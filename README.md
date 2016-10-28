@@ -25,7 +25,7 @@ The Notify Gateway provides an interface for Response Management to send communi
 
 - To start:
     ./mvnw spring-boot:run
-    
+
 
 ## Copyright
 Copyright (C) 2016 Crown Copyright (Office for National Statistics)
