@@ -14,8 +14,8 @@ The Notify Gateway provides an interface for Response Management to send communi
 - Prerequisites:
     - for logging:
         - cd /var/log/ctp/responsemanagement
-        - mkdir notificationgatewaysvc
-        - chmod 777 notificationgatewaysvc
+        - mkdir notifygatewaysvc
+        - chmod 777 notifygatewaysvc
     - Stop RabbitMQ if running: sudo /sbin/service rabbitmq-server stop
     - Install ActiveMQ:
         - Install Apache ActiveMQ 5.13.3: download and unzip under /opt
