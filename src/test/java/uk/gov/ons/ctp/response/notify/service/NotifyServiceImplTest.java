@@ -13,6 +13,7 @@ import static junit.framework.TestCase.assertTrue;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NotifyServiceImplTest {
+
   @InjectMocks
   private NotifyServiceImpl notifyService;
 

@@ -5,7 +5,10 @@ The Notify Gateway provides an interface for Response Management to send communi
 ##################################################
 # To build
 ##################################################
-./mvnw clean install
+- Prerequisites:
+    - see README (Installation - Maven) at https://github.com/alphagov/notifications-java-client
+
+- mvn clean install
 
 
 ##################################################

@@ -23,3 +23,6 @@ management:
 endpoints:
   enabled: true
   sensitive: true
+
+API_KEY: ctpnotifygateway-0e515090-7962-40e8-a8c7-acbacf079c21-ac979394-a989-4f79-b0e0-6abcca564393
+TEMPLATE_ID: 966731dc-ef2e-41ad-a828-8cdd95c81ebc
