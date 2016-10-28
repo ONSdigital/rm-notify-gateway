@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.notify.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
@@ -24,9 +25,10 @@ public class NotifyServiceImpl implements NotifyService {
 
   private static final String FIRST_NAME = "firstName";
   private static final String IAC = "iac";
+  private static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
 
   @Override
-  public void process(ActionInstruction actionInstruction) {
+  public void process(ActionInstruction actionInstruction) throws CTPException {
     try {
       HashMap<String, String> personalisation = new HashMap<>();
       personalisation.put(FIRST_NAME, "John");
@@ -37,7 +39,9 @@ public class NotifyServiceImpl implements NotifyService {
       String status = notification.getStatus();
       log.debug("status = {}", status);
     } catch (NotificationClientException e) {
-      log.debug("there was an issue - msg = {}", e.getMessage());
+      String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
+      log.error(errorMsg);
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }
   }
 }
