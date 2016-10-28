@@ -1,0 +1,25 @@
+info:
+  contactEmail: philippe.brossier@ons.gov.uk
+  version: ${project.version}
+  commit: ${buildNumber}
+  branch: ${scmBranch}
+  buildTime: ${timestamp}
+
+spring:
+  application:
+    name: Notify Gateway API
+
+  sleuth:
+    sampler:
+      percentage: 1
+
+  zipkin:
+    enabled: true # true is the default to post to a Zipkin server at 9411
+
+management:
+  port: 8281
+  context-path: /mgmt
+
+endpoints:
+  enabled: true
+  sensitive: true
