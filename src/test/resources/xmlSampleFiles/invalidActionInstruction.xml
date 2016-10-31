@@ -1,0 +1,21 @@
+<ins:actionInstruction xmlns:ins="http://ons.gov.uk/ctp/response/action/message/instruction">
+    <actionRequests>
+        <actionRequest>
+            <!-- Note the missing mandatory address -->
+            <responseRequired>true</responseRequired>
+            <actionId>666</actionId>
+            <actionType>HouseholdCreateVisit</actionType>
+            <!--Optional:-->
+            <contactName>int test</contactName>
+            <caseId>1</caseId>
+            <!--Optional:-->
+            <priority>highest</priority>
+            <questionnaireId>1</questionnaireId>
+            <iac>123456789</iac>
+            <events>
+                <!--Zero or more repetitions:-->
+                <event>IWantToTestTheLimitAt100WeThoughtItWas250code</event>
+            </events>
+        </actionRequest>
+    </actionRequests>
+</ins:actionInstruction>

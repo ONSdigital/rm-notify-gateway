@@ -54,4 +54,12 @@ public class NotifyServiceImpl implements NotifyService {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }
   }
+
+  /**
+   * To set the Template ID
+   * @param templateId the Template ID
+   * */
+  public void setTemplateId(String templateId) {
+    this.templateId = templateId;
+  }
 }

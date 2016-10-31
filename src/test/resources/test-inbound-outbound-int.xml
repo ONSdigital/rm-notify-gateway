@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+    <bean id="instructionReceiver" class="uk.gov.ons.ctp.response.notify.message.impl.InstructionReceiverImpl"/>
+
+    <bean id="notificationClient" class="uk.gov.service.notify.NotificationClient">
+        <constructor-arg name="apiKey" value="${API_KEY}" />
+    </bean>
+
+    <bean id="notifyService" class="uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl"/>
+</beans>
+
