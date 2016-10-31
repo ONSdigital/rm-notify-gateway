@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+    <!-- The poller to manage the throughput to GOV.UK Notify -->
+    <int:channel id="notifyPollerError" />
+    <bean id="notifyPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.NotifyPollerErrors"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="notifyPollerErrorJmsOut" destination="notifyPollerErrorQueue" channel="notifyPollerError"/>
+    <int:poller id="defaultPoller" default="true" error-channel="notifyPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
+
+    <!--  First the inbound flow -->
+    <!-- The inbound message container config - the inbound queue is defined here
+    We will listen for actionInstructions coming from the ActionSvc.
+    -->
+    <bean id="actionInstructionMessageListenerContainer"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destinationName" value="Action.Notify" />
+        <property name="maxConcurrentConsumers" value="1" />
+        <property name="concurrentConsumers" value="1" />
+        <property name="receiveTimeout" value="5000" />
+        <property name="recoveryInterval" value="60000" />
+        <property name="autoStartup" value="true" />
+    </bean>
+
+    <!-- need an input channel defined for MQ adapter to input to -->
+    <int:channel id="actionInstructionXml" />
+
+    <!-- anything sent to this channel is put on the queue Action.InvalidActionInstructions -->
+    <int:channel id="actionInstructionXmlInvalid" />
+    <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.InvalidActionInstructions"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="invalidActionInstructionJmsOut" destination="invalidActionInstructionQueue" channel="actionInstructionXmlInvalid"/>
+
+    <!-- the MQ channel adapter reads from the Action.Notify Queue (see the container above) and inputs to actionInstructionXml -->
+    <int-jms:message-driven-channel-adapter
+            id="jmsIn" container="actionInstructionMessageListenerContainer" channel="actionInstructionXml" />
+
+    <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int-xml:validating-filter id="actionInstructionValidator" input-channel="actionInstructionXml"
+                               output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
+
+    <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
+    <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction">
+        <!-- The line below to make it a PollableChannel so our defaultPoller is used to control flow to Kirona DRS -->
+        <int:queue/>
+    </int:channel>
+    <int-xml:unmarshalling-transformer
+            input-channel="actionInstructionXmlValid" output-channel="actionInstructionTransformed"
+            unmarshaller="actionInstructionUnmarshaller" />
+
+    <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
+    <bean id="actionInstructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
+    </bean>
+    <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
+
+    <!-- TODO Deal with situation where process (NotifyService) throws an exception. Do similar to CaseSvc for CaseReeceipt
+    TODO We need to put the ActionInstruction back on the queue Action.Notify -->
+
+    <!--  Start of section required for tests -->
+    <!-- Section to publish Action Instructions -->
+    <!-- setup the outbound jms queues -->
+    <bean id="notifyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Notify"/>
+    </bean>
+
+    <!-- setup the outbound channels - note each queue needs a channel -->
+    <int:channel id="instructionOutbound" />
+    <int:channel id="instructionXml" />
+    <int:channel id="instructionNotify" />
+
+    <!-- the @Publisher sends to the marshalling-transformers input channel -->
+    <int-xml:marshalling-transformer
+            input-channel="instructionOutbound" output-channel="instructionXml"
+            marshaller="instructionMarshaller" result-transformer="instructionTransformer" />
+    <!-- the instructionMarshaller turns java objs into xml dom -->
+    <bean id="instructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath"
+                  value="uk.gov.ons.ctp.response.action.message.instruction" />
+    </bean>
+    <!-- the instructionTransformer turns the xml dom into a string -->
+    <bean id="instructionTransformer"
+          class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <int-xml:validating-filter id="instructionValidator"
+                               input-channel="instructionXml" output-channel="instructionXmlValid"
+                               schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid" />
+
+    <int:router input-channel="instructionXmlValid" expression="'instructionNotify'" />
+
+    <!-- each channel adapter listens to one of our routed channels and adapts
+     the SI message to a JMS message -->
+    <int-jms:outbound-channel-adapter id="jmsout.Notify"
+                                      channel="instructionNotify" destination="notifyInstructionQueue" />
+    <!--  End of section required for tests -->
+
+</beans>
+
