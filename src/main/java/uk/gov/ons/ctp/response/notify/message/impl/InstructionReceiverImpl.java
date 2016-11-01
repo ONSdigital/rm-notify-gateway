@@ -30,6 +30,7 @@ public class InstructionReceiverImpl implements InstructionReceiver {
   /**
    * To process ActionInstructions from the input channel actionInstructionTransformed
    * @param instruction the ActionInstruction to be processed
+   * @throws CTPException when notifyService processing fails
    */
   @ServiceActivator(inputChannel = "actionInstructionTransformed")
   public final void processInstruction(final ActionInstruction instruction) throws CTPException {

@@ -1,0 +1,8 @@
+## To test the health endpoint without credentials
+curl http://localhost:8281/mgmt/health -v -X GET
+401 {"timestamp":1478001260449,"status":401,"error":"Unauthorized","message":"Full authentication is required to access this resource","path":"/mgmt/health"}
+
+
+## To test the health endpoint
+curl http://localhost:8281/mgmt/health -v -X GET -u notifygw:ctp
+200 {"status":"UP","jms":{"status":"UP","provider":"ActiveMQ"},"diskSpace":{"status":"UP","total":30335164416,"free":6962753536,"threshold":10485760},"refreshScope":{"status":"UP"}}

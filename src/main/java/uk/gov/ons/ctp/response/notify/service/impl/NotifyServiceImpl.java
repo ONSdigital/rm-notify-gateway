@@ -13,11 +13,16 @@ import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.NotificationResponse;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The service implementation for NotifyService
+ */
 @Slf4j
+@Named
 public class NotifyServiceImpl implements NotifyService {
 
   @Value("${TEMPLATE_ID}")
@@ -64,9 +69,9 @@ public class NotifyServiceImpl implements NotifyService {
 
   /**
    * To set the Template ID
-   * @param templateId the Template ID
+   * @param aTemplateId the Template ID
    * */
-  public void setTemplateId(String templateId) {
-    this.templateId = templateId;
+  public void setTemplateId(String aTemplateId) {
+    templateId = aTemplateId;
   }
 }

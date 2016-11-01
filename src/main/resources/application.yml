@@ -16,6 +16,20 @@ spring:
   zipkin:
     enabled: true # true is the default to post to a Zipkin server at 9411
 
+# logging config here as a reminder as to how to override logback from cmd line
+# ie -Dlogging.level.org.springframework=DEBUG
+logging:
+  level:
+    org.springframework: debug
+    uk.gov.ons.ctp: debug
+
+security:
+  basic:
+    enabled: true
+  user:
+    name: notifygw
+    password: ctp
+
 management:
   port: 8281
   context-path: /mgmt

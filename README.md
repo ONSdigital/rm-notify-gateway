@@ -9,6 +9,7 @@ The Notify Gateway provides an interface for Response Management to send communi
     - see README (Installation - Maven) at https://github.com/alphagov/notifications-java-client
 
 - mvn clean install
+- mvn clean install -DskipITs
 
 
 ##################################################
@@ -27,7 +28,8 @@ The Notify Gateway provides an interface for Response Management to send communi
         - console accessed at http://localhost:8161/ with user = admin - pwd = admin
 
 - To start:
-    ./mvnw spring-boot:run
+    - cd .../rm-notify-gateway/target
+    - java -jar notifygatewaysvc-9.28.0-SNAPSHOT.jar
 
 
 ## Copyright
