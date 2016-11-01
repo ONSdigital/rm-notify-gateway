@@ -51,7 +51,7 @@ public class NotifyServiceImpl implements NotifyService {
         personalisation.put(CONTACT_NAME, actionRequest.getContactName());
         personalisation.put(IAC, actionRequest.getIac());
         // TODO replace hardcoded phone with data from actionRequest
-        String phoneNumber = "07985675158";
+        String phoneNumber = "07985675111";
         log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
                 templateId, phoneNumber, personalisation, actionId);
         response = notificationClient.sendSms(templateId, phoneNumber, personalisation);

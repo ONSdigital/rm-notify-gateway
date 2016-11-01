@@ -20,7 +20,7 @@ public class ManualTest {
     HashMap<String, String> personalisation = new HashMap<>();
     personalisation.put(FIRST_NAME, "John");
     personalisation.put(IAC, "ABCD EFGH IJKL");
-    NotificationResponse response = notificationClient.sendSms(TEMPLATE_ID, "07985675158", personalisation);
+    NotificationResponse response = notificationClient.sendSms(TEMPLATE_ID, "07985675111", personalisation);
     String notificationId = response.getNotificationId();
     Notification notification = notificationClient.getNotificationById(notificationId);
     String status = notification.getStatus();
