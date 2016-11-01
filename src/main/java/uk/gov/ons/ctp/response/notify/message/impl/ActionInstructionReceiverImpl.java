@@ -7,7 +7,7 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
-import uk.gov.ons.ctp.response.notify.message.InstructionReceiver;
+import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
 import javax.inject.Inject;
@@ -17,7 +17,7 @@ import javax.inject.Inject;
  */
 @Slf4j
 @MessageEndpoint
-public class InstructionReceiverImpl implements InstructionReceiver {
+public class ActionInstructionReceiverImpl implements ActionInstructionReceiver {
 
   private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
 
@@ -32,7 +32,7 @@ public class InstructionReceiverImpl implements InstructionReceiver {
    * @param instruction the ActionInstruction to be processed
    * @throws CTPException when notifyService processing fails
    */
-  @ServiceActivator(inputChannel = "actionInstructionTransformed")
+  @ServiceActivator(inputChannel = "actionInstructionTransformedWithHeader")
   public final void processInstruction(final ActionInstruction instruction) throws CTPException {
     log.debug("entering processInstruction with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);

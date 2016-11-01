@@ -9,7 +9,7 @@ import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
-import uk.gov.ons.ctp.response.notify.message.impl.InstructionReceiverImpl;
+import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 
@@ -19,13 +19,13 @@ import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestData;
 
 /**
- * To unit test InstructionReceiverImpl
+ * To unit test ActionInstructionReceiverImpl
  */
 @RunWith(MockitoJUnitRunner.class)
-public class InstructionReceiverImplTest {
+public class ActionInstructionReceiverImplTest {
 
   @InjectMocks
-  InstructionReceiverImpl instructionReceiver;
+  ActionInstructionReceiverImpl instructionReceiver;
 
   @Mock
   private NotifyService notifyService;

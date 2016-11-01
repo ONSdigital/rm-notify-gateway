@@ -17,7 +17,7 @@
         <constructor-arg value="Action.NotifyPollerErrors"/>
     </bean>
     <int-jms:outbound-channel-adapter id="notifyPollerErrorJmsOut" destination="notifyPollerErrorQueue" channel="notifyPollerError"/>
-    <int:poller id="defaultPoller" default="true" error-channel="notifyPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
+    <int:poller id="defaultPoller" default="true" error-channel="notifyPollerError" fixed-delay="${notify-default-poller.fixedDelay}" time-unit="MILLISECONDS" max-messages-per-poll="${notify-default-poller.msgPerPoll}" receive-timeout="5000" />
 
     <!--  First the inbound flow -->
     <!-- The inbound message container config - the inbound queue is defined here
@@ -66,10 +66,56 @@
     <bean id="actionInstructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
     </bean>
-    <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
 
-    <!-- TODO Deal with situation where process (NotifyService) throws an exception. Do similar to CaseSvc for CaseReeceipt
-    TODO We need to put the ActionInstruction back on the queue Action.Notify -->
+    <!-- we add an error channel so we can reprocess ActionInstructions when an exception is thrown in processInstruction
+    in ActionInstructionReceiverImpl-->
+    <int:channel id="actionInstructionProcessError">
+        <int:queue />
+    </int:channel>
+    <int:channel id="actionInstructionProcessErrorFailedMsgOnly" >
+        <int:queue />
+    </int:channel>
+    <int:transformer input-channel="actionInstructionProcessError" output-channel="actionInstructionProcessErrorFailedMsgOnly" expression="payload.failedMessage"/>
+    <int:channel id="actionInstructionTransformedWithHeader" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction">
+        <int:queue />
+    </int:channel>
+    <int:header-enricher input-channel="actionInstructionTransformed" output-channel="actionInstructionTransformedWithHeader">
+        <int:error-channel value="actionInstructionProcessError"/>
+    </int:header-enricher>
+    <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformedWithHeader") -->
+
+    <!-- START of section to publish ActionInstructions -->
+    <bean id="actionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Notify"/>
+    </bean>
+
+    <!--  setup the outbound channels - note each queue needs a channel -->
+    <int:channel id="actionInstructionOutbound" />
+    <int:channel id="actionInstructionOutboundXml" />
+    <int:channel id="actionInstruction" />
+
+    <!--  the @Publisher sends to the marshalling-transformers input channel -->
+    <int-xml:marshalling-transformer
+            input-channel="actionInstructionOutbound" output-channel="actionInstructionOutboundXml"
+            marshaller="actionInstructionMarshaller"
+            result-transformer="actionInstructionTransformer"/>
+    <!--  the actionInstructionMarshaller turns java objects into xml dom -->
+    <bean id="actionInstructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
+    </bean>
+    <!--  the actionInstructionTransformer turns the xml dom into a string -->
+    <bean id="actionInstructionTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <!-- we validate here that we post ActionInstructions matching the outbound schema -->
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int-xml:validating-filter id="actionInstructionOutboundValidator" input-channel="actionInstructionOutboundXml"
+                               output-channel="actionInstructionOutboundXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
+
+    <!-- define the channel name to send our xml string to -->
+    <int:router input-channel="actionInstructionOutboundXmlValid" expression="'actionInstruction'"/>
+
+    <int-jms:outbound-channel-adapter id="actionInstructionJmsout" channel="actionInstruction" destination="actionInstructionQueue"/>
+    <!-- END of section to publish ActionInstructions -->
 
     <!--  Start of section required for tests -->
     <!-- Section to publish Action Instructions -->

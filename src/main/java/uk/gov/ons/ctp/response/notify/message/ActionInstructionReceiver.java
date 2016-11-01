@@ -8,7 +8,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 /**
  * The service that reads ActionInstructions from the inbound channel
  */
-public interface InstructionReceiver {
+public interface ActionInstructionReceiver {
   /**
    * To process ActionInstructions from the input channel actionInstructionTransformed
    * @param instruction the ActionInstruction to be processed
