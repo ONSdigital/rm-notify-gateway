@@ -14,8 +14,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import java.util.Random;
 
 @SpringBootConfiguration
-@ImportResource(locations = { "classpath:InstructionReceiverImplITCase-context.xml" })
-public class InstructionReceiverImplITCaseConfig {
+@ImportResource(locations = { "classpath:ActionInstructionReceiverImplITCase-context.xml" })
+public class ActionInstructionReceiverImplITCaseConfig {
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertyConfigInTest() {
     return new PropertySourcesPlaceholderConfigurer();

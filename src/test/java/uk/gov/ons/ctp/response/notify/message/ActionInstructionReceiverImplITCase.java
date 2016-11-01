@@ -33,8 +33,8 @@ import static uk.gov.ons.ctp.response.notify.utility.CommonValues.PACKAGE_ACTION
  * Test focusing on Spring Integration
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = InstructionReceiverImplITCaseConfig.class)
-public class InstructionReceiverImplITCase {
+@SpringBootTest(classes = ActionInstructionReceiverImplITCaseConfig.class)
+public class ActionInstructionReceiverImplITCase {
 
   @Autowired
   MessageChannel actionInstructionXml;
