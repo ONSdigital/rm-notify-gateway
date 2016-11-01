@@ -102,8 +102,6 @@ public class InstructionReceiverImplITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTIONS_QUEUE);
     assertEquals(initialCounter, finalCounter);
-
-    // TODO Do we need to check that an ActionFeedback is produced and put on queue?
   }
 
   private File provideTempFile(String inputStreamLocation) throws IOException {
