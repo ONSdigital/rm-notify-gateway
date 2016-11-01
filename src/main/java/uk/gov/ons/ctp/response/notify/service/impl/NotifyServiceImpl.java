@@ -13,6 +13,7 @@ import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.NotificationResponse;
 
 import javax.inject.Inject;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,21 +33,27 @@ public class NotifyServiceImpl implements NotifyService {
 
   @Override
   public void process(ActionInstruction actionInstruction) throws CTPException {
+    log.debug("Entering process with actionInstruction {}", actionInstruction);
     try {
       List<ActionRequest> actionRequests = actionInstruction.getActionRequests().getActionRequests();
       HashMap<String, String> personalisation = new HashMap<>();
       NotificationResponse response;
       String notificationId, status;
       Notification notification;
+      BigInteger actionId;
       for (ActionRequest actionRequest :  actionRequests) {
+        actionId = actionRequest.getActionId();
         personalisation.put(CONTACT_NAME, actionRequest.getContactName());
         personalisation.put(IAC, actionRequest.getIac());
         // TODO replace hardcoded phone with data from actionRequest
-        response = notificationClient.sendSms(templateId, "07985675158", personalisation);
+        String phoneNumber = "07985675158";
+        log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
+                templateId, phoneNumber, personalisation, actionId);
+        response = notificationClient.sendSms(templateId, phoneNumber, personalisation);
         notificationId = response.getNotificationId();
         notification = notificationClient.getNotificationById(notificationId);
         status = notification.getStatus();
-        log.debug("status = {} for actionId = {}", status, actionRequest.getActionId());
+        log.debug("status = {} for actionId = {}", status, actionId);
       }
     } catch (NotificationClientException e) {
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
