@@ -5,6 +5,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
+import uk.gov.ons.ctp.response.notify.endpoint.ManualTestEndpoint;
 
 import javax.inject.Named;
 
@@ -25,6 +26,8 @@ public class Application {
     public JerseyConfig() {
       log.debug("entering the JerseyConfig constructor...");
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
+
+      register(ManualTestEndpoint.class);
 
       System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
       System.setProperty("ma.glasnost.orika.writeClassFiles", "false");

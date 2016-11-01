@@ -13,7 +13,7 @@ import javax.inject.Named;
 @Slf4j
 @Named
 public class ActionInstructionPublisherImpl implements ActionInstructionPublisher {
-  @Publisher(channel = "caseReceiptOutbound")
+  @Publisher(channel = "actionInstructionOutbound")
   @Override
   public ActionInstruction send(ActionInstruction actionInstruction) {
     log.debug("send to queue actionInstruction {}", actionInstruction);

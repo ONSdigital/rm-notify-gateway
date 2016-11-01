@@ -6,3 +6,7 @@ curl http://localhost:8281/mgmt/health -v -X GET
 ## To test the health endpoint
 curl http://localhost:8281/mgmt/health -v -X GET -u notifygw:ctp
 200 {"status":"UP","jms":{"status":"UP","provider":"ActiveMQ"},"diskSpace":{"status":"UP","total":30335164416,"free":6962753536,"threshold":10485760},"refreshScope":{"status":"UP"}}
+
+
+## To put an ActionInstruction on queue ready for processing by the Notify service
+curl http://localhost:8181/manual -v -X GET -u notifygw:ctp

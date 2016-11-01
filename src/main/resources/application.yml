@@ -34,6 +34,10 @@ management:
   port: 8281
   context-path: /mgmt
 
+server:
+  port: 8181
+  servlet-path: /mgmt
+
 endpoints:
   enabled: true
   sensitive: true
