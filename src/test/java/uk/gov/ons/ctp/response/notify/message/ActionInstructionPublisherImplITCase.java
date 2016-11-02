@@ -50,7 +50,6 @@ public class ActionInstructionPublisherImplITCase {
 
   @Test
   public void testSendInvalidActionInstructionWithActionInstructionPublisher() throws Exception {
-    // TODO Build an invalid ActionInstruction and assertEquals below should be at 1, not 0
     ActionInstruction actionInstruction = ObjectBuilder.buildActionInstruction(buildTestData());
     actionInstructionPublisher.send(actionInstruction);
 
@@ -60,8 +59,9 @@ public class ActionInstructionPublisherImplITCase {
      * We check that the xml invalid queue contains 1 additional message.
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTIONS_QUEUE);
-    assertEquals(0, finalCounter - initialCounter);
+    assertEquals(1, finalCounter - initialCounter);
 
+    // TODO adapt for ActionInstruction
     /**
      * The section below verifies that no CaseReceipt ends up on the queue
      */

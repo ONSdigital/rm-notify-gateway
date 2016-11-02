@@ -11,6 +11,8 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
+    <int:annotation-config/>
+
     <!-- The poller to manage the throughput to GOV.UK Notify -->
     <int:channel id="notifyPollerError" />
     <bean id="notifyPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
@@ -20,9 +22,8 @@
     <int:poller id="defaultPoller" default="true" error-channel="notifyPollerError" fixed-delay="${notify-default-poller.fixedDelay}" time-unit="MILLISECONDS" max-messages-per-poll="${notify-default-poller.msgPerPoll}" receive-timeout="5000" />
 
     <!--  First the inbound flow -->
-    <!-- The inbound message container config - the inbound queue is defined here
-    We will listen for actionInstructions coming from the ActionSvc.
-    -->
+    <!-- The inbound message container config - the inbound queue is defined here. We listen for actionInstructions
+    coming from the ActionSvc. -->
     <bean id="actionInstructionMessageListenerContainer"
           class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
@@ -55,7 +56,7 @@
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
     <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction">
-        <!-- The line below to make it a PollableChannel so our defaultPoller is used to control flow to Kirona DRS -->
+        <!-- The line below to make it a PollableChannel so our defaultPoller is used to control flow to GOV.UK Notify -->
         <int:queue/>
     </int:channel>
     <int-xml:unmarshalling-transformer
@@ -116,43 +117,5 @@
 
     <int-jms:outbound-channel-adapter id="actionInstructionJmsout" channel="actionInstruction" destination="actionInstructionQueue"/>
     <!-- END of section to publish ActionInstructions -->
-
-    <!--  Start of section required for tests -->
-    <!-- Section to publish Action Instructions -->
-    <!-- setup the outbound jms queues -->
-    <bean id="notifyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Notify"/>
-    </bean>
-
-    <!-- setup the outbound channels - note each queue needs a channel -->
-    <int:channel id="instructionOutbound" />
-    <int:channel id="instructionXml" />
-    <int:channel id="instructionNotify" />
-
-    <!-- the @Publisher sends to the marshalling-transformers input channel -->
-    <int-xml:marshalling-transformer
-            input-channel="instructionOutbound" output-channel="instructionXml"
-            marshaller="instructionMarshaller" result-transformer="instructionTransformer" />
-    <!-- the instructionMarshaller turns java objs into xml dom -->
-    <bean id="instructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath"
-                  value="uk.gov.ons.ctp.response.action.message.instruction" />
-    </bean>
-    <!-- the instructionTransformer turns the xml dom into a string -->
-    <bean id="instructionTransformer"
-          class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
-
-    <int-xml:validating-filter id="instructionValidator"
-                               input-channel="instructionXml" output-channel="instructionXmlValid"
-                               schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid" />
-
-    <int:router input-channel="instructionXmlValid" expression="'instructionNotify'" />
-
-    <!-- each channel adapter listens to one of our routed channels and adapts
-     the SI message to a JMS message -->
-    <int-jms:outbound-channel-adapter id="jmsout.Notify"
-                                      channel="instructionNotify" destination="notifyInstructionQueue" />
-    <!--  End of section required for tests -->
-
 </beans>
 
