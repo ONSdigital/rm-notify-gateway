@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.notify.utility;
 
+import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
@@ -32,7 +33,7 @@ public class ObjectBuilder {
     for (String actionId : actionIds) {
       String value = dataMap.get(actionId);
       String[] params = value.split(",");
-      actionRequestList.add(buildActionRequest(new BigInteger(actionId), params[0], params[1], valid));
+      actionRequestList.add(buildActionRequest(new BigInteger(actionId), params[0], params[1], params[2], valid));
     }
 
     actionInstruction.setActionRequests(actionRequests);
@@ -42,15 +43,20 @@ public class ObjectBuilder {
   /**
    * This builds an ActionRequest.
    * @param actionId the actionId
-   * @param contactName the contactName
+   * @param forename the forename
+   * @param surname the surname
    * @param phoneNumber the phoneNumber
    * @param valid true if valid ActionRequest
    * @return
    */
-  public static ActionRequest buildActionRequest(BigInteger actionId, String contactName, String phoneNumber, boolean valid) {
+  public static ActionRequest buildActionRequest(BigInteger actionId, String forename, String surname, String phoneNumber, boolean valid) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setActionId(actionId);
-    actionRequest.setContactName(contactName);
+    ActionContact actionContact = new ActionContact();
+    actionContact.setForename(forename);
+    actionContact.setSurname(surname);
+    actionContact.setPhoneNumber(phoneNumber);
+    actionRequest.setContact(actionContact);
     if (valid) {
       actionRequest.setActionPlan(DEFAULT_ACTION_PLAN);
       actionRequest.setActionType(NOTIFY);
@@ -93,9 +99,9 @@ public class ObjectBuilder {
 
   public static Map<String, String> buildTestData() {
     Map<String, String> testData = new HashMap<>();
-    testData.put("1", "Joe,07742994131");
-    testData.put("2", "Joe,07742994132");
-    testData.put("3", "Joe,07742994133");
+    testData.put("1", "Joe,Blogg,07742994131");
+    testData.put("2", "Bob,Smith,07742994132");
+    testData.put("3", "Al,Simms,07742994133");
     return testData;
   }
 }

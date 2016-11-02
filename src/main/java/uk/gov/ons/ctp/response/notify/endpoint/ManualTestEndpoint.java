@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.notify.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
@@ -35,6 +36,7 @@ public class ManualTestEndpoint implements CTPEndpoint {
 
   /**
    * To publish an ActionInstruction
+   * @param valid true if publishes a valid ActionInstruction
    * @return 200
    */
   @GET
@@ -45,14 +47,25 @@ public class ManualTestEndpoint implements CTPEndpoint {
     return Response.status(Response.Status.OK).build();
   }
 
+  /**
+   * To build the test data.
+   * Key is actionId, Value is forename,surname,phonenumber
+   * @return the test data
+   */
   private Map<String, String> buildTestData() {
     Map<String, String> testData = new HashMap<>();
-    testData.put("1", "Joe,07742994131");
-    testData.put("2", "Joe,07742994132");
-    testData.put("3", "Joe,07742994133");
+    testData.put("1", "Joe,Blogg,07742994131");
+    testData.put("2", "Bob,Smith,07742994132");
+    testData.put("3", "Al,Simms,07742994133");
     return testData;
   }
 
+  /**
+   * To build an ActionInstruction
+   * @param dataMap the test data
+   * @param valid true if validates against xsd
+   * @return the ActionInstruction
+   */
   private ActionInstruction buildActionInstruction(Map<String, String> dataMap, boolean valid) {
     ActionInstruction actionInstruction = new ActionInstruction();
     ActionRequests actionRequests = new ActionRequests();
@@ -62,17 +75,31 @@ public class ManualTestEndpoint implements CTPEndpoint {
     for (String actionId : actionIds) {
       String value = dataMap.get(actionId);
       String[] params = value.split(",");
-      actionRequestList.add(buildActionRequest(new BigInteger(actionId), params[0], params[1], valid));
+      actionRequestList.add(buildActionRequest(new BigInteger(actionId), params[0], params[1], params[2], valid));
     }
 
     actionInstruction.setActionRequests(actionRequests);
     return actionInstruction;
   }
 
-  private ActionRequest buildActionRequest(BigInteger actionId, String contactName, String phoneNumber, boolean valid) {
+  /**
+   * To build an ActionRequest
+   * @param actionId the actionId
+   * @param forename the forename
+   * @param surname the surname
+   * @param phoneNumber the phone number
+   * @param valid true if validates against xsd
+   * @return the ActionRequest
+   */
+  private ActionRequest buildActionRequest(BigInteger actionId, String forename, String surname, String phoneNumber,
+                                           boolean valid) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setActionId(actionId);
-    actionRequest.setContactName(contactName);
+    ActionContact actionContact = new ActionContact();
+    actionContact.setForename(forename);
+    actionContact.setSurname(surname);
+    actionContact.setPhoneNumber(phoneNumber);
+    actionRequest.setContact(actionContact);
     if (valid) {
       actionRequest.setActionPlan(DEFAULT_ACTION_PLAN);
       actionRequest.setActionType(NOTIFY);

@@ -13,6 +13,10 @@ public class NotifyConfiguration {
   @Value("${API_KEY}")
   private String apiKey;
 
+  /**
+   * To set up the GOV.UK Notify notificationClient
+   * @return the notificationClient
+   */
   @Bean
   public NotificationClient notificationClient() {
     return new NotificationClient(apiKey);

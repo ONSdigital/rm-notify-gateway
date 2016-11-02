@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.notify.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
@@ -31,7 +32,8 @@ public class NotifyServiceImpl implements NotifyService {
   @Inject
   private NotificationClient notificationClient;
 
-  private static final String CONTACT_NAME = "contactName";
+  private static final String FORENAME = "forename";
+  private static final String SURNAME = "surnname";
   private static final String IAC = "iac";
 
   public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
@@ -46,12 +48,14 @@ public class NotifyServiceImpl implements NotifyService {
       String notificationId, status;
       Notification notification;
       BigInteger actionId;
+      ActionContact actionContact;
       for (ActionRequest actionRequest :  actionRequests) {
         actionId = actionRequest.getActionId();
-        personalisation.put(CONTACT_NAME, actionRequest.getContactName());
+        actionContact = actionRequest.getContact();
+        personalisation.put(FORENAME, actionContact.getForename());
+        personalisation.put(SURNAME, actionContact.getSurname());
         personalisation.put(IAC, actionRequest.getIac());
-        // TODO replace hardcoded phone with data from actionRequest
-        String phoneNumber = "07985675111";
+        String phoneNumber = actionContact.getPhoneNumber();
         log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
                 templateId, phoneNumber, personalisation, actionId);
         response = notificationClient.sendSms(templateId, phoneNumber, personalisation);

@@ -32,7 +32,7 @@ public class ActionInstructionProcessErrorReceiverImpl {
   @ServiceActivator(inputChannel = "actionInstructionProcessErrorFailedMsgOnly")
   public void process(Message<?> message) {
     log.debug("entering process with message {}", message);
-    ActionInstruction actionInstructionToReprocess = (ActionInstruction)message.getPayload();
+    ActionInstruction actionInstructionToReprocess = (ActionInstruction) message.getPayload();
     log.debug("actionInstructionToReprocess = {}", actionInstructionToReprocess);
 
     actionInstructionPublisher.send(actionInstructionToReprocess);
