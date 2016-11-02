@@ -11,8 +11,6 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <int:annotation-config/>
-
     <!-- The poller to manage the throughput to GOV.UK Notify -->
     <int:channel id="notifyPollerError" />
     <bean id="notifyPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
@@ -86,10 +84,11 @@
     <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformedWithHeader") -->
 
     <!-- START of section to publish ActionInstructions -->
-    <bean id="actionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    <bean id="actionInstructionOutboundQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Action.Notify"/>
     </bean>
 
+    <int:annotation-config/>
     <!--  setup the outbound channels - note each queue needs a channel -->
     <int:channel id="actionInstructionOutbound" />
     <int:channel id="actionInstructionOutboundXml" />
@@ -98,16 +97,16 @@
     <!--  the @Publisher sends to the marshalling-transformers input channel -->
     <int-xml:marshalling-transformer
             input-channel="actionInstructionOutbound" output-channel="actionInstructionOutboundXml"
-            marshaller="actionInstructionMarshaller"
-            result-transformer="actionInstructionTransformer"/>
-    <!--  the actionInstructionMarshaller turns java objects into xml dom -->
-    <bean id="actionInstructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+            marshaller="actionInstructionOutboundMarshaller"
+            result-transformer="actionInstructionOutboundTransformer"/>
+    <!--  the actionInstructionOutboundMarshaller turns java objects into xml dom -->
+    <bean id="actionInstructionOutboundMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
     </bean>
-    <!--  the actionInstructionTransformer turns the xml dom into a string -->
-    <bean id="actionInstructionTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+    <!--  the actionInstructionOutboundTransformer turns the xml dom into a string -->
+    <bean id="actionInstructionOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
 
-    <!-- we validate here that we post ActionInstructions matching the outbound schema -->
+    <!-- we validate here that we post action instructions matching the outbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int-xml:validating-filter id="actionInstructionOutboundValidator" input-channel="actionInstructionOutboundXml"
                                output-channel="actionInstructionOutboundXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
@@ -115,7 +114,8 @@
     <!-- define the channel name to send our xml string to -->
     <int:router input-channel="actionInstructionOutboundXmlValid" expression="'actionInstruction'"/>
 
-    <int-jms:outbound-channel-adapter id="actionInstructionJmsout" channel="actionInstruction" destination="actionInstructionQueue"/>
+    <!--  each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
+    <int-jms:outbound-channel-adapter id="jmsout" channel="actionInstruction" destination="actionInstructionOutboundQueue"/>
     <!-- END of section to publish ActionInstructions -->
 </beans>
 

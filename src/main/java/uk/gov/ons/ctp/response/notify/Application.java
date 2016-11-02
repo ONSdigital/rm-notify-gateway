@@ -4,6 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.notify.endpoint.ManualTestEndpoint;
 
@@ -13,6 +18,11 @@ import javax.inject.Named;
  * The main application class
  */
 @Slf4j
+@IntegrationComponentScan
+@EnableAsync
+@EnableScheduling
+@EnableCaching
+@ImportResource("main-int.xml")
 @SpringBootApplication
 public class Application {
   /**
