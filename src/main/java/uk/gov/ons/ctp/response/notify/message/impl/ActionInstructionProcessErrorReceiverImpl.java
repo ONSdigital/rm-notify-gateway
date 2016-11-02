@@ -20,16 +20,14 @@ public class ActionInstructionProcessErrorReceiverImpl {
   @Inject
   private ActionInstructionPublisher actionInstructionPublisher;
 
-// TODO Reinstate the poller inside the @ServiceActivator: currently gives an exception at runtime
-//  ,
-//  poller = @Poller(
-//          fixedDelay = "${notify-error-poller.fixedDelay}",
-//          maxMessagesPerPoll = "${notify-error-poller.msgPerPoll}")
   /**
    * To process messages put on channel actionInstructionProcessErrorFailedMsgOnly
    * @param message the message to process
    */
-  @ServiceActivator(inputChannel = "actionInstructionProcessErrorFailedMsgOnly")
+  @ServiceActivator(inputChannel = "actionInstructionProcessErrorFailedMsgOnly",
+          poller = @Poller(
+                  fixedDelay = "${notify-error-poller.fixedDelay}",
+                  maxMessagesPerPoll = "${notify-error-poller.msgPerPoll}"))
   public void process(Message<?> message) {
     log.debug("entering process with message {}", message);
     ActionInstruction actionInstructionToReprocess = (ActionInstruction) message.getPayload();
