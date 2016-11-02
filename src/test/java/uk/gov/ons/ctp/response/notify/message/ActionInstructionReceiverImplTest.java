@@ -9,6 +9,7 @@ import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
@@ -25,7 +26,7 @@ import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestData
 public class ActionInstructionReceiverImplTest {
 
   @InjectMocks
-  ActionInstructionReceiverImpl instructionReceiver;
+  ActionInstructionReceiverImpl actionInstructionReceiver;
 
   @Mock
   private NotifyService notifyService;
@@ -35,9 +36,9 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessInstruction() throws CTPException {
-    instructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
+    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
     verify(tracer, times(1)).createSpan(any(String.class));
-    verify(notifyService, times(1)).process(any(ActionInstruction.class));
+    verify(notifyService, times(3)).process(any(ActionRequest.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
 }

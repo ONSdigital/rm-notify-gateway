@@ -12,6 +12,7 @@ import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 
 import static junit.framework.TestCase.assertTrue;
@@ -20,9 +21,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.EXCEPTION_NOTIFY_SERVICE;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildNotification;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildNotificationResponse;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestData;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
 
 /**
  * To unit test NotifyServiceImpl
@@ -41,10 +40,10 @@ public class NotifyServiceImplTest {
     Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class))).thenReturn(buildNotificationResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotification());
 
-    notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData(), true));
+    notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID_1, FORENAME, SURNAME, PHONENUMBER, true));
 
-    verify(notificationClient, times(3)).sendSms(any(String.class), any(String.class), any(HashMap.class));
-    verify(notificationClient, times(3)).getNotificationById(any(String.class));
+    verify(notificationClient, times(1)).sendSms(any(String.class), any(String.class), any(HashMap.class));
+    verify(notificationClient, times(1)).getNotificationById(any(String.class));
   }
 
   @Test
@@ -54,7 +53,7 @@ public class NotifyServiceImplTest {
 
     boolean exceptionThrown = false;
     try {
-      notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData(), true));
+      notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID_1, FORENAME, SURNAME, PHONENUMBER, true));
     } catch(CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());

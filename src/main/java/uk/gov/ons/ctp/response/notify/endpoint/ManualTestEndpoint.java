@@ -67,7 +67,7 @@ public class ManualTestEndpoint implements CTPEndpoint {
   private Map<String, String> buildTestData() {
     Map<String, String> testData = new HashMap<>();
     testData.put("1", "Joe,Blogg,07742994131");
-    testData.put("2", "Bob,Smith,07742994132");
+    testData.put("2", "Bob,Smith,077");
     testData.put("3", "Al,Simms,07742994133");
     return testData;
   }

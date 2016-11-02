@@ -3,7 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-    <bean id="instructionReceiver" class="uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl"/>
+    <bean id="actionInstructionReceiver" class="uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl"/>
+
+    <bean id="actionInstructionPublisher" class="uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionPublisherImpl"/>
 
     <bean id="notificationClient" class="uk.gov.service.notify.NotificationClient">
         <constructor-arg name="apiKey" value="${API_KEY}" />

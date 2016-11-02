@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
@@ -17,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * The service implementation for NotifyService
@@ -39,31 +37,23 @@ public class NotifyServiceImpl implements NotifyService {
   public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
 
   @Override
-  public void process(ActionInstruction actionInstruction) throws CTPException {
-    log.debug("Entering process with actionInstruction {}", actionInstruction);
+  public void process(ActionRequest actionRequest) throws CTPException {
+    log.debug("Entering process with actionRequest {}", actionRequest);
     try {
-      List<ActionRequest> actionRequests = actionInstruction.getActionRequests().getActionRequests();
+      BigInteger actionId = actionRequest.getActionId();
+      ActionContact actionContact = actionRequest.getContact();
       HashMap<String, String> personalisation = new HashMap<>();
-      NotificationResponse response;
-      String notificationId, status;
-      Notification notification;
-      BigInteger actionId;
-      ActionContact actionContact;
-      for (ActionRequest actionRequest :  actionRequests) {
-        actionId = actionRequest.getActionId();
-        actionContact = actionRequest.getContact();
-        personalisation.put(FORENAME, actionContact.getForename());
-        personalisation.put(SURNAME, actionContact.getSurname());
-        personalisation.put(IAC, actionRequest.getIac());
-        String phoneNumber = actionContact.getPhoneNumber();
-        log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
-                templateId, phoneNumber, personalisation, actionId);
-        response = notificationClient.sendSms(templateId, phoneNumber, personalisation);
-        notificationId = response.getNotificationId();
-        notification = notificationClient.getNotificationById(notificationId);
-        status = notification.getStatus();
-        log.debug("status = {} for actionId = {}", status, actionId);
-      }
+      personalisation.put(FORENAME, actionContact.getForename());
+      personalisation.put(SURNAME, actionContact.getSurname());
+      personalisation.put(IAC, actionRequest.getIac());
+      String phoneNumber = actionContact.getPhoneNumber();
+      log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
+              templateId, phoneNumber, personalisation, actionId);
+      NotificationResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation);
+      String notificationId = response.getNotificationId();
+      Notification notification = notificationClient.getNotificationById(notificationId);
+      String status = notification.getStatus();
+      log.debug("status = {} for actionId = {}", status, actionId);
     } catch (NotificationClientException e) {
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
       log.error(errorMsg);

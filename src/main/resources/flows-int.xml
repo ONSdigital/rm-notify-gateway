@@ -65,23 +65,7 @@
     <bean id="actionInstructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
     </bean>
-
-    <!-- we add an error channel so we can reprocess ActionInstructions when an exception is thrown in processInstruction
-    in ActionInstructionReceiverImpl-->
-    <int:channel id="actionInstructionProcessError">
-        <int:queue />
-    </int:channel>
-    <int:channel id="actionInstructionProcessErrorFailedMsgOnly" >
-        <int:queue />
-    </int:channel>
-    <int:transformer input-channel="actionInstructionProcessError" output-channel="actionInstructionProcessErrorFailedMsgOnly" expression="payload.failedMessage"/>
-    <int:channel id="actionInstructionTransformedWithHeader" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction">
-        <int:queue />
-    </int:channel>
-    <int:header-enricher input-channel="actionInstructionTransformed" output-channel="actionInstructionTransformedWithHeader">
-        <int:error-channel value="actionInstructionProcessError"/>
-    </int:header-enricher>
-    <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformedWithHeader") -->
+    <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
 
     <!-- START of section to publish ActionInstructions -->
     <bean id="actionInstructionOutboundQueue" class="org.apache.activemq.command.ActiveMQQueue">
