@@ -33,7 +33,7 @@ public class NotifyServiceImpl implements NotifyService {
   private NotificationClient notificationClient;
 
   private static final String FORENAME = "forename";
-  private static final String SURNAME = "surnname";
+  private static final String SURNAME = "surname";
   private static final String IAC = "iac";
 
   public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
