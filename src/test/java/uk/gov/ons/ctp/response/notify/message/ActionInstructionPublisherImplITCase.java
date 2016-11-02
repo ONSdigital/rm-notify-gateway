@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
@@ -30,6 +31,9 @@ public class ActionInstructionPublisherImplITCase {
 
   @Autowired
   CachingConnectionFactory connectionFactory;
+
+  @Autowired
+  DefaultMessageListenerContainer actionInstructionMessageListenerContainer;
 
   private Connection connection;
   private int initialCounter;
@@ -60,14 +64,19 @@ public class ActionInstructionPublisherImplITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTIONS_QUEUE);
     assertEquals(1, finalCounter - initialCounter);
+  }
 
-    // TODO adapt for ActionInstruction
+  @Test
+  public void testSendValidActionInstructionWithActionInstructionPublisher() throws Exception {
+    ActionInstruction actionInstruction = ObjectBuilder.buildActionInstruction(buildTestData(), true);
+    actionInstructionPublisher.send(actionInstruction);
+
+    Thread.sleep(10000L);
+
     /**
-     * The section below verifies that no CaseReceipt ends up on the queue
+     * We check that no additional message ends up on the invalid queue
      */
-//    CaseBoundMessageListener listener = (CaseBoundMessageListener) caseReceiptMessageListenerContainer.getMessageListener();
-//    TimeUnit.SECONDS.sleep(10);
-//    String listenerPayload = listener.getPayload();
-//    assertNull(listenerPayload);
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTIONS_QUEUE);
+    assertEquals(0, finalCounter - initialCounter);
   }
 }
