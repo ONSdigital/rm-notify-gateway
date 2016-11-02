@@ -3,6 +3,8 @@ package uk.gov.ons.ctp.response.notify.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
@@ -33,11 +35,12 @@ public class NotifyServiceImpl implements NotifyService {
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
   private static final String IAC = "iac";
+  private static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
   public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
 
   @Override
-  public void process(ActionRequest actionRequest) throws CTPException {
+  public ActionFeedback process(ActionRequest actionRequest) throws CTPException {
     log.debug("Entering process with actionRequest {}", actionRequest);
     try {
       BigInteger actionId = actionRequest.getActionId();
@@ -54,6 +57,8 @@ public class NotifyServiceImpl implements NotifyService {
       Notification notification = notificationClient.getNotificationById(notificationId);
       String status = notification.getStatus();
       log.debug("status = {} for actionId = {}", status, actionId);
+      ActionFeedback result = new ActionFeedback(actionId, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED, status);
+      return result;
     } catch (NotificationClientException e) {
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
       log.error(errorMsg);

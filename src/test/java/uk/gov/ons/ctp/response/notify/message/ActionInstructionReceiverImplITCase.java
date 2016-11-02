@@ -95,6 +95,8 @@ public class ActionInstructionReceiverImplITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTIONS_QUEUE);
     assertEquals(initialCounter, finalCounter);
+
+    // TODO Check that one more ActionFeedback message ends up on queue
   }
 
   private File provideTempFile(String inputStreamLocation) throws IOException {

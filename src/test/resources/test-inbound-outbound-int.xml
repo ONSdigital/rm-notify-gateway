@@ -7,6 +7,8 @@
 
     <bean id="actionInstructionPublisher" class="uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionPublisherImpl"/>
 
+    <bean id="actionFeedbackPublisher" class="uk.gov.ons.ctp.response.notify.message.impl.ActionFeedbackPublisherImpl"/>
+
     <bean id="notificationClient" class="uk.gov.service.notify.NotificationClient">
         <constructor-arg name="apiKey" value="${API_KEY}" />
     </bean>

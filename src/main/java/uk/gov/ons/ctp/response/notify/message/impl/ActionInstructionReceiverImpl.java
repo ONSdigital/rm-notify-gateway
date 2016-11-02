@@ -6,9 +6,11 @@ import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
+import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
@@ -36,6 +38,9 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   @Inject
   private ActionInstructionPublisher actionInstructionPublisher;
 
+  @Inject
+  private ActionFeedbackPublisher actionFeedbackPublisher;
+
   /**
    * To process ActionInstructions from the input channel actionInstructionTransformed
    * @param instruction the ActionInstruction to be processed
@@ -48,7 +53,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     if (actionRequests != null) {
       for (ActionRequest actionRequest : actionRequests.getActionRequests()) {
         try {
-          notifyService.process(actionRequest);
+          ActionFeedback actionFeedback = notifyService.process(actionRequest);
+          actionFeedbackPublisher.sendFeedback(actionFeedback);
         } catch (CTPException e) {
           String errorMsg = String.format("%s %d - %s", ERROR_PROCESSING_ACTION_REQUEST, actionRequest.getActionId(),
                   e.getMessage());
