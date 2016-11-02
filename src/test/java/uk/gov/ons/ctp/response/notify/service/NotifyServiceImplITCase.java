@@ -8,7 +8,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.EXCEPTION_NOTIFY_SERVICE;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestData;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestDataInvalidPhoneNumbers;
 
 @SpringBootTest(classes = NotifyServiceImplITCaseConfig.class)
 @RunWith(SpringRunner.class)
@@ -18,11 +22,20 @@ public class NotifyServiceImplITCase {
   private NotifyService notifyService;
 
   @Test
-  public void testProcess() {
+  public void testProcessHappyPath() throws CTPException {
+    notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData(), true));
+  }
+
+  @Test
+  public void testProcessInvalidPhoneNumbers() {
+    boolean exceptionThrown = false;
     try {
-      notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData(), true));
-    } catch(CTPException e) {
-      // TODO At the moment, we get a "Invalid token: expired" error thrown.
+      notifyService.process(ObjectBuilder.buildActionInstruction(buildTestDataInvalidPhoneNumbers(), true));
+    } catch (CTPException e) {
+      exceptionThrown = true;
+      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
+      assertTrue(e.getMessage().startsWith(EXCEPTION_NOTIFY_SERVICE));
     }
+    assertTrue(exceptionThrown);
   }
 }
