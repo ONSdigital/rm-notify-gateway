@@ -1,12 +1,15 @@
 package uk.gov.ons.ctp.response.notify.utility;
 
+import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationResponse;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +17,19 @@ import java.util.Map;
 import java.util.Set;
 
 public class ObjectBuilder {
-  private static final String DEFAULT_ACTION_PLAN = "abc";
-  private static final String DEFAULT_QUESTION_SET = "simple";
+
+  private static final BigDecimal LATITYUDE = new BigDecimal("1000.00");
+  private static final BigDecimal LONGITUDE = new BigDecimal("1000.00");
+
+  private static final BigInteger CASEID = new BigInteger("1");
+  private static final BigInteger UPRN = new BigInteger("201");
+
+  private static final String ACTION_PLAN = "abc";
+  private static final String CASEREF = "1";
+  private static final String IAC = "123";
   private static final String NOTIFY = "notify";
+  private static final String POSTCODE = "PO157RR";
+  private static final String QUESTION_SET = "simple";
 
   /**
    * This builds an ActionInstruction.
@@ -58,9 +71,20 @@ public class ObjectBuilder {
     actionContact.setPhoneNumber(phoneNumber);
     actionRequest.setContact(actionContact);
     if (valid) {
-      actionRequest.setActionPlan(DEFAULT_ACTION_PLAN);
+      actionRequest.setActionPlan(ACTION_PLAN);
       actionRequest.setActionType(NOTIFY);
-      actionRequest.setQuestionSet(DEFAULT_QUESTION_SET);
+      actionRequest.setQuestionSet(QUESTION_SET);
+      ActionAddress actionAddress = new ActionAddress();
+      actionAddress.setUprn(UPRN);
+      actionAddress.setPostcode(POSTCODE);
+      actionAddress.setLatitude(LATITYUDE);
+      actionAddress.setLongitude(LONGITUDE);
+      actionRequest.setAddress(actionAddress);
+      actionRequest.setCaseId(CASEID);
+      actionRequest.setCaseRef(CASEREF);
+      actionRequest.setIac(IAC);
+      ActionEvent actionEvent = new ActionEvent();
+      actionRequest.setEvents(actionEvent);
     }
     return actionRequest;
   }
