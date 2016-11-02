@@ -10,6 +10,7 @@ import uk.gov.ons.ctp.response.notify.message.ActionInstructionPublisher;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
@@ -25,6 +26,9 @@ import java.util.Set;
 @Produces({"application/json"})
 @Slf4j
 public class ManualTestEndpoint implements CTPEndpoint {
+  private static final String DEFAULT_ACTION_PLAN = "abc";
+  private static final String DEFAULT_QUESTION_SET = "simple";
+  private static final String NOTIFY = "notify";
 
   @Inject
   private ActionInstructionPublisher actionInstructionPublisher;
@@ -34,8 +38,10 @@ public class ManualTestEndpoint implements CTPEndpoint {
    * @return 200
    */
   @GET
-  public final Response publishActionInstruction() {
-    actionInstructionPublisher.send(buildActionInstruction(buildTestData()));
+  @Path("/{valid}")
+  public final Response publishActionInstruction(@PathParam("valid") final String valid) {
+    log.debug("Entering publishActionInstruction with valid = {}", valid);
+    actionInstructionPublisher.send(buildActionInstruction(buildTestData(), new Boolean(valid)));
     return Response.status(Response.Status.OK).build();
   }
 
@@ -47,7 +53,7 @@ public class ManualTestEndpoint implements CTPEndpoint {
     return testData;
   }
 
-  private ActionInstruction buildActionInstruction(Map<String, String> dataMap) {
+  private ActionInstruction buildActionInstruction(Map<String, String> dataMap, boolean valid) {
     ActionInstruction actionInstruction = new ActionInstruction();
     ActionRequests actionRequests = new ActionRequests();
     List<ActionRequest> actionRequestList = actionRequests.getActionRequests();
@@ -56,17 +62,22 @@ public class ManualTestEndpoint implements CTPEndpoint {
     for (String actionId : actionIds) {
       String value = dataMap.get(actionId);
       String[] params = value.split(",");
-      actionRequestList.add(buildActionRequest(new BigInteger(actionId), params[0], params[1]));
+      actionRequestList.add(buildActionRequest(new BigInteger(actionId), params[0], params[1], valid));
     }
 
     actionInstruction.setActionRequests(actionRequests);
     return actionInstruction;
   }
 
-  private ActionRequest buildActionRequest(BigInteger actionId, String contactName, String phoneNumber) {
+  private ActionRequest buildActionRequest(BigInteger actionId, String contactName, String phoneNumber, boolean valid) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setActionId(actionId);
     actionRequest.setContactName(contactName);
+    if (valid) {
+      actionRequest.setActionPlan(DEFAULT_ACTION_PLAN);
+      actionRequest.setActionType(NOTIFY);
+      actionRequest.setQuestionSet(DEFAULT_QUESTION_SET);
+    }
     return actionRequest;
   }
 }

@@ -50,7 +50,7 @@ public class ActionInstructionPublisherImplITCase {
 
   @Test
   public void testSendInvalidActionInstructionWithActionInstructionPublisher() throws Exception {
-    ActionInstruction actionInstruction = ObjectBuilder.buildActionInstruction(buildTestData());
+    ActionInstruction actionInstruction = ObjectBuilder.buildActionInstruction(buildTestData(), false);
     actionInstructionPublisher.send(actionInstruction);
 
     Thread.sleep(10000L);

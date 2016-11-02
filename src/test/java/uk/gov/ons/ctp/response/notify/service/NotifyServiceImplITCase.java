@@ -20,7 +20,7 @@ public class NotifyServiceImplITCase {
   @Test
   public void testProcess() {
     try {
-      notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData()));
+      notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData(), true));
     } catch(CTPException e) {
       // TODO At the moment, we get a "Invalid token: expired" error thrown.
     }

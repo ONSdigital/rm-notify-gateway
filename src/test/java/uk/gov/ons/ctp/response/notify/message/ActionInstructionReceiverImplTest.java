@@ -35,7 +35,7 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessInstruction() throws CTPException {
-    instructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData()));
+    instructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(1)).process(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));

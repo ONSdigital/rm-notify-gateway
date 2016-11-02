@@ -41,7 +41,7 @@ public class NotifyServiceImplTest {
     Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class))).thenReturn(buildNotificationResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotification());
 
-    notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData()));
+    notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData(), true));
 
     verify(notificationClient, times(3)).sendSms(any(String.class), any(String.class), any(HashMap.class));
     verify(notificationClient, times(3)).getNotificationById(any(String.class));
@@ -54,7 +54,7 @@ public class NotifyServiceImplTest {
 
     boolean exceptionThrown = false;
     try {
-      notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData()));
+      notifyService.process(ObjectBuilder.buildActionInstruction(buildTestData(), true));
     } catch(CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());

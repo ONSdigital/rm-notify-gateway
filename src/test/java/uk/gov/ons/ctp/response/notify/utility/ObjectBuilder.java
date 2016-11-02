@@ -13,12 +13,17 @@ import java.util.Map;
 import java.util.Set;
 
 public class ObjectBuilder {
+  private static final String DEFAULT_ACTION_PLAN = "abc";
+  private static final String DEFAULT_QUESTION_SET = "simple";
+  private static final String NOTIFY = "notify";
+
   /**
    * This builds an ActionInstruction.
    * @param dataMap is a map where keys are actionIds and values are contactName,telephoneNumber
+   * @param valid true if valid ActionInstruction
    * @return an ActionInstruction
    */
-  public static ActionInstruction buildActionInstruction(Map<String, String> dataMap) {
+  public static ActionInstruction buildActionInstruction(Map<String, String> dataMap, boolean valid) {
     ActionInstruction actionInstruction = new ActionInstruction();
     ActionRequests actionRequests = new ActionRequests();
     List<ActionRequest> actionRequestList = actionRequests.getActionRequests();
@@ -27,17 +32,30 @@ public class ObjectBuilder {
     for (String actionId : actionIds) {
       String value = dataMap.get(actionId);
       String[] params = value.split(",");
-      actionRequestList.add(buildActionRequest(new BigInteger(actionId), params[0], params[1]));
+      actionRequestList.add(buildActionRequest(new BigInteger(actionId), params[0], params[1], valid));
     }
 
     actionInstruction.setActionRequests(actionRequests);
     return actionInstruction;
   }
 
-  public static ActionRequest buildActionRequest(BigInteger actionId, String contactName, String phoneNumber) {
+  /**
+   * This builds an ActionRequest.
+   * @param actionId the actionId
+   * @param contactName the contactName
+   * @param phoneNumber the phoneNumber
+   * @param valid true if valid ActionRequest
+   * @return
+   */
+  public static ActionRequest buildActionRequest(BigInteger actionId, String contactName, String phoneNumber, boolean valid) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setActionId(actionId);
     actionRequest.setContactName(contactName);
+    if (valid) {
+      actionRequest.setActionPlan(DEFAULT_ACTION_PLAN);
+      actionRequest.setActionType(NOTIFY);
+      actionRequest.setQuestionSet(DEFAULT_QUESTION_SET);
+    }
     return actionRequest;
   }
 
