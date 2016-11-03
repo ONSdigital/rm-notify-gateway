@@ -10,13 +10,21 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.message.JmsHelper;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
+import uk.gov.ons.ctp.response.notify.utility.ActionMessageListener;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
+import java.io.ByteArrayInputStream;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestData;
 
 /**
@@ -33,7 +41,7 @@ public class ActionInstructionPublisherImplITCase {
   CachingConnectionFactory connectionFactory;
 
   @Autowired
-  DefaultMessageListenerContainer actionInstructionMessageListenerContainer;
+  DefaultMessageListenerContainer actionFeedbackMessageListenerContainer;
 
   private Connection connection;
   private int initialCounter;
@@ -45,6 +53,9 @@ public class ActionInstructionPublisherImplITCase {
     connection = connectionFactory.createConnection();
     connection.start();
     initialCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTIONS_QUEUE);
+
+    ActionMessageListener listener = (ActionMessageListener)actionFeedbackMessageListenerContainer.getMessageListener();
+    listener.setPayload(null);
   }
 
   @After
@@ -64,6 +75,14 @@ public class ActionInstructionPublisherImplITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTIONS_QUEUE);
     assertEquals(1, finalCounter - initialCounter);
+
+    /**
+     * The section below verifies that no ActionFeedback ends up on the queue
+     */
+    ActionMessageListener listener = (ActionMessageListener)actionFeedbackMessageListenerContainer.getMessageListener();
+    TimeUnit.SECONDS.sleep(10);
+    String listenerPayload = listener.getPayload();
+    assertNull(listenerPayload);
   }
 
   @Test

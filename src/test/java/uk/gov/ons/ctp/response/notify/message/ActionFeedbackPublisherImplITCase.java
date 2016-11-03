@@ -67,7 +67,7 @@ public class ActionFeedbackPublisherImplITCase {
 
   /**
    * This test sends a valid ActionFeedback using FeedbackPublisher. It then verifies that the correct message is
-   * received on the queue Action.Notifications . See the definition of the jmsContainer in test-outbound-only-int.xml
+   * received on the queue Action.Notifications.
    */
   @Test
   public void testSendValidActionFeedbackWithFeedbackPublisher() throws Exception {

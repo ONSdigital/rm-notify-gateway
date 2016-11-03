@@ -9,5 +9,5 @@
 
     <beans:import resource="flows-int.xml" />
     <beans:import resource="test-broker-int.xml" />
-    <beans:import resource="test-outbound-only-int.xml" />
+    <beans:import resource="test-outbound-action-instruction.xml" />
 </beans:beans>
