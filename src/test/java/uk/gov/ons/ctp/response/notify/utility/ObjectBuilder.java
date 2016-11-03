@@ -18,28 +18,30 @@ import java.util.Set;
 
 public class ObjectBuilder {
 
+  public static final BigInteger ACTION_ID = new BigInteger("1");
+
+  public static final String FORENAME_KEY = "forename";
+  public static final String FORENAME = "Joe";
+  public static final String IAC_KEY = "iac";
+  public static final String IAC = "123";
+  public static final String INVALID_PHONENUMBER = "077";
+  public static final String NOTIFICATION_ID = "1";
+  public static final String PHONENUMBER = "07742994131";
+  public static final String STATUS = "sent";
+  public static final String SURNAME_KEY = "surname";
+  public static final String SURNAME = "Blogg";
+
   private static final BigDecimal LATITYUDE = new BigDecimal("1000.00");
   private static final BigDecimal LONGITUDE = new BigDecimal("1000.00");
 
-  public static final BigInteger ACTION_ID = new BigInteger("1");
   private static final BigInteger CASEID = new BigInteger("1");
   private static final BigInteger UPRN = new BigInteger("201");
 
   private static final String ACTION_PLAN = "abc";
   private static final String CASEREF = "1";
-  public static final String FORENAME_KEY = "forename";
-  public static final String FORENAME = "Joe";
-  public static final String IAC_KEY = "iac";
-  public static final String IAC = "123";
-  public static final String NOTIFICATION_ID = "1";
   private static final String NOTIFY = "notify";
-  public static final String PHONENUMBER = "07742994131";
-  public static final String INVALID_PHONENUMBER = "077";
   private static final String POSTCODE = "PO157RR";
   private static final String QUESTION_SET = "simple";
-  public static final String SURNAME_KEY = "surname";
-  public static final String SURNAME = "Blogg";
-  public static final String STATUS = "sent";
 
   /**
    * This builds an ActionInstruction.

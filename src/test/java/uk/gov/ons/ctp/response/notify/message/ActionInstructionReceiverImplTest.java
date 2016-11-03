@@ -14,10 +14,12 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
+import uk.gov.service.notify.NotificationClientException;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestData;
 
 /**
@@ -44,11 +46,25 @@ public class ActionInstructionReceiverImplTest {
   @Test
   public void testProcessInstructionHappyPath() throws CTPException {
     actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
+
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(3)).process(any(ActionRequest.class));
     verify(actionFeedbackPublisher, times(3)).sendFeedback(any(ActionFeedback.class));
+    verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
 
-  // TODO test with Instruction containing a request which gives an exception with Gov Notify
+  @Test
+  public void testProcessInstructionNotifyThrowsException() throws CTPException {
+    CTPException exception = new CTPException(CTPException.Fault.SYSTEM_ERROR);
+    when(notifyService.process(any(ActionRequest.class))).thenThrow(exception);
+
+    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
+
+    verify(tracer, times(1)).createSpan(any(String.class));
+    verify(notifyService, times(3)).process(any(ActionRequest.class));
+    verify(actionFeedbackPublisher, times(0)).sendFeedback(any(ActionFeedback.class));
+    verify(actionInstructionPublisher, times(3)).send(any(ActionInstruction.class));
+    verify(tracer, times(1)).close(any(Span.class));
+  }
 }
