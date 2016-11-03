@@ -4,6 +4,5 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
     <bean id="actionInstructionPublisher" class="uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionPublisherImpl"/>
-
 </beans>
 
