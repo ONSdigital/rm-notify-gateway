@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -24,14 +23,14 @@ public class NotifyServiceImplITCase {
 
   @Test
   public void testProcessHappyPath() throws CTPException {
-    notifyService.process(buildActionRequest(ACTION_ID_1, FORENAME, SURNAME, PHONENUMBER, true));
+    notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER, true));
   }
 
   @Test
   public void testProcessInvalidPhoneNumbers() {
     boolean exceptionThrown = false;
     try {
-      notifyService.process(buildActionRequest(ACTION_ID_1, FORENAME, SURNAME, INVALID_PHONENUMBER, true));
+      notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, INVALID_PHONENUMBER, true));
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());

@@ -7,20 +7,23 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.EXCEPTION_NOTIFY_SERVICE;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
 
 /**
@@ -40,10 +43,18 @@ public class NotifyServiceImplTest {
     Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class))).thenReturn(buildNotificationResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotification());
 
-    notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID_1, FORENAME, SURNAME, PHONENUMBER, true));
+    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER, true));
+    assertEquals(ACTION_ID, result.getActionId());
+    assertEquals(NOTIFY_SMS_SENT, result.getSituation());
+    assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
+    assertEquals(STATUS, result.getNotes());
 
-    verify(notificationClient, times(1)).sendSms(any(String.class), any(String.class), any(HashMap.class));
-    verify(notificationClient, times(1)).getNotificationById(any(String.class));
+    HashMap<String, String> personalisation = new HashMap<>();
+    personalisation.put(FORENAME_KEY, FORENAME);
+    personalisation.put(SURNAME_KEY, SURNAME);
+    personalisation.put(IAC_KEY, IAC);
+    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER), eq(personalisation));
+    verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
   }
 
   @Test
@@ -53,7 +64,7 @@ public class NotifyServiceImplTest {
 
     boolean exceptionThrown = false;
     try {
-      notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID_1, FORENAME, SURNAME, PHONENUMBER, true));
+      notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER, true));
     } catch(CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -61,5 +72,6 @@ public class NotifyServiceImplTest {
     }
 
     assertTrue(exceptionThrown);
+    verify(notificationClient, times(1)).sendSms(any(String.class), any(String.class), any(HashMap.class));
   }
 }

@@ -35,9 +35,9 @@ public class NotifyServiceImpl implements NotifyService {
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
   private static final String IAC = "iac";
-  private static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
   public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
+  public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
   @Override
   public ActionFeedback process(ActionRequest actionRequest) throws CTPException {
