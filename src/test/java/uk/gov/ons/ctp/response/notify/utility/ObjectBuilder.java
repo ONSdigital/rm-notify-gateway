@@ -140,12 +140,4 @@ public class ObjectBuilder {
     testData.put("3", "Al,Simms,07742994133");
     return testData;
   }
-
-  public static Map<String, String> buildTestDataInvalidPhoneNumbers() {
-    Map<String, String> testData = new HashMap<>();
-    testData.put("1", "Joe,Blogg,077");
-    testData.put("2", "Bob,Smith,078");
-    testData.put("3", "Al,Simms,079");
-    return testData;
-  }
 }
