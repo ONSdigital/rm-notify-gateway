@@ -22,8 +22,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.EXCEPTION_NOTIFY_SERVICE;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.*;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
 
 /**

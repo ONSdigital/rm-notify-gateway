@@ -32,9 +32,9 @@ public class NotifyServiceImpl implements NotifyService {
   @Inject
   private NotificationClient notificationClient;
 
-  private static final String FORENAME = "forename";
-  private static final String SURNAME = "surname";
-  private static final String IAC = "iac";
+  public static final String FORENAME_KEY = "forename";
+  public static final String SURNAME_KEY = "surname";
+  public static final String IAC_KEY = "iac";
 
   public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
   public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
@@ -46,9 +46,9 @@ public class NotifyServiceImpl implements NotifyService {
       BigInteger actionId = actionRequest.getActionId();
       ActionContact actionContact = actionRequest.getContact();
       HashMap<String, String> personalisation = new HashMap<>();
-      personalisation.put(FORENAME, actionContact.getForename());
-      personalisation.put(SURNAME, actionContact.getSurname());
-      personalisation.put(IAC, actionRequest.getIac());
+      personalisation.put(FORENAME_KEY, actionContact.getForename());
+      personalisation.put(SURNAME_KEY, actionContact.getSurname());
+      personalisation.put(IAC_KEY, actionRequest.getIac());
       String phoneNumber = actionContact.getPhoneNumber();
       log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
               templateId, phoneNumber, personalisation, actionId);
