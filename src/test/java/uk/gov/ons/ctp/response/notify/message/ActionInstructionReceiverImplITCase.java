@@ -11,23 +11,33 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.message.JmsHelper;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.notify.utility.ActionMessageListener;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.ons.ctp.response.notify.utility.CommonValues.INVALID_ACTION_INSTRUCTIONS_QUEUE;
 import static uk.gov.ons.ctp.response.notify.utility.CommonValues.PACKAGE_ACTION_INSTRUCTION;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.ACTION_ID;
 
 /**
  * Test focusing on Spring Integration
@@ -45,6 +55,9 @@ public class ActionInstructionReceiverImplITCase {
 
   @Autowired
   CachingConnectionFactory connectionFactory;
+
+  @Autowired
+  DefaultMessageListenerContainer actionFeedbackMessageListenerContainer;
 
   private Connection connection;
   private int initialCounter;
@@ -96,7 +109,21 @@ public class ActionInstructionReceiverImplITCase {
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTIONS_QUEUE);
     assertEquals(initialCounter, finalCounter);
 
-    // TODO Check that one more ActionFeedback message ends up on queue
+    Thread.sleep(30000L);   // Required so the valid ActionInstruction has got time to be processed in the background
+
+    /**
+     * The section below verifies that an ActionFeedback ends up on queue
+     */
+    ActionMessageListener listener = (ActionMessageListener)actionFeedbackMessageListenerContainer.getMessageListener();
+    String listenerPayload = listener.getPayload();
+    if (listenerPayload != null) {
+      JAXBContext jaxbContext = JAXBContext.newInstance(ActionFeedback.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      ActionFeedback retrievedActionFeedback = (ActionFeedback) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(listenerPayload.getBytes()));
+      assertEquals(ACTION_ID, retrievedActionFeedback.getActionId());
+      assertEquals(Outcome.REQUEST_COMPLETED, retrievedActionFeedback.getOutcome());
+      assertNotNull(retrievedActionFeedback.getSituation());
+    }
   }
 
   private File provideTempFile(String inputStreamLocation) throws IOException {

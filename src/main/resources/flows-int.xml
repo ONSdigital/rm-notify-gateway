@@ -102,10 +102,10 @@
     <int-jms:outbound-channel-adapter id="jmsout" channel="actionInstruction" destination="actionInstructionOutboundQueue"/>
     <!-- END of section to publish ActionInstructions -->
 
-    <!-- START of section to publish ActionFeedbacks  -->
+    <!-- START of section to publish ActionFeedback  -->
     <int:channel id="actionFeedbackXmlInvalid" />
     <bean id="invalidActionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.InvalidActionFeedbacks"/>
+        <constructor-arg value="Action.InvalidActionFeedback"/>
     </bean>
     <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
 

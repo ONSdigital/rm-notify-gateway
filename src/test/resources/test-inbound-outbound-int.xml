@@ -14,5 +14,18 @@
     </bean>
 
     <bean id="notifyService" class="uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl"/>
+
+    <bean id="actionFeedbackMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destinationName" value="Action.Notifications" />
+        <property name="messageListener" ref="messageListener" />
+        <property name="maxConcurrentConsumers" value="1" />
+        <property name="concurrentConsumers" value="1" />
+        <property name="receiveTimeout" value="5000" />
+        <property name="recoveryInterval" value="60000" />
+        <property name="autoStartup" value="true" />
+    </bean>
+
+    <bean id="messageListener" class="uk.gov.ons.ctp.response.notify.utility.ActionMessageListener"/>
 </beans>
 

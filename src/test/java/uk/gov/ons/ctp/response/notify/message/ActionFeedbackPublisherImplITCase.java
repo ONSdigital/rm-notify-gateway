@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static uk.gov.ons.ctp.response.notify.utility.CommonValues.INVALID_ACTION_FEEDBACKS_QUEUE;
+import static uk.gov.ons.ctp.response.notify.utility.CommonValues.INVALID_ACTION_FEEDBACK_QUEUE;
 
 /**
  * Test focusing on Spring Integration
@@ -54,7 +54,7 @@ public class ActionFeedbackPublisherImplITCase {
   public void setUp() throws JMSException {
     connection = connectionFactory.createConnection();
     connection.start();
-    initialCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_FEEDBACKS_QUEUE);
+    initialCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_FEEDBACK_QUEUE);
 
     ActionMessageListener listener = (ActionMessageListener)actionFeedbackMessageListenerContainer.getMessageListener();
     listener.setPayload(null);
@@ -82,7 +82,7 @@ public class ActionFeedbackPublisherImplITCase {
     /**
      * We check that no additional message has been put on the xml invalid queue
      */
-    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_FEEDBACKS_QUEUE);
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_FEEDBACK_QUEUE);
     assertEquals(initialCounter, finalCounter);
 
     /**
@@ -117,7 +117,7 @@ public class ActionFeedbackPublisherImplITCase {
     /**
      * We check that the xml invalid queue contains 1 additional message.
      */
-    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_FEEDBACKS_QUEUE);
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_FEEDBACK_QUEUE);
     assertEquals(1, finalCounter - initialCounter);
 
     /**
