@@ -73,6 +73,7 @@ public class ObjectBuilder {
    */
   public static ActionRequest buildActionRequest(BigInteger actionId, String forename, String surname, String phoneNumber, boolean valid) {
     ActionRequest actionRequest = new ActionRequest();
+    actionRequest.setResponseRequired(true);
     actionRequest.setActionId(actionId);
     ActionContact actionContact = new ActionContact();
     actionContact.setForename(forename);

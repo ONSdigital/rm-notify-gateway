@@ -22,7 +22,7 @@ import javax.inject.Named;
 @EnableAsync
 @EnableScheduling
 @EnableCaching
-@ImportResource("main-int.xml")
+@ImportResource("springintegration/main.xml")
 @SpringBootApplication
 public class Application {
   /**

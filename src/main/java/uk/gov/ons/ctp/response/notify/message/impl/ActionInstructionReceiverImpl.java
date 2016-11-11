@@ -5,6 +5,8 @@ import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
@@ -45,6 +47,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    * To process ActionInstructions from the input channel actionInstructionTransformed
    * @param instruction the ActionInstruction to be processed
    */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed")
   public final void processInstruction(final ActionInstruction instruction) {
     log.debug("entering processInstruction with instruction {}", instruction);
@@ -54,7 +57,9 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
       for (ActionRequest actionRequest : actionRequests.getActionRequests()) {
         try {
           ActionFeedback actionFeedback = notifyService.process(actionRequest);
-          actionFeedbackPublisher.sendFeedback(actionFeedback);
+          if (actionRequest.isResponseRequired()) {
+            actionFeedbackPublisher.sendFeedback(actionFeedback);
+          }
         } catch (CTPException e) {
           String errorMsg = String.format("%s %d - %s", ERROR_PROCESSING_ACTION_REQUEST, actionRequest.getActionId(),
                   e.getMessage());
