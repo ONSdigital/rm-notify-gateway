@@ -8,6 +8,12 @@ curl http://localhost:8281/mgmt/health -v -X GET -u notifygw:ctp
 200 {"status":"UP","jms":{"status":"UP","provider":"ActiveMQ"},"diskSpace":{"status":"UP","total":30335164416,"free":6962753536,"threshold":10485760},"refreshScope":{"status":"UP"}}
 
 
+For the below to work, you will need to add back in application.yml (ONLY do this locaally as 8181 is Hawtio port):
+server:
+  port: 8181
+  servlet-path: /mgmt
+
+
 ## To put an invalid ActionInstruction on queue
 curl http://localhost:8181/manual/false -v -X GET -u notifygw:ctp
 200 and one more msg on queue Action.InvalidActionInstructions
