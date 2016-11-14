@@ -18,7 +18,7 @@
     <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
 
     <bean id="actionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Notifications"/>
+        <constructor-arg value="Action.Feedback"/>
     </bean>
 
     <!--  setup the outbound channels - note each queue needs a channel -->
