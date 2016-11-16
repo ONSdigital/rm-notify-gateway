@@ -20,7 +20,6 @@ spring:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    org.springframework: debug
     uk.gov.ons.ctp: debug
 
 security:
