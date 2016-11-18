@@ -47,8 +47,8 @@ import static org.mockito.Mockito.verify;
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ActionInstructionReceiverImplSITestConfig.class)
-public class ActionInstructionReceiverImplSITest {
+@SpringBootTest(classes = ActionInstructionReceiverImplITCaseConfig.class)
+public class ActionInstructionReceiverImplITCase {
 
   @Inject
   private MessageChannel actionInstructionXml;
@@ -178,7 +178,6 @@ public class ActionInstructionReceiverImplSITest {
     /**
      * We check that no xml ends up on the dead letter queue.
      */
-//    TODO This test passes inside IntelliJ but fails on the command line.
     Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
     assertNull(message);
 
