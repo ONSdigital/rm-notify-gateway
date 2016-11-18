@@ -18,9 +18,13 @@ import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.PHONENUMBER;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.SURNAME;
 
-@SpringBootTest(classes = NotifyServiceImplITCaseConfig.class)
+/**
+ * Note the class name in ManualCase as we do NOT want this test to be run as part of a Maven cycle. Reason: it fails
+ * intermittently with 'token expired' exception.
+ */
+@SpringBootTest(classes = NotifyServiceImplITManualCaseConfig.class)
 @RunWith(SpringRunner.class)
-public class NotifyServiceImplITCase {
+public class NotifyServiceImplITManualCase {
 
   private static final String CREATED = "created";
 

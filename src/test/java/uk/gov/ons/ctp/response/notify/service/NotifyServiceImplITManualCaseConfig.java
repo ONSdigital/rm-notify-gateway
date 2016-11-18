@@ -7,7 +7,7 @@ import uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl;
 import uk.gov.service.notify.NotificationClient;
 
 @SpringBootConfiguration
-public class NotifyServiceImplITCaseConfig {
+public class NotifyServiceImplITManualCaseConfig {
 
   @Value("${API_KEY}")
   private String apiKey;
