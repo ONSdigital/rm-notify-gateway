@@ -9,6 +9,7 @@ The Notify Gateway provides an interface for Response Management to send communi
     - see README (Installation - Maven) at https://github.com/alphagov/notifications-java-client
 
     - Add this snippet to your Maven settings.xml file (under MAVEN_HOME/conf).
+```xml
             <?xml version='1.0' encoding='UTF-8'?>
             <settings xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd' xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
             <profiles>
@@ -40,7 +41,7 @@ The Notify Gateway provides an interface for Response Management to send communi
                 <activeProfile>artifactory</activeProfile>
             </activeProfiles>
             </settings>
-
+```
 
 - mvn clean install
 - mvn clean install -DskipITs
