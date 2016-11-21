@@ -8,6 +8,36 @@ The Notify Gateway provides an interface for Response Management to send communi
 - Prerequisites:
     - see README (Installation - Maven) at https://github.com/alphagov/notifications-java-client
 
+    - Add this snippet to your Maven settings.xml file (under MAVEN_HOME/conf).
+            <profiles>
+                <profile>
+                    <repositories>
+                        <repository>
+                            <snapshots>
+                                <enabled>true</enabled>
+                            </snapshots>
+                            <id>artifactory-maven</id>
+                            <name>artifactory</name>
+                            <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local</url>
+                        </repository>
+                    </repositories>
+                    <pluginRepositories>
+                        <pluginRepository>
+                            <snapshots>
+                              <enabled>true</enabled>
+                            </snapshots>
+                            <id>artifactory-maven</id>
+                            <name>artifactory-plugins</name>
+                            <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local</url>
+                        </pluginRepository>
+                    </pluginRepositories>
+                    <id>artifactory</id>
+                </profile>
+            </profiles>
+            <activeProfiles>
+                <activeProfile>artifactory</activeProfile>
+            </activeProfiles>
+
 - mvn clean install
 - mvn clean install -DskipITs
 
