@@ -144,30 +144,6 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <skip.integration.tests>false</skip.integration.tests>
-            </properties>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <skip.integration.tests>true</skip.integration.tests>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <skip.integration.tests>true</skip.integration.tests>
-            </properties>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <plugin>
@@ -219,9 +195,6 @@
                 <!-- IMPORTANT: old version used below because https://github.com/spring-projects/spring-boot/issues/6254
                 Once a newer version than 2.19.1 is developed, try to move to it. -->
                 <version>2.18.1</version>
-                <configuration>
-                    <skipTests>${skip.integration.tests}</skipTests>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -316,16 +289,24 @@
         </plugins>
     </reporting>
 
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>libs-release</name>
-            <url>http://192.168.11.11:8081/artifactory/libs-release-local</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>libs-snapshots</name>
-            <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>artifactory</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>central</id>
+                    <name>libs-release</name>
+                    <url>http://192.168.11.11:8081/artifactory/libs-release-local</url>
+                </repository>
+                <snapshotRepository>
+                    <id>snapshots</id>
+                    <name>libs-snapshots</name>
+                    <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>
