@@ -28,8 +28,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
             <fileNamePattern>/var/log/ctp/responsemanagement/notifygatewaysvc/debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
@@ -57,7 +56,7 @@
         </filter>
     </appender>
 
-    <root level="debug">
+    <root level="WARN">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="STDERR" />
         <appender-ref ref="FILE-AUDIT" />
