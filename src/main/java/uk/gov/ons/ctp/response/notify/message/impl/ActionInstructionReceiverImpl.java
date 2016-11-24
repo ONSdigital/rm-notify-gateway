@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
@@ -21,6 +22,8 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
+
 /**
  * The service that reads ActionInstructions from the inbound channel
  */
@@ -30,6 +33,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
 
   private static final String ERROR_PROCESSING_ACTION_REQUEST =
           "An exception occurred while processing action request with action id";
+  private static final String INVALID_ACTION_REQUEST = "Invalid action request.";
   private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
   private static final String TELEPHONE_REGEX = "[\\d]{7,11}";
 
@@ -70,6 +74,10 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
             log.error(errorMsg);
             actionInstructionPublisher.send(buildActionInstruction(actionRequest));
           }
+        } else {
+          ActionFeedback actionFeedback = new ActionFeedback(actionRequest.getActionId(), NOTIFY_SMS_NOT_SENT,
+                  Outcome.REQUEST_FAILED, INVALID_ACTION_REQUEST);
+          actionFeedbackPublisher.sendFeedback(actionFeedback);
         }
       }
     }

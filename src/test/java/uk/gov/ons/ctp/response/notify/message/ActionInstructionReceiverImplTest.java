@@ -61,7 +61,7 @@ public class ActionInstructionReceiverImplTest {
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(2)).process(any(ActionRequest.class));
-    verify(actionFeedbackPublisher, times(2)).sendFeedback(any(ActionFeedback.class));
+    verify(actionFeedbackPublisher, times(3)).sendFeedback(any(ActionFeedback.class));
     verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
