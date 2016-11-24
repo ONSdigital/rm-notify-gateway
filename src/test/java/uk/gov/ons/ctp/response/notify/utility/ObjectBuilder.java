@@ -22,9 +22,9 @@ public class ObjectBuilder {
 
   public static final String FORENAME = "Joe";
   public static final String IAC = "123";
-  public static final String INVALID_PHONENUMBER = "077";
   public static final String NOTIFICATION_ID = "1";
-  public static final String PHONENUMBER = "07742994131";
+  public static final String INVALIDPHONENUMBER = "0798567515";
+  public static final String PHONENUMBER = "07985675157";
   public static final String STATUS = "sent";
   public static final String SURNAME = "Blogg";
 

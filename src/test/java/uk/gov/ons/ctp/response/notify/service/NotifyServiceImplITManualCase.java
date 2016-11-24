@@ -11,8 +11,7 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.EXCEPTION_NOTIFY_SERVICE;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.PHONENUMBER;
@@ -42,15 +41,12 @@ public class NotifyServiceImplITManualCase {
   }
 
   @Test
-  public void testProcessInvalidPhoneNumber() {
-    boolean exceptionThrown = false;
-    try {
-      notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, INVALID_PHONENUMBER, true));
-    } catch (CTPException e) {
-      exceptionThrown = true;
-      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
-      assertTrue(e.getMessage().startsWith(EXCEPTION_NOTIFY_SERVICE));
-    }
-    assertTrue(exceptionThrown);
+  public void testProcessInvalidPhoneNumber() throws CTPException {
+    ActionFeedback actionFeedback = notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, INVALIDPHONENUMBER, true));
+    assertNotNull(actionFeedback);
+    assertEquals(ACTION_ID, actionFeedback.getActionId());
+    assertEquals(Outcome.REQUEST_FAILED, actionFeedback.getOutcome());
+    assertEquals(NOTIFY_SMS_NOT_SENT, actionFeedback.getSituation());
+    assertNotNull(actionFeedback.getNotes());
   }
 }
