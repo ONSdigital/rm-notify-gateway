@@ -19,6 +19,7 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * The service that reads ActionInstructions from the inbound channel
@@ -27,9 +28,10 @@ import java.util.List;
 @MessageEndpoint
 public class ActionInstructionReceiverImpl implements ActionInstructionReceiver {
 
-  private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
   private static final String ERROR_PROCESSING_ACTION_REQUEST =
           "An exception occurred while processing action request with action id";
+  private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
+  private static final String TELEPHONE_REGEX = "[\\d]{7,11}";
 
   @Inject
   private Tracer tracer;
@@ -52,19 +54,22 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   public final void processInstruction(final ActionInstruction instruction) {
     log.debug("entering processInstruction with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);
+
     ActionRequests actionRequests = instruction.getActionRequests();
     if (actionRequests != null) {
       for (ActionRequest actionRequest : actionRequests.getActionRequests()) {
-        try {
-          ActionFeedback actionFeedback = notifyService.process(actionRequest);
-          if (actionRequest.isResponseRequired()) {
-            actionFeedbackPublisher.sendFeedback(actionFeedback);
+        if (validate(actionRequest)) {
+          try {
+            ActionFeedback actionFeedback = notifyService.process(actionRequest);
+            if (actionRequest.isResponseRequired()) {
+              actionFeedbackPublisher.sendFeedback(actionFeedback);
+            }
+          } catch (CTPException e) {
+            String errorMsg = String.format("%s %d - %s", ERROR_PROCESSING_ACTION_REQUEST, actionRequest.getActionId(),
+                    e.getMessage());
+            log.error(errorMsg);
+            actionInstructionPublisher.send(buildActionInstruction(actionRequest));
           }
-        } catch (CTPException e) {
-          String errorMsg = String.format("%s %d - %s", ERROR_PROCESSING_ACTION_REQUEST, actionRequest.getActionId(),
-                  e.getMessage());
-          log.error(errorMsg);
-          actionInstructionPublisher.send(buildActionInstruction(actionRequest));
         }
       }
     }
@@ -84,5 +89,20 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     ActionInstruction actionInstruction = new ActionInstruction();
     actionInstruction.setActionRequests(actionRequests);
     return actionInstruction;
+  }
+
+  /**
+   * This validates the phone number in the given ActionRequest
+   * @param actionRequest the ActionRequest
+   * @return true if the phone number is valid
+   */
+  private boolean validate(ActionRequest actionRequest) {
+    boolean result = false;
+    if (actionRequest != null && actionRequest.getContact() != null) {
+      String phoneNumber = actionRequest.getContact().getPhoneNumber();
+      Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
+      result = pattern.matcher(phoneNumber).matches();
+    }
+    return result;
   }
 }

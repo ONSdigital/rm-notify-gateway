@@ -21,6 +21,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestData;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestInvalidData;
 
 /**
  * To unit test ActionInstructionReceiverImpl
@@ -50,6 +51,17 @@ public class ActionInstructionReceiverImplTest {
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(3)).process(any(ActionRequest.class));
     verify(actionFeedbackPublisher, times(3)).sendFeedback(any(ActionFeedback.class));
+    verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
+    verify(tracer, times(1)).close(any(Span.class));
+  }
+
+  @Test
+  public void testProcessInstructionInvalidPhoneNumber() throws CTPException {
+    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestInvalidData(), true));
+
+    verify(tracer, times(1)).createSpan(any(String.class));
+    verify(notifyService, times(2)).process(any(ActionRequest.class));
+    verify(actionFeedbackPublisher, times(2)).sendFeedback(any(ActionFeedback.class));
     verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }

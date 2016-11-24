@@ -138,4 +138,15 @@ public class ObjectBuilder {
     testData.put("3", "Al,Simms,07742994133");
     return testData;
   }
+
+  /**
+   * Note the 2nd phone number with only 3 digits.
+   */
+  public static Map<String, String> buildTestInvalidData() {
+    Map<String, String> testData = new HashMap<>();
+    testData.put("1", "Joe,Blogg,07742994131");
+    testData.put("2", "Bob,Smith,077");
+    testData.put("3", "Al,Simms,07742994133");
+    return testData;
+  }
 }
