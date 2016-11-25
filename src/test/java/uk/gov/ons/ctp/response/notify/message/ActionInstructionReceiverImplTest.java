@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.notify.message;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -17,8 +18,11 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 
 import java.math.BigInteger;
+import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +63,24 @@ public class ActionInstructionReceiverImplTest {
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(3)).process(any(ActionRequest.class));
-    verify(actionFeedbackPublisher, times(6)).sendFeedback(any(ActionFeedback.class));
+
+    ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
+    verify(actionFeedbackPublisher, times(6)).sendFeedback(argumentCaptor.capture());
+    List<ActionFeedback> actionFeedbackList = argumentCaptor.getAllValues();
+    assertEquals(6, actionFeedbackList.size());
+    int countAccepted = 0; int countCompleted = 0;
+    for (ActionFeedback anActionFeedback :  actionFeedbackList) {
+      if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_ACCEPTED)) {
+        countAccepted += 1;
+      }
+      if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_COMPLETED)) {
+        countCompleted += 1;
+      }
+    }
+    assertEquals(3, countAccepted);
+    assertEquals(3, countCompleted);
+    verify(actionFeedbackPublisher, times(3)).sendFeedback(eq(mockedActionFeedback));
+
     verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
@@ -72,8 +93,25 @@ public class ActionInstructionReceiverImplTest {
     actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestInvalidData(), true));
 
     verify(tracer, times(1)).createSpan(any(String.class));
-    verify(actionFeedbackPublisher, times(6)).sendFeedback(any(ActionFeedback.class));
     verify(notifyService, times(2)).process(any(ActionRequest.class));
+
+    ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
+    verify(actionFeedbackPublisher, times(6)).sendFeedback(argumentCaptor.capture());
+    List<ActionFeedback> actionFeedbackList = argumentCaptor.getAllValues();
+    assertEquals(6, actionFeedbackList.size());
+    int countAccepted = 0; int countCompleted = 0;
+    for (ActionFeedback anActionFeedback :  actionFeedbackList) {
+      if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_ACCEPTED)) {
+        countAccepted += 1;
+      }
+      if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_COMPLETED)) {
+        countCompleted += 1;
+      }
+    }
+    assertEquals(3, countAccepted);
+    assertEquals(3, countCompleted);
+    verify(actionFeedbackPublisher, times(2)).sendFeedback(eq(mockedActionFeedback));
+
     verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
@@ -86,8 +124,20 @@ public class ActionInstructionReceiverImplTest {
     actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
 
     verify(tracer, times(1)).createSpan(any(String.class));
-    verify(actionFeedbackPublisher, times(3)).sendFeedback(any(ActionFeedback.class));
-    verify(notifyService, times(3)).process(any(ActionRequest.class));  // only the 3 REQUEST_ACCEPTED
+    verify(notifyService, times(3)).process(any(ActionRequest.class));
+
+    ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
+    verify(actionFeedbackPublisher, times(3)).sendFeedback(argumentCaptor.capture());
+    List<ActionFeedback> actionFeedbackList = argumentCaptor.getAllValues();
+    assertEquals(3, actionFeedbackList.size());
+    int countAccepted = 0;
+    for (ActionFeedback anActionFeedback :  actionFeedbackList) {
+      if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_ACCEPTED)) {
+        countAccepted += 1;
+      }
+    }
+    assertEquals(3, countAccepted);
+
     verify(actionInstructionPublisher, times(3)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
