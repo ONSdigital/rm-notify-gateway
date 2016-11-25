@@ -65,7 +65,7 @@ public class NotifyServiceImpl implements NotifyService {
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
       log.error(errorMsg);
       if (errorMsg.contains(BAD_REQUEST)) {
-        return new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_FAILED, errorMsg);
+        return new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_COMPLETED, errorMsg);
       }
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }

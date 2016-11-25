@@ -19,6 +19,7 @@ import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
 import javax.inject.Inject;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -34,6 +35,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   private static final String ERROR_PROCESSING_ACTION_REQUEST =
           "An exception occurred while processing action request with action id";
   private static final String INVALID_ACTION_REQUEST = "Invalid action request.";
+  private static final String NOTIFY_GW = "NotifyGateway";
   private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
   private static final String TELEPHONE_REGEX = "[\\d]{7,11}";
 
@@ -62,21 +64,29 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     ActionRequests actionRequests = instruction.getActionRequests();
     if (actionRequests != null) {
       for (ActionRequest actionRequest : actionRequests.getActionRequests()) {
+        ActionFeedback actionFeedback = null;
+        boolean responseRequired = actionRequest.isResponseRequired();
+        BigInteger actionId = actionRequest.getActionId();
+
+        if (responseRequired) {
+          actionFeedback = new ActionFeedback(actionId, NOTIFY_GW, Outcome.REQUEST_ACCEPTED, null);
+          actionFeedbackPublisher.sendFeedback(actionFeedback);
+          actionFeedback = null;
+        }
+
         if (validate(actionRequest)) {
           try {
-            ActionFeedback actionFeedback = notifyService.process(actionRequest);
-            if (actionRequest.isResponseRequired()) {
-              actionFeedbackPublisher.sendFeedback(actionFeedback);
-            }
+            actionFeedback = notifyService.process(actionRequest);
           } catch (CTPException e) {
-            String errorMsg = String.format("%s %d - %s", ERROR_PROCESSING_ACTION_REQUEST, actionRequest.getActionId(),
-                    e.getMessage());
+            String errorMsg = String.format("%s %d - %s", ERROR_PROCESSING_ACTION_REQUEST, actionId, e.getMessage());
             log.error(errorMsg);
             actionInstructionPublisher.send(buildActionInstruction(actionRequest));
           }
         } else {
-          ActionFeedback actionFeedback = new ActionFeedback(actionRequest.getActionId(), NOTIFY_SMS_NOT_SENT,
-                  Outcome.REQUEST_FAILED, INVALID_ACTION_REQUEST);
+          actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_COMPLETED,
+                  INVALID_ACTION_REQUEST);
+        }
+        if (actionFeedback != null && responseRequired) {
           actionFeedbackPublisher.sendFeedback(actionFeedback);
         }
       }
