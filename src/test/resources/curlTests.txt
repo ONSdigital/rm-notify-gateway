@@ -21,4 +21,4 @@ curl http://localhost:8181/manual/false -v -X GET -u notifygw:ctp
 
 ## To put a valid ActionInstruction on queue
 curl http://localhost:8181/manual/true -v -X GET -u notifygw:ctp
-200 snd one more msg on queue Action.Notify: enqueued AND dequeued
+200 and one more msg on queue Action.Notify: enqueued AND dequeued

@@ -2,12 +2,14 @@ package uk.gov.ons.ctp.response.notify.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
+
+import javax.inject.Inject;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
@@ -27,7 +29,10 @@ public class NotifyServiceImplITManualCase {
 
   private static final String CREATED = "created";
 
-  @Autowired
+  @Inject
+  private NotifyConfiguration notifyConfiguration;
+
+  @Inject
   private NotifyService notifyService;
 
   @Test
@@ -45,7 +50,7 @@ public class NotifyServiceImplITManualCase {
     ActionFeedback actionFeedback = notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, INVALIDPHONENUMBER, true));
     assertNotNull(actionFeedback);
     assertEquals(ACTION_ID, actionFeedback.getActionId());
-    assertEquals(Outcome.REQUEST_FAILED, actionFeedback.getOutcome());
+    assertEquals(Outcome.REQUEST_COMPLETED, actionFeedback.getOutcome());
     assertEquals(NOTIFY_SMS_NOT_SENT, actionFeedback.getSituation());
     assertNotNull(actionFeedback.getNotes());
   }

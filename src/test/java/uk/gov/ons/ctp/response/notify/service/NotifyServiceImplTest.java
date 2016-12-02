@@ -9,6 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClient;
@@ -33,6 +34,9 @@ public class NotifyServiceImplTest {
 
   @InjectMocks
   private NotifyServiceImpl notifyService;
+
+  @Mock
+  private NotifyConfiguration notifyConfiguration;
 
   @Mock
   private NotificationClient notificationClient;

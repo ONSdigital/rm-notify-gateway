@@ -48,6 +48,10 @@
         <constructor-arg value="uk.gov.ons.ctp.response.notify.message.impl.ActionFeedbackPublisherImpl"/>
     </bean>
 
+    <bean id="notifyConfiguration" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="uk.gov.ons.ctp.response.notify.config.NotifyConfiguration"/>
+    </bean>
+
     <bean id="notificationClient" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="uk.gov.service.notify.NotificationClient"/>
     </bean>

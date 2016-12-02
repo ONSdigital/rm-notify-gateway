@@ -1,12 +1,12 @@
 package uk.gov.ons.ctp.response.notify.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
 import uk.gov.service.notify.NotificationClient;
@@ -26,8 +26,8 @@ import java.util.HashMap;
 @Named
 public class NotifyServiceImpl implements NotifyService {
 
-  @Value("${TEMPLATE_ID}")
-  private String templateId;
+  @Inject
+  private NotifyConfiguration notifyConfiguration;
 
   @Inject
   private NotificationClient notificationClient;
@@ -46,18 +46,22 @@ public class NotifyServiceImpl implements NotifyService {
   public ActionFeedback process(ActionRequest actionRequest) throws CTPException {
     BigInteger actionId = actionRequest.getActionId();
     log.debug("Entering process with actionId {}", actionId);
+
     try {
+      String templateId = notifyConfiguration.getTemplateId();
+
       ActionContact actionContact = actionRequest.getContact();
       String phoneNumber = actionContact.getPhoneNumber();
       HashMap<String, String> personalisation = new HashMap<>();
       personalisation.put(FORENAME_KEY, actionContact.getForename());
       personalisation.put(SURNAME_KEY, actionContact.getSurname());
       personalisation.put(IAC_KEY, actionRequest.getIac());
+
       log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
               templateId, phoneNumber, personalisation, actionId);
       NotificationResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation);
-      String notificationId = response.getNotificationId();
-      Notification notification = notificationClient.getNotificationById(notificationId);
+
+      Notification notification = notificationClient.getNotificationById(response.getNotificationId());
       String status = notification.getStatus();
       log.debug("status = {} for actionId = {}", status, actionId);
       return new ActionFeedback(actionId, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED, status);
