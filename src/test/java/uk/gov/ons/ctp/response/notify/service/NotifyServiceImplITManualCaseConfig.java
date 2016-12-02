@@ -3,12 +3,10 @@ package uk.gov.ons.ctp.response.notify.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl;
 import uk.gov.service.notify.NotificationClient;
 
-@PropertySource("classpath:application.yml")
 @SpringBootConfiguration
 public class NotifyServiceImplITManualCaseConfig {
 
