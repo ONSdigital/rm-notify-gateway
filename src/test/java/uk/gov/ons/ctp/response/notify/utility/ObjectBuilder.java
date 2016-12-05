@@ -21,7 +21,8 @@ public class ObjectBuilder {
   public static final BigInteger ACTION_ID = new BigInteger("1");
 
   public static final String FORENAME = "Joe";
-  public static final String IAC = "123";
+  public static final String IAC_AS_DISPLAYED_IN_SMS = "123A BC45 6DEF";
+  public static final String IAC_AS_STORED_IN_DB = "123abc456def";
   public static final String NOTIFICATION_ID = "1";
   public static final String INVALIDPHONENUMBER = "0798567515";
   public static final String PHONENUMBER = "07985675157";
@@ -92,7 +93,7 @@ public class ObjectBuilder {
       actionRequest.setAddress(actionAddress);
       actionRequest.setCaseId(CASEID);
       actionRequest.setCaseRef(CASEREF);
-      actionRequest.setIac(IAC);
+      actionRequest.setIac(IAC_AS_STORED_IN_DB);
       ActionEvent actionEvent = new ActionEvent();
       actionRequest.setEvents(actionEvent);
     }

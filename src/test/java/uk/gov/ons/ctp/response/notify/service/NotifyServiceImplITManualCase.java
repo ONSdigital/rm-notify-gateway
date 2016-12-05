@@ -27,8 +27,6 @@ import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.SURNAME;
 @RunWith(SpringRunner.class)
 public class NotifyServiceImplITManualCase {
 
-  private static final String CREATED = "created";
-
   @Inject
   private NotifyConfiguration notifyConfiguration;
 
@@ -42,7 +40,6 @@ public class NotifyServiceImplITManualCase {
     assertEquals(ACTION_ID, actionFeedback.getActionId());
     assertEquals(Outcome.REQUEST_COMPLETED, actionFeedback.getOutcome());
     assertEquals(NOTIFY_SMS_SENT, actionFeedback.getSituation());
-    assertEquals(CREATED, actionFeedback.getNotes());
   }
 
   @Test
@@ -52,6 +49,5 @@ public class NotifyServiceImplITManualCase {
     assertEquals(ACTION_ID, actionFeedback.getActionId());
     assertEquals(Outcome.REQUEST_COMPLETED, actionFeedback.getOutcome());
     assertEquals(NOTIFY_SMS_NOT_SENT, actionFeedback.getSituation());
-    assertNotNull(actionFeedback.getNotes());
   }
 }

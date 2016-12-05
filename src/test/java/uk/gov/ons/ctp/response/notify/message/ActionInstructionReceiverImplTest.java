@@ -37,7 +37,6 @@ import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestInva
 public class ActionInstructionReceiverImplTest {
 
   private static final BigInteger MOCKED_ACTIONID = BigInteger.ONE;
-  private static final String MOCKED_STATUS = "mocked status";
 
   @InjectMocks
   ActionInstructionReceiverImpl actionInstructionReceiver;
@@ -56,7 +55,7 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessInstructionHappyPath() throws CTPException {
-    ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED, MOCKED_STATUS);
+    ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
     actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
@@ -87,7 +86,7 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessInstructionInvalidPhoneNumber() throws CTPException {
-    ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED, MOCKED_STATUS);
+    ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
     actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestInvalidData(), true));

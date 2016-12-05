@@ -9,6 +9,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
+import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
@@ -55,21 +56,20 @@ public class NotifyServiceImpl implements NotifyService {
       HashMap<String, String> personalisation = new HashMap<>();
       personalisation.put(FORENAME_KEY, actionContact.getForename());
       personalisation.put(SURNAME_KEY, actionContact.getSurname());
-      personalisation.put(IAC_KEY, actionRequest.getIac());
+      personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
 
       log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
               templateId, phoneNumber, personalisation, actionId);
       NotificationResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation);
 
       Notification notification = notificationClient.getNotificationById(response.getNotificationId());
-      String status = notification.getStatus();
-      log.debug("status = {} for actionId = {}", status, actionId);
-      return new ActionFeedback(actionId, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED, status);
+      log.debug("status = {} for actionId = {}", notification.getStatus(), actionId);
+      return new ActionFeedback(actionId, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED);
     } catch (NotificationClientException e) {
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
       log.error(errorMsg);
       if (errorMsg.contains(BAD_REQUEST)) {
-        return new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_COMPLETED, errorMsg);
+        return new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_COMPLETED);
       }
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }
