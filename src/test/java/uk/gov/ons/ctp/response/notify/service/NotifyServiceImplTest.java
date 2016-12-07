@@ -52,8 +52,6 @@ public class NotifyServiceImplTest {
     assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
 
     HashMap<String, String> personalisation = new HashMap<>();
-    personalisation.put(FORENAME_KEY, FORENAME);
-    personalisation.put(SURNAME_KEY, SURNAME);
     personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER), eq(personalisation));
     verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));

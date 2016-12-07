@@ -35,11 +35,8 @@ public class NotifyServiceImpl implements NotifyService {
 
   private static final String BAD_REQUEST = "Status code: 400";
 
-  public static final String FORENAME_KEY = "forename";
-  public static final String SURNAME_KEY = "surname";
-  public static final String IAC_KEY = "iac";
-
   public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
+  public static final String IAC_KEY = "iac";
   public static final String NOTIFY_SMS_NOT_SENT = "Notify Sms Not Sent";
   public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
@@ -54,8 +51,6 @@ public class NotifyServiceImpl implements NotifyService {
       ActionContact actionContact = actionRequest.getContact();
       String phoneNumber = actionContact.getPhoneNumber();
       HashMap<String, String> personalisation = new HashMap<>();
-      personalisation.put(FORENAME_KEY, actionContact.getForename());
-      personalisation.put(SURNAME_KEY, actionContact.getSurname());
       personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
 
       log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
