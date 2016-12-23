@@ -114,7 +114,7 @@ public class ActionInstructionReceiverImplITCase {
     Date now = new Date();
     long startXmlInvalid = now.getTime();
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.txt"), "UTF-8");
     actionInstructionXml.send(MessageBuilder.withPayload(testMessage).build());
 
     /**
@@ -133,7 +133,7 @@ public class ActionInstructionReceiverImplITCase {
     Date now = new Date();
     long startBadlyFormed = now.getTime();
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionInstruction.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionInstruction.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     /**
@@ -163,7 +163,7 @@ public class ActionInstructionReceiverImplITCase {
     final CountDownLatch notifyServiceInvoked = new CountDownLatch(1);
     doAnswer(countsDownLatch(notifyServiceInvoked)).when(notifyService).process(any(ActionRequest.class));
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/actionInstructionWithRequestOnly.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/actionInstructionWithRequestOnly.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // Await synchronisation with the asynchronous message call
