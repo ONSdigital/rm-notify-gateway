@@ -82,7 +82,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
             actionInstructionPublisher.send(buildActionInstruction(actionRequest));
           }
         } else {
-          actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_COMPLETED);
+          log.error("Data validation failed for actionRequest with action id {}", actionRequest.getActionId());
+          actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_DECLINED);
         }
         if (actionFeedback != null && responseRequired) {
           actionFeedbackPublisher.sendFeedback(actionFeedback);

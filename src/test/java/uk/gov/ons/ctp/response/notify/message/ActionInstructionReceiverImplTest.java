@@ -98,17 +98,21 @@ public class ActionInstructionReceiverImplTest {
     verify(actionFeedbackPublisher, times(6)).sendFeedback(argumentCaptor.capture());
     List<ActionFeedback> actionFeedbackList = argumentCaptor.getAllValues();
     assertEquals(6, actionFeedbackList.size());
-    int countAccepted = 0; int countCompleted = 0;
+    int countAccepted = 0; int countDeclined = 0; int countCompleted = 0;
     for (ActionFeedback anActionFeedback :  actionFeedbackList) {
       if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_ACCEPTED)) {
         countAccepted += 1;
+      }
+      if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_DECLINED)) {
+        countDeclined += 1;
       }
       if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_COMPLETED)) {
         countCompleted += 1;
       }
     }
     assertEquals(3, countAccepted);
-    assertEquals(3, countCompleted);
+    assertEquals(1, countDeclined);
+    assertEquals(2, countCompleted);
     verify(actionFeedbackPublisher, times(2)).sendFeedback(eq(mockedActionFeedback));
 
     verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
