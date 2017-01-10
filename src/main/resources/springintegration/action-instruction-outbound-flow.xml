@@ -11,8 +11,10 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <bean id="actionInstructionOutboundQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Notify"/>
+    <bean id="actionInstructionOutboundQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Action.Notify"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
 
     <!--  setup the outbound channels - note each queue needs a channel -->
