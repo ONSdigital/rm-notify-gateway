@@ -118,10 +118,19 @@
             <version>${lombok.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-            <version>5.13.2</version>
+          <groupId>org.springframework.amqp</groupId>
+          <artifactId>spring-rabbit</artifactId>
         </dependency>
+        <dependency>
+          <groupId>com.rabbitmq.jms</groupId>
+          <artifactId>rabbitmq-jms</artifactId>
+          <version>1.4.7</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.activemq</groupId>
+          <artifactId>activemq-broker</artifactId>
+          <scope>test</scope>
+          </dependency>
         <dependency>
             <groupId>uk.gov.service.notify</groupId>
             <artifactId>notifications-java-client</artifactId>
