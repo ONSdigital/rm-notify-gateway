@@ -36,10 +36,10 @@ public class NotifyServiceImplTest {
   private NotifyServiceImpl notifyService;
 
   @Mock
-  private NotifyConfiguration notifyConfiguration;
+  private NotificationClient notificationClient;
 
   @Mock
-  private NotificationClient notificationClient;
+  private NotifyConfiguration notifyConfiguration;
 
   @Test
   public void testProcessHappyPath() throws CTPException, NotificationClientException {
@@ -54,7 +54,6 @@ public class NotifyServiceImplTest {
     HashMap<String, String> personalisation = new HashMap<>();
     personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER), eq(personalisation));
-    verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
   }
 
   @Test
