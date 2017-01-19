@@ -57,8 +57,11 @@ public class NotifyServiceImpl implements NotifyService {
               templateId, phoneNumber, personalisation, actionId);
       NotificationResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation);
 
-      Notification notification = notificationClient.getNotificationById(response.getNotificationId());
-      log.debug("status = {} for actionId = {}", notification.getStatus(), actionId);
+      if (log.isDebugEnabled()) {
+        log.debug("status = {} for actionId = {}",
+                notificationClient.getNotificationById(response.getNotificationId()).getStatus(), actionId);
+      }
+
       return new ActionFeedback(actionId, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED);
     } catch (NotificationClientException e) {
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
