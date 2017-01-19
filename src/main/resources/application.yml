@@ -6,6 +6,10 @@ info:
   buildTime: ${timestamp}
 
 spring:
+  output:
+    ansi:
+      enabled: never
+
   application:
     name: Notify Gateway API
 
