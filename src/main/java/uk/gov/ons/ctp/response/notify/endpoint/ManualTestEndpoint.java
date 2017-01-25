@@ -30,7 +30,7 @@ import java.util.Set;
 @Produces({"application/json"})
 @Slf4j
 public class ManualTestEndpoint implements CTPEndpoint {
-  private static final BigDecimal LATITYUDE = new BigDecimal("1000.00");
+  private static final BigDecimal LATITUDE = new BigDecimal("1000.00");
   private static final BigDecimal LONGITUDE = new BigDecimal("1000.00");
 
   private static final BigInteger CASEID = new BigInteger("1");
@@ -38,7 +38,8 @@ public class ManualTestEndpoint implements CTPEndpoint {
 
   private static final String ACTION_PLAN = "abc";
   private static final String CASEREF = "1";
-  private static final String IAC = "123";
+  private static final String IAC = "2345bcde6789";
+  private static final String LADCODE = "testlad";
   private static final String NOTIFY = "notify";
   private static final String POSTCODE = "PO157RR";
   private static final String QUESTION_SET = "simple";
@@ -64,7 +65,7 @@ public class ManualTestEndpoint implements CTPEndpoint {
    * Key is actionId, Value is forename,surname,phonenumber
    * @return the test data
    */
-  private Map<String, String> buildTestData() {
+  public static Map<String, String> buildTestData() {
     Map<String, String> testData = new HashMap<>();
     testData.put("1", "Joe,Blogg,07742994131");
     testData.put("2", "Bob,Smith,077");
@@ -78,7 +79,7 @@ public class ManualTestEndpoint implements CTPEndpoint {
    * @param valid true if validates against xsd
    * @return the ActionInstruction
    */
-  private ActionInstruction buildActionInstruction(Map<String, String> dataMap, boolean valid) {
+  public static ActionInstruction buildActionInstruction(Map<String, String> dataMap, boolean valid) {
     ActionInstruction actionInstruction = new ActionInstruction();
     ActionRequests actionRequests = new ActionRequests();
     List<ActionRequest> actionRequestList = actionRequests.getActionRequests();
@@ -103,7 +104,7 @@ public class ManualTestEndpoint implements CTPEndpoint {
    * @param valid true if validates against xsd
    * @return the ActionRequest
    */
-  private ActionRequest buildActionRequest(BigInteger actionId, String forename, String surname, String phoneNumber,
+  public static ActionRequest buildActionRequest(BigInteger actionId, String forename, String surname, String phoneNumber,
                                            boolean valid) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setActionId(actionId);
@@ -119,12 +120,13 @@ public class ManualTestEndpoint implements CTPEndpoint {
       ActionAddress actionAddress = new ActionAddress();
       actionAddress.setUprn(UPRN);
       actionAddress.setPostcode(POSTCODE);
-      actionAddress.setLatitude(LATITYUDE);
+      actionAddress.setLatitude(LATITUDE);
       actionAddress.setLongitude(LONGITUDE);
       actionRequest.setAddress(actionAddress);
       actionRequest.setCaseId(CASEID);
       actionRequest.setCaseRef(CASEREF);
       actionRequest.setIac(IAC);
+      actionAddress.setLadCode(LADCODE);
       ActionEvent actionEvent = new ActionEvent();
       actionRequest.setEvents(actionEvent);
     }
