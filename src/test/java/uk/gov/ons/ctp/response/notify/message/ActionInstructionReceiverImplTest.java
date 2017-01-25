@@ -26,6 +26,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestData;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildTestInvalidData;
@@ -55,7 +56,10 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessInstructionHappyPath() throws CTPException {
-    ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED);
+    ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
+            NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
+            NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
+            Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
     actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
@@ -86,7 +90,10 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessInstructionInvalidPhoneNumber() throws CTPException {
-    ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED);
+    ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
+            NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
+            NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
+            Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
     actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestInvalidData(), true));

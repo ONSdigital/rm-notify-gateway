@@ -11,14 +11,15 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
-import uk.gov.service.notify.NotificationResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigInteger;
 import java.util.HashMap;
+
+import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
 
 /**
  * The service implementation for NotifyService
@@ -55,19 +56,24 @@ public class NotifyServiceImpl implements NotifyService {
 
       log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
               templateId, phoneNumber, personalisation, actionId);
-      NotificationResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation);
+      SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
 
       if (log.isDebugEnabled()) {
         log.debug("status = {} for actionId = {}",
-                notificationClient.getNotificationById(response.getNotificationId()).getStatus(), actionId);
+                notificationClient.getNotificationById(response.getNotificationId().toString()).getStatus(), actionId);
       }
 
-      return new ActionFeedback(actionId, NOTIFY_SMS_SENT, Outcome.REQUEST_COMPLETED);
+      return new ActionFeedback(actionId,
+              NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
+              NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
+              Outcome.REQUEST_COMPLETED);
     } catch (NotificationClientException e) {
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
       log.error(errorMsg);
       if (errorMsg.contains(BAD_REQUEST)) {
-        return new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_COMPLETED);
+        return new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH ?
+                NOTIFY_SMS_NOT_SENT : NOTIFY_SMS_NOT_SENT.substring(0, SITUATION_MAX_LENGTH),
+                Outcome.REQUEST_COMPLETED);
       }
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }

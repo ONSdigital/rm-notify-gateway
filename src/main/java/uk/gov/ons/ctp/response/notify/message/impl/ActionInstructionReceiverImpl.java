@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
 
 /**
  * The service that reads ActionInstructions from the inbound channel
@@ -37,6 +38,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   private static final String NOTIFY_GW = "NotifyGateway";
   private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
   private static final String TELEPHONE_REGEX = "[\\d]{7,11}";
+
+  public static final int SITUATION_MAX_LENGTH = 100;
 
   @Inject
   private Tracer tracer;
@@ -68,7 +71,10 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
         BigInteger actionId = actionRequest.getActionId();
 
         if (responseRequired) {
-          actionFeedback = new ActionFeedback(actionId, NOTIFY_GW, Outcome.REQUEST_ACCEPTED);
+          actionFeedback = new ActionFeedback(actionId,
+                  NOTIFY_GW.length() <= SITUATION_MAX_LENGTH ?
+                  NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
+                  Outcome.REQUEST_ACCEPTED);
           actionFeedbackPublisher.sendFeedback(actionFeedback);
           actionFeedback = null;
         }
@@ -83,7 +89,9 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
           }
         } else {
           log.error("Data validation failed for actionRequest with action id {}", actionRequest.getActionId());
-          actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_DECLINED);
+          actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH ?
+                  NOTIFY_SMS_NOT_SENT : NOTIFY_SMS_NOT_SENT.substring(0, SITUATION_MAX_LENGTH),
+                  Outcome.REQUEST_DECLINED);
         }
         if (actionFeedback != null && responseRequired) {
           actionFeedbackPublisher.sendFeedback(actionFeedback);

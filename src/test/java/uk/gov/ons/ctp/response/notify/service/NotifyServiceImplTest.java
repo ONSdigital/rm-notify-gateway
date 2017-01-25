@@ -43,7 +43,7 @@ public class NotifyServiceImplTest {
 
   @Test
   public void testProcessHappyPath() throws CTPException, NotificationClientException {
-    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class))).thenReturn(buildNotificationResponse());
+    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotification());
 
     ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER, true));
@@ -53,13 +53,13 @@ public class NotifyServiceImplTest {
 
     HashMap<String, String> personalisation = new HashMap<>();
     personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER), eq(personalisation));
+    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER), eq(personalisation),any(String.class));
   }
 
   @Test
   public void testProcessSendSmsException() throws NotificationClientException {
     NotificationClientException exception = new NotificationClientException(new Exception());
-    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class))).thenThrow(exception);
+    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class), any(String.class))).thenThrow(exception);
 
     boolean exceptionThrown = false;
     try {
@@ -71,6 +71,6 @@ public class NotifyServiceImplTest {
     }
 
     assertTrue(exceptionThrown);
-    verify(notificationClient, times(1)).sendSms(any(String.class), any(String.class), any(HashMap.class));
+    verify(notificationClient, times(1)).sendSms(any(String.class), any(String.class), any(HashMap.class), any(String.class));
   }
 }

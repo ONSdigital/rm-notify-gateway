@@ -44,7 +44,6 @@ The Notify Gateway provides an interface for Response Management to send communi
 ```
 
 - mvn clean install
-- mvn clean install -DskipITs
 
 
 ##################################################
