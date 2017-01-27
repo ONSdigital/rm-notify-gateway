@@ -36,6 +36,9 @@ security:
 management:
   port: 8281
   context-path: /mgmt
+  health:
+    rabbit:
+      enabled: false
 
 endpoints:
   enabled: true
