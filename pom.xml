@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>notifygatewaysvc</artifactId>
-    <version>9.32.0-SNAPSHOT</version>
+    <version>9.33.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>CTP : ResponseManagement : Notify Gateway</name>
@@ -11,7 +11,7 @@
 
     <properties>
         <skip.integration.tests>true</skip.integration.tests>
-        <ctp.version>9.31.2-SNAPSHOT</ctp.version>
+        <ctp.version>9.33.0-SNAPSHOT</ctp.version>
         <java.version>1.8</java.version>
         <jersey.version>2.22.2</jersey.version>
         <lombok.version>1.16.6</lombok.version>
@@ -56,7 +56,7 @@
         <dependency>
             <groupId>uk.gov.ons.ctp.product</groupId>
             <artifactId>actionsvc-api</artifactId>
-            <version>9.32.0-SNAPSHOT</version>
+            <version>9.32.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -134,7 +134,7 @@
         <dependency>
             <groupId>uk.gov.service.notify</groupId>
             <artifactId>notifications-java-client</artifactId>
-            <version>2.2.0-RELEASE</version>
+            <version>3.0.0-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.bitbucket.b_c</groupId>
@@ -145,6 +145,12 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.9.6</version>
+        </dependency>
+        <!-- required to run in IDE -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20160810</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

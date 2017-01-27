@@ -7,7 +7,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.NotificationResponse;
+import uk.gov.service.notify.SendSmsResponse;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,10 +23,8 @@ public class ObjectBuilder {
   public static final String FORENAME = "Joe";
   public static final String IAC_AS_DISPLAYED_IN_SMS = "123A BC45 6DEF";
   public static final String IAC_AS_STORED_IN_DB = "123abc456def";
-  public static final String NOTIFICATION_ID = "1";
   public static final String INVALIDPHONENUMBER = "0798567515";
   public static final String PHONENUMBER = "07985675157";
-  public static final String STATUS = "sent";
   public static final String SURNAME = "Blogg";
 
   private static final BigDecimal LATITYUDE = new BigDecimal("1000.00");
@@ -100,35 +98,33 @@ public class ObjectBuilder {
     return actionRequest;
   }
 
-  public static NotificationResponse buildNotificationResponse() {
-    return new NotificationResponse("{\n" +
-            "\t\"data\": {\n" +
-            "\t\t\"notification\": {\n" +
-            "\t\t\t\"id\": \"" + NOTIFICATION_ID + "\"\n" +
-            "\t\t},\n" +
-            "\t\t\"body\": \"abc\",\n" +
-            "\t\t\"template_version\": 1\n" +
+  public static SendSmsResponse buildSendSmsResponse() {
+    return new SendSmsResponse("{\n" +
+            "\t\"id\": \"067e6162-3b6f-4ae2-a171-2470b63dff00\",\n" +
+            "\t\"reference\": \"testReference\",\n" +
+            "\t\"content\": {\n" +
+            "\t\t\"body\": \"thebody\"\n" +
+            "\t},\n" +
+            "\t\"template\": {\n" +
+            "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +
+            "\t\t\"version\": 1,\n" +
+            "\t\t\"uri\": \"theUri\"\n" +
             "\t}\n" +
             "}");
   }
 
   public static Notification buildNotification() {
     return new Notification("{\n" +
-            "\t\"data\": {\n" +
-            "\t\t\"notification\": {\n" +
-            "\t\t\t\"id\": \"1\",\n" +
-            "\t\t\t\"body\": \"def\",\n" +
-            "\t\t\t\"notification_type\": \"test\",\n" +
-            "\t\t\t\"template\": {\n" +
-            "\t\t\t\t\"id\": \"1\",\n" +
-            "\t\t\t\t\"name\": \"test\"\n" +
-            "\t\t\t},\n" +
-            "\t\t\t\"template_version\": 1,\n" +
-            "\t\t\t\"to\": \"tester\",\n" +
-            "\t\t\t\"status\": \"" + STATUS + "\",\n" +
-            "\t\t\t\"created_at\": \"20110706\"\n" +
-            "\t\t}\n" +
-            "\t}\n" +
+            "\t\"id\": \"067e6162-3b6f-4ae2-a171-2470b63dff00\",\n" +
+            "\t\"type\": \"sms\",\n" +
+            "\t\"template\": {\n" +
+            "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +
+            "\t\t\"version\": 1,\n" +
+            "\t\t\"uri\": \"theUri\"\n" +
+            "\t},\n" +
+            "\t\"body\": \"theBody\",\n" +
+            "\t\"status\": \"sent\",\n" +
+            "\t\"created_at\": \"2004-12-13T21:39:45.618-08:00\"\n" +
             "}");
   }
 

@@ -1,13 +1,16 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.oxm.Marshaller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.util.DeadLetterLogCommand;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
@@ -38,8 +41,14 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
   private static final String TELEPHONE_REGEX = "[\\d]{7,11}";
 
+  public static final int SITUATION_MAX_LENGTH = 100;
+
   @Inject
   private Tracer tracer;
+
+  @Inject
+  @Qualifier("actionInstructionUnmarshaller")
+  Marshaller marshaller;
 
   @Inject
   private NotifyService notifyService;
@@ -57,7 +66,16 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed")
   public final void processInstruction(final ActionInstruction instruction) {
-    log.debug("entering processInstruction with instruction {}", instruction);
+    DeadLetterLogCommand<ActionInstruction> command = new DeadLetterLogCommand<>(marshaller, instruction);
+    command.run((ActionInstruction x)->process(x));
+  }
+
+  /**
+   * this is where the processing is really done
+   * @param instruction to process
+   */
+  private void process(final ActionInstruction instruction) {
+    log.debug("entering process with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);
 
     ActionRequests actionRequests = instruction.getActionRequests();
@@ -68,7 +86,10 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
         BigInteger actionId = actionRequest.getActionId();
 
         if (responseRequired) {
-          actionFeedback = new ActionFeedback(actionId, NOTIFY_GW, Outcome.REQUEST_ACCEPTED);
+          actionFeedback = new ActionFeedback(actionId,
+                  NOTIFY_GW.length() <= SITUATION_MAX_LENGTH ?
+                          NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
+                  Outcome.REQUEST_ACCEPTED);
           actionFeedbackPublisher.sendFeedback(actionFeedback);
           actionFeedback = null;
         }
@@ -83,7 +104,9 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
           }
         } else {
           log.error("Data validation failed for actionRequest with action id {}", actionRequest.getActionId());
-          actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT, Outcome.REQUEST_DECLINED);
+          actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH ?
+                  NOTIFY_SMS_NOT_SENT : NOTIFY_SMS_NOT_SENT.substring(0, SITUATION_MAX_LENGTH),
+                  Outcome.REQUEST_DECLINED);
         }
         if (actionFeedback != null && responseRequired) {
           actionFeedbackPublisher.sendFeedback(actionFeedback);
@@ -93,6 +116,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
 
     tracer.close(span);
   }
+
+
 
   /**
    * To build an ActionInstruction containing one ActionRequest
