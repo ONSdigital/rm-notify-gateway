@@ -45,7 +45,3 @@ redelivery-policy:
 notify:
   apiKey: ctpnotifygateway-0e515090-7962-40e8-a8c7-acbacf079c21-ac979394-a989-4f79-b0e0-6abcca564393
   templateId: 966731dc-ef2e-41ad-a828-8cdd95c81ebc
-
-server:
-  port: 8181
-  servlet-path: /mgmt
