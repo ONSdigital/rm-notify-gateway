@@ -39,6 +39,9 @@ management:
   security:
     roles: SUPERUSER
     enabled: true
+  health:
+    rabbit:
+      enabled: false
 
 endpoints:
   enabled: true
