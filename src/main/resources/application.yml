@@ -32,6 +32,9 @@ security:
 management:
   port: 8281
   context-path: /mgmt
+  security:
+    roles: SUPERUSER
+    enabled: true
 
 endpoints:
   enabled: true
