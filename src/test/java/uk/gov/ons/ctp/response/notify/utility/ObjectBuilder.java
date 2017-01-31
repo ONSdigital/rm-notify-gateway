@@ -30,7 +30,7 @@ public class ObjectBuilder {
   private static final BigDecimal LATITYUDE = new BigDecimal("1000.00");
   private static final BigDecimal LONGITUDE = new BigDecimal("1000.00");
 
-  private static final BigInteger CASEID = new BigInteger("1");
+  private static final Integer CASEID = new Integer("1");
   private static final BigInteger UPRN = new BigInteger("201");
 
   private static final String ACTION_PLAN = "abc";
