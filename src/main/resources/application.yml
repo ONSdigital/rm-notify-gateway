@@ -21,6 +21,8 @@ spring:
 logging:
   level:
     uk.gov.ons.ctp: debug
+    org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
+    org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
 security:
   basic:
