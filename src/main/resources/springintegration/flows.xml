@@ -10,6 +10,6 @@
 
     <import resource="action-instruction-inbound-flow.xml"/>
     <import resource="action-instruction-outbound-flow.xml"/>
-    <!-- TODO <import resource="action-feedback-outbound-flow.xml"/> -->
+    <import resource="action-feedback-outbound-flow.xml"/>
 </beans>
 

@@ -52,10 +52,5 @@
     <int-xml:unmarshalling-transformer
             input-channel="actionInstructionXmlValid" output-channel="actionInstructionTransformed"
             unmarshaller="actionInstructionMarshaller" />
-
-    <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
-    <bean id="actionInstructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
-    </bean>
     <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
 </beans>

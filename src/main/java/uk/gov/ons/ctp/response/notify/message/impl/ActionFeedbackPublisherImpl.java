@@ -16,9 +16,9 @@ import javax.inject.Named;
 @Slf4j
 public class ActionFeedbackPublisherImpl implements ActionFeedbackPublisher {
 
-//  @Qualifier("actionFeedbackRabbitTemplate")
-//  @Inject
-//  private RabbitTemplate rabbitTemplate;
+  @Qualifier("actionFeedbackRabbitTemplate")
+  @Inject
+  private RabbitTemplate rabbitTemplate;
 
   /**
    * To put an ActionFeedback on the outbound channel actionFeedbackOutbound
@@ -26,7 +26,7 @@ public class ActionFeedbackPublisherImpl implements ActionFeedbackPublisher {
    */
   public void sendFeedback(ActionFeedback actionFeedback) {
     log.debug("Entering sendFeedback for actionId {}", actionFeedback.getActionId());
-    // TODO Leave this binding hardcoded? The same value is used in the xml flow.
-//    rabbitTemplate.convertAndSend("Action.Feedback.binding", actionFeedback);
+    // TODO Leave these hardcoded strings? The same values are used in the xml flow.
+    rabbitTemplate.convertAndSend("action-feedback-exchange", "Action.Feedback.binding", actionFeedback);
   }
 }
