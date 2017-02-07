@@ -9,7 +9,6 @@ public interface ActionFeedbackPublisher {
   /**
    * To put ActionFeedback on the outbound channel
    * @param actionFeedback the ActionFeedback to put on the outbound channel actionFeedbackOutbound
-   * @return ActionFeedback
    */
-  ActionFeedback sendFeedback(ActionFeedback actionFeedback);
+  void sendFeedback(ActionFeedback actionFeedback);
 }

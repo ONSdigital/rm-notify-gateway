@@ -9,7 +9,6 @@ public interface ActionInstructionPublisher {
   /**
    * To publish a actionInstruction to queue
    * @param actionInstruction to be published
-   * @return the published ActionInstruction
    */
-  ActionInstruction send(ActionInstruction actionInstruction);
+  void send(ActionInstruction actionInstruction);
 }

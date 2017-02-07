@@ -63,3 +63,7 @@ rabbitmq:
   password: guest
   host: localhost
   virtualhost: /
+
+server:
+  port: 8181
+  servlet-path: /mgmt

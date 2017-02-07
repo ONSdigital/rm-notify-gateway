@@ -2,28 +2,18 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
+  http://www.springframework.org/schema/rabbit
+  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-    <int:channel id="actionFeedbackXmlInvalid" />
-    <bean id="invalidActionFeedbackQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="InvalidActionFeedback"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
-    <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
-
-    <bean id="actionFeedbackQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.Feedback"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
     <!--  setup the outbound channels - note each queue needs a channel -->
     <int:channel id="actionFeedbackOutbound" />
     <int:channel id="actionFeedbackXml" />
@@ -34,21 +24,58 @@
             input-channel="actionFeedbackOutbound" output-channel="actionFeedbackXml"
             marshaller="actionFeedbackMarshaller"
             result-transformer="actionFeedbackTransformer"/>
+
     <!--  the actionFeedbackMarshaller turns java objects into xml dom -->
     <bean id="actionFeedbackMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
     </bean>
+
     <!--  the actionFeedbackTransformer turns the xml dom into a string -->
     <bean id="actionFeedbackTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
 
     <!-- we validate here that we post action feedbacks matching the outbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int:channel id="actionFeedbackXmlInvalid" />
+
+    <!-- Start of Infrastructure TODO Move in a separate xml file? -->
+    <rabbit:queue name="Action.InvalidActionFeedback" durable="true">
+    </rabbit:queue>
+
+    <rabbit:direct-exchange name="invalid-action-feedback-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Action.InvalidActionFeedback" key="Action.InvalidActionFeedback.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+    <!-- End of Infrastructure -->
+
+
+    <int-amqp:outbound-channel-adapter id="invalidActionFeedbackOutboundAmqp" channel="actionFeedbackXmlInvalid" exchange-name="invalid-action-feedback-exchange"/>
+
+
     <int-xml:validating-filter id="actionFeedbackValidator" input-channel="actionFeedbackXml"
                                output-channel="actionFeedbackXmlValid" schema-location="classpath:xsd/actionFeedback.xsd" discard-channel="actionFeedbackXmlInvalid"/>
 
     <!-- define the channel name to send our xml string to -->
     <int:router input-channel="actionFeedbackXmlValid" expression="'actionFeedback'"/>
 
-    <!--  each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
-    <int-jms:outbound-channel-adapter id="actionFeedbackJmsout" channel="actionFeedback" destination="actionFeedbackQueue"/>
+    <!-- Start of Infrastructure TODO Move in a separate xml file? -->
+    <bean id="actionFeedbackMarshallingMessageConverter" class="org.springframework.amqp.support.converter.MarshallingMessageConverter">
+        <constructor-arg ref="actionFeedbackMarshaller" />
+    </bean>
+
+    <rabbit:template id="actionFeedbackRabbitTemplate" connection-factory="connectionFactory" message-converter="actionFeedbackMarshallingMessageConverter">
+    </rabbit:template>
+
+    <rabbit:queue name="Action.Feedback" durable="true">
+    </rabbit:queue>
+
+    <rabbit:direct-exchange name="action-feedback-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Action.Feedback" key="Action.Feedback.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+    <!-- End of Infrastructure -->
+
+    <!--  each channel adapter listens to one of our routed channels and adapts the SI message to an AMQP message -->
+    <int-amqp:outbound-channel-adapter id="actionFeedbackOutboundAmqp" channel="actionFeedback" exchange-name="action-feedback-exchange" />
 </beans>

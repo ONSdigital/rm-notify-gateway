@@ -2,20 +2,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
-
-    <bean id="actionInstructionOutboundQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.Notify"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
+  http://www.springframework.org/schema/rabbit
+  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
     <!--  setup the outbound channels - note each queue needs a channel -->
     <int:channel id="actionInstructionOutbound" />
@@ -42,7 +39,39 @@
     <!-- define the channel name to send our xml string to -->
     <int:router input-channel="actionInstructionOutboundXmlValid" expression="'actionInstruction'"/>
 
-    <!--  each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
-    <int-jms:outbound-channel-adapter id="jmsout" channel="actionInstruction" destination="actionInstructionOutboundQueue"/>
+    <!-- Start of Infrastructure TODO Move in a separate xml file? -->
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" />
+    
+    <bean id="actionInstructionMarshallingMessageConverter" class="org.springframework.amqp.support.converter.MarshallingMessageConverter">
+        <constructor-arg ref="actionInstructionMarshaller" />
+    </bean>
 
+    <rabbit:template id="actionInstructionRabbitTemplate" connection-factory="connectionFactory" message-converter="actionInstructionMarshallingMessageConverter">
+    </rabbit:template>
+
+    <rabbit:queue name="Action.Notify" durable="true">
+        <rabbit:queue-arguments value-type="java.lang.String">
+            <entry key="x-dead-letter-exchange" value="action-notify-deadletter-exchange" />
+            <entry key="x-dead-letter-routing-key" value="Action.NotifyDLQ.binding" />
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+
+    <rabbit:queue name="Action.NotifyDLQ" durable="true">
+    </rabbit:queue>
+
+    <rabbit:direct-exchange name="action-notify-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Action.Notify" key="Action.Notify.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <rabbit:direct-exchange name="action-notify-deadletter-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Action.NotifyDLQ" key="Action.NotifyDLQ.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+    <!-- End of Infrastructure -->
+
+    <!--  each channel adapter listens to one of our routed channels and adapts the SI message to an AMQP message -->
+    <int-amqp:outbound-channel-adapter id="actionInstructionOutboundAmqp" channel="actionInstruction" exchange-name="action-notify-exchange" />
 </beans>
