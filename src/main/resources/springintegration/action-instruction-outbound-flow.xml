@@ -3,41 +3,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
-       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
        xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
-  http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
   http://www.springframework.org/schema/rabbit
   http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-    <!--  setup the outbound channels - note each queue needs a channel -->
-    <int:channel id="actionInstructionOutbound" />
-    <int:channel id="actionInstructionOutboundXml" />
     <int:channel id="actionInstruction" />
-
-    <!--  the @Publisher sends to the marshalling-transformers input channel -->
-    <int-xml:marshalling-transformer
-            input-channel="actionInstructionOutbound" output-channel="actionInstructionOutboundXml"
-            marshaller="actionInstructionOutboundMarshaller"
-            result-transformer="actionInstructionOutboundTransformer"/>
-    <!--  the actionInstructionOutboundMarshaller turns java objects into xml dom -->
-    <bean id="actionInstructionOutboundMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
-    </bean>
-    <!--  the actionInstructionOutboundTransformer turns the xml dom into a string -->
-    <bean id="actionInstructionOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
-
-    <!-- we validate here that we post action instructions matching the outbound schema -->
-    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-    <int-xml:validating-filter id="actionInstructionOutboundValidator" input-channel="actionInstructionOutboundXml"
-                               output-channel="actionInstructionOutboundXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionInvalidXml"/>
-
-    <!-- define the channel name to send our xml string to -->
-    <int:router input-channel="actionInstructionOutboundXmlValid" expression="'actionInstruction'"/>
 
     <!-- Start of Infrastructure TODO Move in a separate xml file? -->
     <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" />
