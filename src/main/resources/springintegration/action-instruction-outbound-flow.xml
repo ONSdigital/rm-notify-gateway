@@ -20,9 +20,8 @@
         <property name="contentType" value="text/xml" />
     </bean>
 
-    <rabbit:template id="actionInstructionRabbitTemplate" connection-factory="connectionFactory" message-converter="actionInstructionMarshallingMessageConverter">
-    </rabbit:template>
-
     <int:channel id="actionInstruction" />
     <int-amqp:outbound-channel-adapter id="actionInstructionOutboundAmqp" channel="actionInstruction" exchange-name="action-outbound-exchange" routing-key="Action.Notify.binding" amqp-template="amqpTemplate"/>
+
+    <rabbit:template id="actionInstructionRabbitTemplate" connection-factory="connectionFactory" exchange="action-outbound-exchange" routing-key="Action.Notify.binding" message-converter="actionInstructionMarshallingMessageConverter" />
 </beans>

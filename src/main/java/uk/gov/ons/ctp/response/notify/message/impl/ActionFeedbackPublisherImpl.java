@@ -26,7 +26,6 @@ public class ActionFeedbackPublisherImpl implements ActionFeedbackPublisher {
    */
   public void sendFeedback(ActionFeedback actionFeedback) {
     log.debug("Entering sendFeedback for actionId {}", actionFeedback.getActionId());
-    // TODO Leave these hardcoded strings? The same values are used in the xml flow.
-    rabbitTemplate.convertAndSend("action-outbound-exchange", "Action.Feedback.binding", actionFeedback);
+    rabbitTemplate.convertAndSend(actionFeedback);
   }
 }

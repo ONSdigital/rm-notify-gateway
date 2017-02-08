@@ -23,7 +23,6 @@ public class ActionInstructionPublisherImpl implements ActionInstructionPublishe
   @Override
   public void send(ActionInstruction actionInstruction) {
     log.debug("send to queue actionInstruction {}", actionInstruction);
-    // TODO Leave these hardcoded strings? The same values are used in the xml flow.
-    rabbitTemplate.convertAndSend("action-outbound-exchange", "Action.Notify.binding", actionInstruction);
+    rabbitTemplate.convertAndSend(actionInstruction);
   }
 }
