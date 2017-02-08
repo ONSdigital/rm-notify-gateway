@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/rabbit
   http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
@@ -19,9 +15,6 @@
         <constructor-arg ref="actionInstructionMarshaller" />
         <property name="contentType" value="text/xml" />
     </bean>
-
-    <int:channel id="actionInstruction" />
-    <int-amqp:outbound-channel-adapter id="actionInstructionOutboundAmqp" channel="actionInstruction" exchange-name="action-outbound-exchange" routing-key="Action.Notify.binding" amqp-template="amqpTemplate"/>
 
     <rabbit:template id="actionInstructionRabbitTemplate" connection-factory="connectionFactory" exchange="action-outbound-exchange" routing-key="Action.Notify.binding" message-converter="actionInstructionMarshallingMessageConverter" />
 </beans>

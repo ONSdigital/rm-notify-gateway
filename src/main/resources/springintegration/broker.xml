@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/rabbit
   http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
@@ -44,9 +40,9 @@
         </rabbit:bindings>
     </rabbit:direct-exchange>
 
-    <rabbit:direct-exchange name="invalid-action-instruction-exchange">
+    <rabbit:direct-exchange name="action-invalid-exchange">
         <rabbit:bindings>
-            <rabbit:binding queue="Action.InvalidActionInstructions" key="Action.InvalidActionInstructions.binding" />
+            <rabbit:binding queue="Action.InvalidActionInstructions" key="Action.ActionInstruction.binding" />
         </rabbit:bindings>
     </rabbit:direct-exchange>
     <!-- End of Exchanges -->

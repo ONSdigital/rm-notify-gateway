@@ -25,8 +25,8 @@ spring:
 logging:
   level:
     uk.gov.ons.ctp: debug
-    org.springframework.amqp: debug
-    org.springframework.integration: debug
+    org.springframework.amqp: warn
+    org.springframework.integration: warn
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
