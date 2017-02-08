@@ -61,6 +61,7 @@
     <!-- Start of Infrastructure TODO Move in a separate xml file? -->
     <bean id="actionFeedbackMarshallingMessageConverter" class="org.springframework.amqp.support.converter.MarshallingMessageConverter">
         <constructor-arg ref="actionFeedbackMarshaller" />
+        <property name="contentType" value="text/xml" />
     </bean>
 
     <rabbit:template id="actionFeedbackRabbitTemplate" connection-factory="connectionFactory" message-converter="actionFeedbackMarshallingMessageConverter">

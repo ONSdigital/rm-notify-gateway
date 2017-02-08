@@ -50,6 +50,7 @@
 
     <bean id="actionInstructionMarshallingMessageConverter" class="org.springframework.amqp.support.converter.MarshallingMessageConverter">
         <constructor-arg ref="actionInstructionMarshaller" />
+        <property name="contentType" value="text/xml" />
     </bean>
 
     <rabbit:template id="actionInstructionRabbitTemplate" connection-factory="connectionFactory" message-converter="actionInstructionMarshallingMessageConverter">
