@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+  http://www.springframework.org/schema/rabbit
+  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
+
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" />
+
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
+
+    <!-- Start of Queues -->
+    <rabbit:queue name="Action.Notify" durable="true">
+        <rabbit:queue-arguments value-type="java.lang.String">
+            <entry key="x-dead-letter-exchange" value="action-notify-deadletter-exchange" />
+            <entry key="x-dead-letter-routing-key" value="Action.NotifyDLQ.binding" />
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+
+    <rabbit:queue name="Action.NotifyDLQ" durable="true" />
+
+    <rabbit:queue name="Action.InvalidActionInstructions" durable="true" />
+
+    <rabbit:queue name="Action.Feedback" durable="true" />
+    <!-- End of Queues -->
+
+    <!-- Start of Exchanges -->
+    <rabbit:direct-exchange name="action-outbound-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Action.Feedback" key="Action.Feedback.binding" />
+            <rabbit:binding queue="Action.Notify" key="Action.Notify.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <rabbit:direct-exchange name="action-notify-deadletter-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Action.NotifyDLQ" key="Action.NotifyDLQ.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <rabbit:direct-exchange name="invalid-action-instruction-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Action.InvalidActionInstructions" key="Action.InvalidActionInstructions.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+    <!-- End of Exchanges -->
+
+</beans>

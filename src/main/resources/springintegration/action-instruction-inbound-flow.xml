@@ -4,15 +4,12 @@
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
-       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
-  http://www.springframework.org/schema/rabbit
-  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
     <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
 
@@ -28,18 +25,7 @@
     <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
     <int-amqp:inbound-channel-adapter id="actionInstructionInboundAmqp" listener-container="actionInstructionListenerContainer" message-converter="simpleMessageConverter" channel="actionInstructionXml" />
 
-    <!-- anything sent to this channel is put on the queue Action.InvalidActionInstructions -->
     <int:channel id="actionInstructionInvalidXml" />
-    <!-- Start of Infrastructure TODO Move in a separate xml file? -->
-    <rabbit:queue name="Action.InvalidActionInstructions" durable="true">
-    </rabbit:queue>
-
-    <rabbit:direct-exchange name="invalid-action-instruction-exchange">
-        <rabbit:bindings>
-            <rabbit:binding queue="Action.InvalidActionInstructions" key="Action.InvalidActionInstructions.binding" />
-        </rabbit:bindings>
-    </rabbit:direct-exchange>
-    <!-- End of Infrastructure -->
     <int-amqp:outbound-channel-adapter id="invalidActionInstructionOutboundAmqp" channel="actionInstructionInvalidXml" exchange-name="invalid-action-instruction-exchange" routing-key="Action.InvalidActionInstructions.binding" />
 
     <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->

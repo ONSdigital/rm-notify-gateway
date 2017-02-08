@@ -13,12 +13,10 @@
 
     <int:channel id="actionFeedback" />
 
-    <!--  the actionFeedbackMarshaller turns java objects into xml dom -->
     <bean id="actionFeedbackMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
     </bean>
 
-    <!-- Start of Infrastructure TODO Move in a separate xml file? -->
     <bean id="actionFeedbackMarshallingMessageConverter" class="org.springframework.amqp.support.converter.MarshallingMessageConverter">
         <constructor-arg ref="actionFeedbackMarshaller" />
         <property name="contentType" value="text/xml" />
@@ -26,16 +24,6 @@
 
     <rabbit:template id="actionFeedbackRabbitTemplate" connection-factory="connectionFactory" message-converter="actionFeedbackMarshallingMessageConverter">
     </rabbit:template>
-
-    <rabbit:queue name="Action.Feedback" durable="true" />
-
-    <rabbit:direct-exchange name="action-outbound-exchange">
-        <rabbit:bindings>
-            <rabbit:binding queue="Action.Feedback" key="Action.Feedback.binding" />
-            <rabbit:binding queue="Action.Notify" key="Action.Notify.binding" />
-        </rabbit:bindings>
-    </rabbit:direct-exchange>
-    <!-- End of Infrastructure -->
 
     <int-amqp:outbound-channel-adapter id="actionFeedbackOutboundAmqp" channel="actionFeedback" exchange-name="action-outbound-exchange" routing-key="Action.Feedback.binding"/>
 </beans>
