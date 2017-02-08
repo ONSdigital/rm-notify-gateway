@@ -14,12 +14,10 @@
   http://www.springframework.org/schema/rabbit
   http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-    <!--  setup the outbound channels - note each queue needs a channel -->
     <int:channel id="actionFeedbackOutbound" />
     <int:channel id="actionFeedbackXml" />
     <int:channel id="actionFeedback" />
 
-    <!--  the @Publisher sends to the marshalling-transformers input channel -->
     <int-xml:marshalling-transformer
             input-channel="actionFeedbackOutbound" output-channel="actionFeedbackXml"
             marshaller="actionFeedbackMarshaller"
@@ -71,13 +69,13 @@
     <rabbit:queue name="Action.Feedback" durable="true">
     </rabbit:queue>
 
-    <rabbit:direct-exchange name="action-feedback-exchange">
+    <rabbit:direct-exchange name="action-outbound-exchange">
         <rabbit:bindings>
             <rabbit:binding queue="Action.Feedback" key="Action.Feedback.binding" />
+            <rabbit:binding queue="Action.Notify" key="Action.Notify.binding" />
         </rabbit:bindings>
     </rabbit:direct-exchange>
     <!-- End of Infrastructure -->
 
-    <!--  each channel adapter listens to one of our routed channels and adapts the SI message to an AMQP message -->
-    <int-amqp:outbound-channel-adapter id="actionFeedbackOutboundAmqp" channel="actionFeedback" exchange-name="action-feedback-exchange" />
+    <int-amqp:outbound-channel-adapter id="actionFeedbackOutboundAmqp" channel="actionFeedback" exchange-name="action-outbound-exchange" routing-key="Action.Feedback.binding"/>
 </beans>

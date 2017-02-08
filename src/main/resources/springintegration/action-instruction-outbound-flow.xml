@@ -66,12 +66,6 @@
     <rabbit:queue name="Action.NotifyDLQ" durable="true">
     </rabbit:queue>
 
-    <rabbit:direct-exchange name="action-notify-exchange">
-        <rabbit:bindings>
-            <rabbit:binding queue="Action.Notify" key="Action.Notify.binding" />
-        </rabbit:bindings>
-    </rabbit:direct-exchange>
-
     <rabbit:direct-exchange name="action-notify-deadletter-exchange">
         <rabbit:bindings>
             <rabbit:binding queue="Action.NotifyDLQ" key="Action.NotifyDLQ.binding" />
@@ -80,5 +74,5 @@
     <!-- End of Infrastructure -->
 
     <!--  each channel adapter listens to one of our routed channels and adapts the SI message to an AMQP message -->
-    <int-amqp:outbound-channel-adapter id="actionInstructionOutboundAmqp" channel="actionInstruction" exchange-name="action-notify-exchange" amqp-template="amqpTemplate"/>
+    <int-amqp:outbound-channel-adapter id="actionInstructionOutboundAmqp" channel="actionInstruction" exchange-name="action-outbound-exchange" routing-key="Action.Notify.binding" amqp-template="amqpTemplate"/>
 </beans>

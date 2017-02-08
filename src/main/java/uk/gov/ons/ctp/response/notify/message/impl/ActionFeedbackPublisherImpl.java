@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * The service that puts ActionFeedbacks on the outbound channel actionFeedbackOutbound
+ * The service that publishes ActionFeedbacks to queue.
  */
 @Named
 @Slf4j
@@ -21,12 +21,12 @@ public class ActionFeedbackPublisherImpl implements ActionFeedbackPublisher {
   private RabbitTemplate rabbitTemplate;
 
   /**
-   * To put an ActionFeedback on the outbound channel actionFeedbackOutbound
-   * @param actionFeedback the ActionFeedback to put on the outbound channel actionFeedbackOutbound
+   * To put an ActionFeedback on the queue
+   * @param actionFeedback the ActionFeedback to put on the queue
    */
   public void sendFeedback(ActionFeedback actionFeedback) {
     log.debug("Entering sendFeedback for actionId {}", actionFeedback.getActionId());
     // TODO Leave these hardcoded strings? The same values are used in the xml flow.
-    rabbitTemplate.convertAndSend("action-feedback-exchange", "Action.Feedback.binding", actionFeedback);
+    rabbitTemplate.convertAndSend("action-outbound-exchange", "Action.Feedback.binding", actionFeedback);
   }
 }
