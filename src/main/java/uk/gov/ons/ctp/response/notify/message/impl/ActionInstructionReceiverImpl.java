@@ -66,10 +66,13 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    * @param instruction the ActionInstruction to be processed
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  @ServiceActivator(inputChannel = "actionInstructionTransformed")
+  @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
   public final void processInstruction(final ActionInstruction instruction) {
     try {
-      process(instruction);
+      // TODO suppress the below once DLQ tested
+      throw new RuntimeException();
+
+//      process(instruction);
     } catch (Throwable t) {
       // In this case, we do not want to replay the ActionInstruction. If we did, duplicate sms may be sent.
       log.error("Unexpected exception: {}", t);

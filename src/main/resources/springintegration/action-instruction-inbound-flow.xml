@@ -17,6 +17,8 @@
         <property name="connectionFactory" ref="connectionFactory" />
         <property name="queueNames" value="Action.Notify" />
         <property name="concurrentConsumers" value="1" />
+        <property name="prefetchCount" value="10" />
+        <property name="txSize" value="10" />
         <property name="channelTransacted" value="true" />
         <property name="transactionManager" ref="transactionManager" />
     </bean>
@@ -24,8 +26,8 @@
     <!-- Xml msg is taken off the queue Action.Notify and put on the channel actionInstructionXml -->
     <int:channel id="actionInstructionXml" />
     <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
-    <int-amqp:inbound-channel-adapter id="actionInstructionInboundAmqp" listener-container="actionInstructionListenerContainer" message-converter="simpleMessageConverter" channel="actionInstructionXml" />
-
+    <int-amqp:inbound-channel-adapter id="actionInstructionInboundAmqp" listener-container="actionInstructionListenerContainer"
+                                      message-converter="simpleMessageConverter" channel="actionInstructionXml" />
 
     <!-- Xml validated against the inbound schema -->
     <int:channel id="actionInstructionInvalidXml" />
@@ -42,4 +44,12 @@
             unmarshaller="actionInstructionMarshaller" />
 
     <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
+
+    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="dlqChannel" max-attempts="3"/>
+    <int:channel id="dlqChannel" />
+    <!-- TODO <int-amqp:outbound-channel-adapter id="dlqActionInstructionOutboundAmqp" channel="dlqChannel" exchange-name="action-deadletter-exchange" routing-key="Action.Notify.binding" /> -->
+    <int:chain input-channel="dlqChannel">
+        <int:transformer expression="'permanently failed:' + payload.failedMessage.payload + ' handled by recovery'" />
+        <int-stream:stderr-channel-adapter append-newline="true"/>
+    </int:chain>
 </beans>

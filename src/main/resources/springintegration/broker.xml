@@ -14,8 +14,8 @@
     <!-- Start of Queues -->
     <rabbit:queue name="Action.Notify" durable="true">
         <rabbit:queue-arguments value-type="java.lang.String">
-            <entry key="x-dead-letter-exchange" value="action-notify-deadletter-exchange" />
-            <entry key="x-dead-letter-routing-key" value="Action.NotifyDLQ.binding" />
+            <entry key="x-dead-letter-exchange" value="action-deadletter-exchange" />
+            <entry key="x-dead-letter-routing-key" value="Action.Notify.binding" />
         </rabbit:queue-arguments>
     </rabbit:queue>
 
@@ -34,9 +34,9 @@
         </rabbit:bindings>
     </rabbit:direct-exchange>
 
-    <rabbit:direct-exchange name="action-notify-deadletter-exchange">
+    <rabbit:direct-exchange name="action-deadletter-exchange">
         <rabbit:bindings>
-            <rabbit:binding queue="Action.NotifyDLQ" key="Action.NotifyDLQ.binding" />
+            <rabbit:binding queue="Action.NotifyDLQ" key="Action.Notify.binding" />
         </rabbit:bindings>
     </rabbit:direct-exchange>
 
