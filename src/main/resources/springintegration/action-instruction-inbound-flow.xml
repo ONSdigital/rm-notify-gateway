@@ -29,7 +29,7 @@
     <int-amqp:inbound-channel-adapter id="actionInstructionInboundAmqp" listener-container="actionInstructionListenerContainer" message-converter="simpleMessageConverter" channel="actionInstructionXml" />
 
     <!-- anything sent to this channel is put on the queue Action.InvalidActionInstructions -->
-    <int:channel id="actionInstructionXmlInvalid" />
+    <int:channel id="actionInstructionInvalidXml" />
     <!-- Start of Infrastructure TODO Move in a separate xml file? -->
     <rabbit:queue name="Action.InvalidActionInstructions" durable="true">
     </rabbit:queue>
@@ -40,12 +40,12 @@
         </rabbit:bindings>
     </rabbit:direct-exchange>
     <!-- End of Infrastructure -->
-    <int-amqp:outbound-channel-adapter id="invalidActionFeedbackOutboundAmqp" channel="actionInstructionXmlInvalid" exchange-name="invalid-action-instruction-exchange" />
+    <int-amqp:outbound-channel-adapter id="invalidActionInstructionOutboundAmqp" channel="actionInstructionInvalidXml" exchange-name="invalid-action-instruction-exchange" routing-key="Action.InvalidActionInstructions.binding" />
 
     <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int-xml:validating-filter id="actionInstructionValidator" input-channel="actionInstructionXml"
-                               output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
+                               output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionInvalidXml"/>
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
     <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction">

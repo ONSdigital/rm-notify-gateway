@@ -129,6 +129,7 @@ public class ManualTestEndpoint implements CTPEndpoint {
       actionAddress.setLadCode(LADCODE);
       ActionEvent actionEvent = new ActionEvent();
       actionRequest.setEvents(actionEvent);
+      actionRequest.setResponseRequired(true);
     }
     return actionRequest;
   }

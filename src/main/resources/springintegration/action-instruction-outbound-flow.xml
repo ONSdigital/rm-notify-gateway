@@ -34,7 +34,7 @@
     <!-- we validate here that we post action instructions matching the outbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int-xml:validating-filter id="actionInstructionOutboundValidator" input-channel="actionInstructionOutboundXml"
-                               output-channel="actionInstructionOutboundXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
+                               output-channel="actionInstructionOutboundXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionInvalidXml"/>
 
     <!-- define the channel name to send our xml string to -->
     <int:router input-channel="actionInstructionOutboundXmlValid" expression="'actionInstruction'"/>

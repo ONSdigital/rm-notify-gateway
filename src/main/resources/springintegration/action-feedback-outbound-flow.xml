@@ -35,12 +35,13 @@
 
     <!-- we validate here that we post action feedbacks matching the outbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-    <int:channel id="actionFeedbackXmlInvalid" />
+    <int:channel id="actionFeedbackInvalidXml" />
 
     <!-- Start of Infrastructure TODO Move in a separate xml file? -->
     <rabbit:queue name="Action.InvalidActionFeedback" durable="true">
     </rabbit:queue>
 
+    <!-- TODO Have only one exchange for all invalid msgs and route on keys -->
     <rabbit:direct-exchange name="invalid-action-feedback-exchange">
         <rabbit:bindings>
             <rabbit:binding queue="Action.InvalidActionFeedback" key="Action.InvalidActionFeedback.binding" />
@@ -49,11 +50,11 @@
     <!-- End of Infrastructure -->
 
 
-    <int-amqp:outbound-channel-adapter id="invalidActionFeedbackOutboundAmqp" channel="actionFeedbackXmlInvalid" exchange-name="invalid-action-feedback-exchange"/>
+    <int-amqp:outbound-channel-adapter id="invalidActionFeedbackOutboundAmqp" channel="actionFeedbackInvalidXml" exchange-name="invalid-action-feedback-exchange" routing-key="Action.InvalidActionFeedback.binding"/>
 
 
     <int-xml:validating-filter id="actionFeedbackValidator" input-channel="actionFeedbackXml"
-                               output-channel="actionFeedbackXmlValid" schema-location="classpath:xsd/actionFeedback.xsd" discard-channel="actionFeedbackXmlInvalid"/>
+                               output-channel="actionFeedbackXmlValid" schema-location="classpath:xsd/actionFeedback.xsd" discard-channel="actionFeedbackInvalidXml"/>
 
     <!-- define the channel name to send our xml string to -->
     <int:router input-channel="actionFeedbackXmlValid" expression="'actionFeedback'"/>
