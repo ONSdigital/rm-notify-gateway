@@ -48,11 +48,21 @@ http://www.springframework.org/schema/integration/stream/spring-integration-stre
 
     <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
 
-    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="dlqChannel" max-attempts="1"/>
-    <int:channel id="dlqChannel" />
-    <!-- TODO <int-amqp:outbound-channel-adapter id="dlqActionInstructionOutboundAmqp" channel="dlqChannel" exchange-name="action-deadletter-exchange" routing-key="Action.Notify.binding" /> -->
-    <int:chain input-channel="dlqChannel">
-        <int:transformer expression="'permanently failed zzzzz:' + payload.failedMessage.payload + ' handled by recovery'" />
-        <int-stream:stderr-channel-adapter append-newline="true"/>
-    </int:chain>
+    <!-- Start of section to deal with retries and DLQ after max attempts -->
+    <int:channel id="actionInstructionDlqChannel" />
+    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="actionInstructionDlqChannel" max-attempts="1"/>
+
+    <int:channel id="actionInstructionDlqIntermChannel" />
+    <int:transformer input-channel="actionInstructionDlqChannel" output-channel="actionInstructionDlqIntermChannel" expression="payload.failedMessage.payload" />
+
+    <int:channel id="actionInstructionDlqChannelXml" />
+    <int-xml:marshalling-transformer
+            input-channel="actionInstructionDlqIntermChannel" output-channel="actionInstructionDlqChannelXml"
+            marshaller="actionInstructionMarshaller"
+            result-transformer="actionInstructionOutboundTransformer"/>
+    <bean id="actionInstructionOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <int-amqp:outbound-channel-adapter id="actionInstructionDlqAmqp" channel="actionInstructionDlqChannelXml" exchange-name="action-deadletter-exchange" routing-key="Action.Notify.binding" />
+    <!-- End of section to deal with retries and DLQ after max attempts -->
+
 </beans>
