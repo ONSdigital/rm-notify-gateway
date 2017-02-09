@@ -118,11 +118,6 @@
           <artifactId>spring-rabbit</artifactId>
         </dependency>
         <dependency>
-          <groupId>org.apache.activemq</groupId>
-          <artifactId>activemq-broker</artifactId>
-          <scope>test</scope>
-          </dependency>
-        <dependency>
             <groupId>uk.gov.service.notify</groupId>
             <artifactId>notifications-java-client</artifactId>
             <version>3.0.0-RELEASE</version>
