@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
@@ -40,8 +39,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   private static final String NOTIFY_GW = "NotifyGateway";
   private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
   private static final String TELEPHONE_REGEX = "[\\d]{7,11}";
-  private static final String UNEXPECTED_ERROR_PROCESSING_ACTION_REQUEST =
-          "An unexpected exception occurred while processing action request.";
 
   public static final int SITUATION_MAX_LENGTH = 100;
 
@@ -68,23 +65,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
   public final void processInstruction(final ActionInstruction instruction) {
-    try {
-      // TODO suppress the below once DLQ tested
-      throw new RuntimeException();
-
-//      process(instruction);
-    } catch (Throwable t) {
-      // In this case, we do not want to replay the ActionInstruction. If we did, duplicate sms may be sent.
-      log.error("Unexpected exception: {}", t);
-      throw new AmqpRejectAndDontRequeueException(UNEXPECTED_ERROR_PROCESSING_ACTION_REQUEST);
-    }
-  }
-
-  /**
-   * this is where the processing is really done
-   * @param instruction to process
-   */
-  private void process(final ActionInstruction instruction) {
     log.debug("entering process with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);
 
