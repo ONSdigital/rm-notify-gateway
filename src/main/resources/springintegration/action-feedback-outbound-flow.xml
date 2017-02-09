@@ -16,5 +16,6 @@
         <property name="contentType" value="text/xml" />
     </bean>
 
-    <rabbit:template id="actionFeedbackRabbitTemplate" connection-factory="connectionFactory" exchange="action-outbound-exchange" routing-key="Action.Feedback.binding" message-converter="actionFeedbackMarshallingMessageConverter" />
+    <rabbit:template id="actionFeedbackRabbitTemplate" connection-factory="connectionFactory" exchange="action-outbound-exchange" routing-key="Action.Feedback.binding"
+                     message-converter="actionFeedbackMarshallingMessageConverter" channel-transacted="true"/>
 </beans>
