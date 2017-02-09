@@ -4,24 +4,21 @@
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
-       xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
-http://www.springframework.org/schema/integration/stream
-http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd">
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
     <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
 
     <bean id="actionInstructionListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
         <property name="queueNames" value="Action.Notify" />
-        <property name="concurrentConsumers" value="1" />
-        <property name="prefetchCount" value="10" />
-        <property name="txSize" value="10" />
+        <property name="concurrentConsumers" value="${messaging.consumingThreads}" />
+        <property name="prefetchCount" value="${messaging.prefetchCount}" />
+        <property name="txSize" value="${messaging.prefetchCount}" />
         <property name="channelTransacted" value="true" />
         <property name="transactionManager" ref="transactionManager" />
     </bean>
@@ -40,8 +37,7 @@ http://www.springframework.org/schema/integration/stream/spring-integration-stre
                                output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionInvalidXml"/>
 
     <!-- The now validated xml is transformed into the jaxb generated object model -->
-    <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction">
-    </int:channel>
+    <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction" />
     <int-xml:unmarshalling-transformer
             input-channel="actionInstructionXmlValid" output-channel="actionInstructionTransformed"
             unmarshaller="actionInstructionMarshaller" />
@@ -50,14 +46,14 @@ http://www.springframework.org/schema/integration/stream/spring-integration-stre
 
     <!-- Start of section to deal with retries and DLQ after max attempts -->
     <int:channel id="actionInstructionDlqChannel" />
-    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="actionInstructionDlqChannel" max-attempts="1"/>
+    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="actionInstructionDlqChannel" max-attempts="${messaging.maxAttempts}"/>
 
-    <int:channel id="actionInstructionDlqIntermChannel" />
-    <int:transformer input-channel="actionInstructionDlqChannel" output-channel="actionInstructionDlqIntermChannel" expression="payload.failedMessage.payload" />
+    <int:channel id="actionInstructionDlqInterimChannel" />
+    <int:transformer input-channel="actionInstructionDlqChannel" output-channel="actionInstructionDlqInterimChannel" expression="payload.failedMessage.payload" />
 
     <int:channel id="actionInstructionDlqChannelXml" />
     <int-xml:marshalling-transformer
-            input-channel="actionInstructionDlqIntermChannel" output-channel="actionInstructionDlqChannelXml"
+            input-channel="actionInstructionDlqInterimChannel" output-channel="actionInstructionDlqChannelXml"
             marshaller="actionInstructionMarshaller"
             result-transformer="actionInstructionOutboundTransformer"/>
     <bean id="actionInstructionOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
