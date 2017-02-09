@@ -4,12 +4,15 @@
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
+http://www.springframework.org/schema/integration/stream
+http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd">
 
     <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
 
@@ -45,11 +48,11 @@
 
     <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
 
-    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="dlqChannel" max-attempts="3"/>
+    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="dlqChannel" max-attempts="1"/>
     <int:channel id="dlqChannel" />
     <!-- TODO <int-amqp:outbound-channel-adapter id="dlqActionInstructionOutboundAmqp" channel="dlqChannel" exchange-name="action-deadletter-exchange" routing-key="Action.Notify.binding" /> -->
     <int:chain input-channel="dlqChannel">
-        <int:transformer expression="'permanently failed:' + payload.failedMessage.payload + ' handled by recovery'" />
+        <int:transformer expression="'permanently failed zzzzz:' + payload.failedMessage.payload + ' handled by recovery'" />
         <int-stream:stderr-channel-adapter append-newline="true"/>
     </int:chain>
 </beans>
