@@ -23,7 +23,12 @@
 
     <rabbit:queue name="Action.InvalidActionInstructions" durable="true" />
 
-    <rabbit:queue name="Action.Feedback" durable="true" />
+    <rabbit:queue name="Action.Feedback" durable="true">
+        <rabbit:queue-arguments value-type="java.lang.String">
+            <entry key="x-dead-letter-exchange" value="action-deadletter-exchange" />
+            <entry key="x-dead-letter-routing-key" value="Action.Feedback.binding" />
+        </rabbit:queue-arguments>
+    </rabbit:queue>
     <!-- End of Queues -->
 
     <!-- Start of Exchanges -->
