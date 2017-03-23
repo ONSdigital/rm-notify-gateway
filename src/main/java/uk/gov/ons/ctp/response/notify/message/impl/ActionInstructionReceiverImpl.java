@@ -13,6 +13,7 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.util.DeadLetterLogCommand;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
@@ -94,6 +95,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
           actionFeedback = null;
         }
 
+        actionRequest = tidyUp(actionRequest);
+
         if (validate(actionRequest)) {
           try {
             actionFeedback = notifyService.process(actionRequest);
@@ -117,10 +120,9 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     tracer.close(span);
   }
 
-
-
   /**
    * To build an ActionInstruction containing one ActionRequest
+   *
    * @param actionRequest the ActionRequest
    * @return an ActionInstruction
    */
@@ -131,6 +133,27 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     ActionInstruction actionInstruction = new ActionInstruction();
     actionInstruction.setActionRequests(actionRequests);
     return actionInstruction;
+  }
+
+  /**
+   * To tidy up phone number within an ActionRequest as we have got no control on the regex expressions used upstream
+   *
+   * @param actionRequest the ActionRequest to tidy up
+   * @return the tidied ActionRequest
+   */
+  private ActionRequest tidyUp(ActionRequest actionRequest) {
+    ActionContact actionContact = actionRequest.getContact();
+    if (actionContact != null) {
+      String phoneNumber = actionContact.getPhoneNumber();
+      if (phoneNumber != null) {
+        phoneNumber = phoneNumber.replaceAll("\\s+","");  // removes all whitespaces and non-visible characters (e.g., tab, \n).
+        phoneNumber = phoneNumber.replaceAll("\\(", "");
+        phoneNumber = phoneNumber.replaceAll("\\)", "");
+        actionContact.setPhoneNumber(phoneNumber);
+        actionRequest.setContact(actionContact);
+      }
+    }
+    return actionRequest;
   }
 
   /**

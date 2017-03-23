@@ -146,4 +146,19 @@ public class ObjectBuilder {
     testData.put("3", "Al,Simms,07742994133");
     return testData;
   }
+
+  /**
+   * Note the space in the phone
+   */
+  public static Map<String, String> buildTestDataForCtpa1170() {
+    Map<String, String> testData = new HashMap<>();
+    testData.put("1", "Joe,Blogg,07742 994131");
+    return testData;
+  }
+
+  public static Map<String, String> buildTestDataMultipleSpacesAndParentheses() {
+    Map<String, String> testData = new HashMap<>();
+    testData.put("1", "Joe,Blogg,(4)77   42 99 41 31");
+    return testData;
+  }
 }
