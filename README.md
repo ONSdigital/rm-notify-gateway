@@ -43,7 +43,7 @@ The Notify Gateway provides an interface for Response Management to send communi
             </settings>
 ```
 
-- mvn clean install
+- mvn clean install -P artifactory-aws
 
 
 ##################################################
