@@ -12,15 +12,18 @@
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
     <int:channel id="actionFeedbackXmlInvalid" />
-    <bean id="invalidActionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.InvalidActionFeedback"/>
+    <bean id="invalidActionFeedbackQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="InvalidActionFeedback"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
     <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
 
-    <bean id="actionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Feedback"/>
+    <bean id="actionFeedbackQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Action.Feedback"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
-
     <!--  setup the outbound channels - note each queue needs a channel -->
     <int:channel id="actionFeedbackOutbound" />
     <int:channel id="actionFeedbackXml" />

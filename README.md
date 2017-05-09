@@ -43,7 +43,7 @@ The Notify Gateway provides an interface for Response Management to send communi
             </settings>
 ```
 
-- mvn clean install
+- mvn clean install -P artifactory-aws
 
 
 ##################################################
@@ -63,7 +63,7 @@ The Notify Gateway provides an interface for Response Management to send communi
 
 - To start:
     - cd .../rm-notify-gateway/target
-    - java -jar notifygatewaysvc-9.28.0-SNAPSHOT.jar
+    - java -jar notifygatewaysvc-9.33.0-SNAPSHOT.jar
 
 
 ## Copyright

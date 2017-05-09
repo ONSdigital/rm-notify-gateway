@@ -1,15 +1,19 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.oxm.Marshaller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.util.DeadLetterLogCommand;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
@@ -24,7 +28,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
 
 /**
  * The service that reads ActionInstructions from the inbound channel
@@ -45,6 +48,10 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   private Tracer tracer;
 
   @Inject
+  @Qualifier("actionInstructionUnmarshaller")
+  Marshaller marshaller;
+
+  @Inject
   private NotifyService notifyService;
 
   @Inject
@@ -60,7 +67,16 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed")
   public final void processInstruction(final ActionInstruction instruction) {
-    log.debug("entering processInstruction with instruction {}", instruction);
+    DeadLetterLogCommand<ActionInstruction> command = new DeadLetterLogCommand<>(marshaller, instruction);
+    command.run((ActionInstruction x)->process(x));
+  }
+
+  /**
+   * this is where the processing is really done
+   * @param instruction to process
+   */
+  private void process(final ActionInstruction instruction) {
+    log.debug("entering process with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);
 
     ActionRequests actionRequests = instruction.getActionRequests();
@@ -73,11 +89,13 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
         if (responseRequired) {
           actionFeedback = new ActionFeedback(actionId,
                   NOTIFY_GW.length() <= SITUATION_MAX_LENGTH ?
-                  NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
+                          NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
                   Outcome.REQUEST_ACCEPTED);
           actionFeedbackPublisher.sendFeedback(actionFeedback);
           actionFeedback = null;
         }
+
+        actionRequest = tidyUp(actionRequest);
 
         if (validate(actionRequest)) {
           try {
@@ -104,6 +122,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
 
   /**
    * To build an ActionInstruction containing one ActionRequest
+   *
    * @param actionRequest the ActionRequest
    * @return an ActionInstruction
    */
@@ -114,6 +133,27 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     ActionInstruction actionInstruction = new ActionInstruction();
     actionInstruction.setActionRequests(actionRequests);
     return actionInstruction;
+  }
+
+  /**
+   * To tidy up phone number within an ActionRequest as we have got no control on the regex expressions used upstream
+   *
+   * @param actionRequest the ActionRequest to tidy up
+   * @return the tidied ActionRequest
+   */
+  private ActionRequest tidyUp(ActionRequest actionRequest) {
+    ActionContact actionContact = actionRequest.getContact();
+    if (actionContact != null) {
+      String phoneNumber = actionContact.getPhoneNumber();
+      if (phoneNumber != null) {
+        phoneNumber = phoneNumber.replaceAll("\\s+","");  // removes all whitespaces and non-visible characters (e.g., tab, \n).
+        phoneNumber = phoneNumber.replaceAll("\\(", "");
+        phoneNumber = phoneNumber.replaceAll("\\)", "");
+        actionContact.setPhoneNumber(phoneNumber);
+        actionRequest.setContact(actionContact);
+      }
+    }
+    return actionRequest;
   }
 
   /**
