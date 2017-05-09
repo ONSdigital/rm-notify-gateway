@@ -10,7 +10,6 @@ import org.springframework.oxm.Marshaller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.util.DeadLetterLogCommand;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
@@ -48,7 +47,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   private Tracer tracer;
 
   @Inject
-  @Qualifier("actionInstructionUnmarshaller")
+  @Qualifier("actionInstructionMarshaller")
   Marshaller marshaller;
 
   @Inject
@@ -65,17 +64,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    * @param instruction the ActionInstruction to be processed
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  @ServiceActivator(inputChannel = "actionInstructionTransformed")
+  @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
   public final void processInstruction(final ActionInstruction instruction) {
-    DeadLetterLogCommand<ActionInstruction> command = new DeadLetterLogCommand<>(marshaller, instruction);
-    command.run((ActionInstruction x)->process(x));
-  }
-
-  /**
-   * this is where the processing is really done
-   * @param instruction to process
-   */
-  private void process(final ActionInstruction instruction) {
     log.debug("entering process with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);
 

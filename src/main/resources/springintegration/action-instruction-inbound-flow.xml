@@ -2,60 +2,63 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <!-- The inbound message container config - the inbound queue is defined here. We listen for actionInstructions
-        coming from the ActionSvc. -->
-    <bean id="actionInstructionMessageListenerContainer"
-          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
+
+    <bean id="actionInstructionListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
-        <property name="destinationName" value="Action.Notify" />
-        <property name="maxConcurrentConsumers" value="1" />
-        <property name="concurrentConsumers" value="1" />
-        <property name="receiveTimeout" value="5000" />
-        <property name="recoveryInterval" value="60000" />
-        <property name="autoStartup" value="true" />
-        <property name="sessionTransacted" value="true" />
+        <property name="queueNames" value="Action.Notify" />
+        <property name="concurrentConsumers" value="${messaging.consumingThreads}" />
+        <property name="prefetchCount" value="${messaging.prefetchCount}" />
+        <property name="txSize" value="${messaging.prefetchCount}" />
+        <property name="channelTransacted" value="true" />
+        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
-    <!-- need an input channel defined for MQ adapter to input to -->
+    <!-- Xml msg is taken off the queue Action.Notify and put on the channel actionInstructionXml -->
     <int:channel id="actionInstructionXml" />
+    <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
+    <int-amqp:inbound-channel-adapter id="actionInstructionInboundAmqp" listener-container="actionInstructionListenerContainer"
+                                      message-converter="simpleMessageConverter" channel="actionInstructionXml" />
 
-    <!-- anything sent to this channel is put on the queue Action.InvalidActionInstructions -->
-    <int:channel id="actionInstructionXmlInvalid" />
-    <bean id="invalidActionInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.InvalidActionInstructions"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
-    <int-jms:outbound-channel-adapter id="invalidActionInstructionJmsOut" destination="invalidActionInstructionQueue" channel="actionInstructionXmlInvalid"/>
-
-    <!-- the MQ channel adapter reads from the Action.Notify Queue (see the container above) and inputs to actionInstructionXml -->
-    <int-jms:message-driven-channel-adapter
-            id="jmsIn" container="actionInstructionMessageListenerContainer" channel="actionInstructionXml" />
-
-    <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
+    <!-- Xml validated against the inbound schema -->
+    <int:channel id="actionInstructionInvalidXml" />
+    <int-amqp:outbound-channel-adapter id="invalidActionInstructionOutboundAmqp" channel="actionInstructionInvalidXml" exchange-name="action-invalid-exchange" routing-key="Action.ActionInstruction.binding" />
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int-xml:validating-filter id="actionInstructionValidator" input-channel="actionInstructionXml"
-                               output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
+                               output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionInvalidXml"/>
 
-    <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
-    <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction">
-    </int:channel>
+    <!-- The now validated xml is transformed into the jaxb generated object model -->
+    <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction" />
     <int-xml:unmarshalling-transformer
             input-channel="actionInstructionXmlValid" output-channel="actionInstructionTransformed"
-            unmarshaller="actionInstructionUnmarshaller" />
+            unmarshaller="actionInstructionMarshaller" />
 
-    <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
-    <bean id="actionInstructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
-    </bean>
     <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
+
+    <!-- Start of section to deal with retries and DLQ after max attempts -->
+    <int:channel id="actionInstructionDlqChannel" />
+    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="actionInstructionDlqChannel" max-attempts="${messaging.maxAttempts}"/>
+
+    <int:channel id="actionInstructionDlqInterimChannel" />
+    <int:transformer input-channel="actionInstructionDlqChannel" output-channel="actionInstructionDlqInterimChannel" expression="payload.failedMessage.payload" />
+
+    <int:channel id="actionInstructionDlqChannelXml" />
+    <int-xml:marshalling-transformer
+            input-channel="actionInstructionDlqInterimChannel" output-channel="actionInstructionDlqChannelXml"
+            marshaller="actionInstructionMarshaller"
+            result-transformer="actionInstructionOutboundTransformer"/>
+    <bean id="actionInstructionOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <int-amqp:outbound-channel-adapter id="actionInstructionDlqAmqp" channel="actionInstructionDlqChannelXml" exchange-name="action-deadletter-exchange" routing-key="Action.Notify.binding" />
+    <!-- End of section to deal with retries and DLQ after max attempts -->
+
 </beans>

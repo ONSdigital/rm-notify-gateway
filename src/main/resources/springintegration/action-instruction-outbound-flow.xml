@@ -1,48 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
-       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
-  http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+  http://www.springframework.org/schema/rabbit
+  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-    <bean id="actionInstructionOutboundQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.Notify"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
-
-    <!--  setup the outbound channels - note each queue needs a channel -->
-    <int:channel id="actionInstructionOutbound" />
-    <int:channel id="actionInstructionOutboundXml" />
-    <int:channel id="actionInstruction" />
-
-    <!--  the @Publisher sends to the marshalling-transformers input channel -->
-    <int-xml:marshalling-transformer
-            input-channel="actionInstructionOutbound" output-channel="actionInstructionOutboundXml"
-            marshaller="actionInstructionOutboundMarshaller"
-            result-transformer="actionInstructionOutboundTransformer"/>
-    <!--  the actionInstructionOutboundMarshaller turns java objects into xml dom -->
-    <bean id="actionInstructionOutboundMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <bean id="actionInstructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
     </bean>
-    <!--  the actionInstructionOutboundTransformer turns the xml dom into a string -->
-    <bean id="actionInstructionOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
 
-    <!-- we validate here that we post action instructions matching the outbound schema -->
-    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-    <int-xml:validating-filter id="actionInstructionOutboundValidator" input-channel="actionInstructionOutboundXml"
-                               output-channel="actionInstructionOutboundXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
+    <bean id="actionInstructionMarshallingMessageConverter" class="org.springframework.amqp.support.converter.MarshallingMessageConverter">
+        <constructor-arg ref="actionInstructionMarshaller" />
+        <property name="contentType" value="text/xml" />
+    </bean>
 
-    <!-- define the channel name to send our xml string to -->
-    <int:router input-channel="actionInstructionOutboundXmlValid" expression="'actionInstruction'"/>
-
-    <!--  each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
-    <int-jms:outbound-channel-adapter id="jmsout" channel="actionInstruction" destination="actionInstructionOutboundQueue"/>
-
+    <rabbit:template id="actionInstructionRabbitTemplate" connection-factory="connectionFactory" exchange="action-outbound-exchange" routing-key="Action.Notify.binding"
+                     message-converter="actionInstructionMarshallingMessageConverter" channel-transacted="true"/>
 </beans>

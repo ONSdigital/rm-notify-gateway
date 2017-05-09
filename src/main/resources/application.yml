@@ -25,6 +25,8 @@ spring:
 logging:
   level:
     uk.gov.ons.ctp: debug
+    org.springframework.amqp: warn
+    org.springframework.integration: warn
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
@@ -63,3 +65,9 @@ rabbitmq:
   password: guest
   host: localhost
   virtualhost: /
+
+messaging:
+  consumingThreads: 1
+  maxAttempts: 1
+  prefetchCount: 10
+  txSize: 1
