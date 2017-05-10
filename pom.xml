@@ -11,9 +11,8 @@
 
     <properties>
         <skip.integration.tests>true</skip.integration.tests>
-        <ctp.version>9.35.0-SNAPSHOT</ctp.version>
+        <ctp.version>10.37.0-SNAPSHOT</ctp.version>
         <java.version>1.8</java.version>
-        <jersey.version>2.22.2</jersey.version>
         <lombok.version>1.16.6</lombok.version>
         <springboot.version>1.4.4.RELEASE</springboot.version>
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
@@ -56,7 +55,7 @@
         <dependency>
             <groupId>uk.gov.ons.ctp.product</groupId>
             <artifactId>actionsvc-api</artifactId>
-            <version>9.34.0-SNAPSHOT</version>
+            <version>10.37.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -69,16 +68,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jetty</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jersey</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -301,22 +290,22 @@
 
     <profiles>
         <profile>
-            <id>artifactory-aws</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>artifactory</id>
             <distributionManagement>
                 <repository>
                     <id>central</id>
                     <name>libs-release</name>
-                    <url>http://artifactory.ctpdev.local/artifactory/libs-release-local-aws</url>
+                    <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-release-local</url>
                 </repository>
                 <snapshotRepository>
                     <id>snapshots</id>
                     <name>libs-snapshots</name>
-                    <url>http://artifactory.ctpdev.local/artifactory/libs-snapshot-local-aws</url>
+                    <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local</url>
                 </snapshotRepository>
             </distributionManagement>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 </project>

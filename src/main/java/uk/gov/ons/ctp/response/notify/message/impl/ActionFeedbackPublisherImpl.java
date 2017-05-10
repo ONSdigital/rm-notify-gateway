@@ -1,23 +1,23 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.integration.annotation.MessageEndpoint;
+
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * The service that publishes ActionFeedbacks to queue.
  */
-@Named
+@MessageEndpoint
 @Slf4j
 public class ActionFeedbackPublisherImpl implements ActionFeedbackPublisher {
 
   @Qualifier("actionFeedbackRabbitTemplate")
-  @Inject
+  @Autowired
   private RabbitTemplate rabbitTemplate;
 
   /**

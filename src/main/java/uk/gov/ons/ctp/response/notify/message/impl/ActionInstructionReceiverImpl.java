@@ -1,6 +1,12 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
+
+import java.math.BigInteger;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
@@ -9,6 +15,8 @@ import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.oxm.Marshaller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
@@ -20,13 +28,6 @@ import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
-
-import javax.inject.Inject;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 
 /**
  * The service that reads ActionInstructions from the inbound channel
@@ -43,20 +44,20 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
 
   public static final int SITUATION_MAX_LENGTH = 100;
 
-  @Inject
+  @Autowired
   private Tracer tracer;
 
-  @Inject
+  @Autowired
   @Qualifier("actionInstructionMarshaller")
   Marshaller marshaller;
 
-  @Inject
+  @Autowired
   private NotifyService notifyService;
 
-  @Inject
+  @Autowired
   private ActionInstructionPublisher actionInstructionPublisher;
 
-  @Inject
+  @Autowired
   private ActionFeedbackPublisher actionFeedbackPublisher;
 
   /**

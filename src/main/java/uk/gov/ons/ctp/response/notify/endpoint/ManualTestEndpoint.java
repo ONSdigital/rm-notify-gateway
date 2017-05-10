@@ -1,5 +1,19 @@
 package uk.gov.ons.ctp.response.notify.endpoint;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
@@ -10,25 +24,12 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionPublisher;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * The REST endpoint controller for manual tests - To be removed before PROD.
  */
-@Path("/manual")
-@Produces({"application/json"})
 @Slf4j
+@RestController
+@RequestMapping(value = "/manual", produces = "application/json")
 public class ManualTestEndpoint implements CTPEndpoint {
   private static final BigDecimal LATITUDE = new BigDecimal("1000.00");
   private static final BigDecimal LONGITUDE = new BigDecimal("1000.00");
@@ -44,7 +45,7 @@ public class ManualTestEndpoint implements CTPEndpoint {
   private static final String POSTCODE = "PO157RR";
   private static final String QUESTION_SET = "simple";
 
-  @Inject
+  @Autowired
   private ActionInstructionPublisher actionInstructionPublisher;
 
   /**
@@ -52,12 +53,11 @@ public class ManualTestEndpoint implements CTPEndpoint {
    * @param valid true if publishes a valid ActionInstruction
    * @return 200
    */
-  @GET
-  @Path("/{valid}")
-  public final Response publishActionInstruction(@PathParam("valid") final String valid) {
+  @RequestMapping(method = RequestMethod.GET, value = "/{valid}")
+  public final ResponseEntity<?> publishActionInstruction(@PathVariable("valid") final String valid) {
     log.debug("Entering publishActionInstruction with valid = {}", valid);
     actionInstructionPublisher.send(buildActionInstruction(buildTestData(), new Boolean(valid)));
-    return Response.status(Response.Status.OK).build();
+    return ResponseEntity.ok().build();
   }
 
   /**

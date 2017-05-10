@@ -1,5 +1,13 @@
 package uk.gov.ons.ctp.response.notify.service.impl;
 
+import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
@@ -8,30 +16,22 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
-
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.SendSmsResponse;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.math.BigInteger;
-import java.util.HashMap;
-
-import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
-
 /**
  * The service implementation for NotifyService
  */
 @Slf4j
-@Named
+@Component
 public class NotifyServiceImpl implements NotifyService {
 
-  @Inject
+  @Autowired
   private NotifyConfiguration notifyConfiguration;
 
-  @Inject
+  @Autowired
   private NotificationClient notificationClient;
 
   private static final String BAD_REQUEST = "Status code: 400";
