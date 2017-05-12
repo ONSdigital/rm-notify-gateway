@@ -6,9 +6,9 @@ import java.math.BigInteger;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
@@ -25,7 +25,7 @@ import uk.gov.service.notify.SendSmsResponse;
  * The service implementation for NotifyService
  */
 @Slf4j
-@Component
+@Service
 public class NotifyServiceImpl implements NotifyService {
 
   @Autowired
