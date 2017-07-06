@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9d74363c178849d09f6d77e19935fcfe)](https://www.codacy.com/app/sdcplatform/rm-notify-gateway?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/rm-notify-gateway&amp;utm_campaign=Badge_Grade)
+
 # Notify Gateway
 The Notify Gateway provides an interface for Response Management to send communications to users using the [GOV.UK Notify](https://www.gov.uk/government/publications/govuk-notify/govuk-notify) service. It is implemented using [Spring Boot](http://projects.spring.io/spring-boot/).
 
