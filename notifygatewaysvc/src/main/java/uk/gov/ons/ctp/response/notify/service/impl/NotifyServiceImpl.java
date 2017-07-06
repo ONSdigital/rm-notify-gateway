@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.notify.service.impl;
 
 import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
 
-import java.math.BigInteger;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
