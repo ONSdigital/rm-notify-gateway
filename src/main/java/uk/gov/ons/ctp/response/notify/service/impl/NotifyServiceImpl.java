@@ -43,7 +43,7 @@ public class NotifyServiceImpl implements NotifyService {
 
   @Override
   public ActionFeedback process(ActionRequest actionRequest) throws CTPException {
-    BigInteger actionId = actionRequest.getActionId();
+    String actionId = actionRequest.getActionId();
     log.debug("Entering process with actionId {}", actionId);
 
     try {

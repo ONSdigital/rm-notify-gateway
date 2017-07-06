@@ -17,7 +17,6 @@ import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -28,7 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
 
 /**
  * To unit test ActionInstructionReceiverImpl
@@ -36,7 +34,7 @@ import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ActionInstructionReceiverImplTest {
 
-  private static final BigInteger MOCKED_ACTIONID = BigInteger.ONE;
+  private static final String MOCKED_ACTIONID = "9a5f2be5-f944-41f9-982c-3517cfcfef3c";
 
   @InjectMocks
   ActionInstructionReceiverImpl actionInstructionReceiver;
@@ -61,15 +59,16 @@ public class ActionInstructionReceiverImplTest {
             Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
-    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
+    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(
+            "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742994131", true));
 
     verify(tracer, times(1)).createSpan(any(String.class));
-    verify(notifyService, times(3)).process(any(ActionRequest.class));
+    verify(notifyService, times(1)).process(any(ActionRequest.class));
 
     ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
-    verify(actionFeedbackPublisher, times(6)).sendFeedback(argumentCaptor.capture());
+    verify(actionFeedbackPublisher, times(2)).sendFeedback(argumentCaptor.capture());
     List<ActionFeedback> actionFeedbackList = argumentCaptor.getAllValues();
-    assertEquals(6, actionFeedbackList.size());
+    assertEquals(2, actionFeedbackList.size());
     int countAccepted = 0; int countCompleted = 0;
     for (ActionFeedback anActionFeedback :  actionFeedbackList) {
       if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_ACCEPTED)) {
@@ -79,9 +78,9 @@ public class ActionInstructionReceiverImplTest {
         countCompleted += 1;
       }
     }
-    assertEquals(3, countAccepted);
-    assertEquals(3, countCompleted);
-    verify(actionFeedbackPublisher, times(3)).sendFeedback(eq(mockedActionFeedback));
+    assertEquals(1, countAccepted);
+    assertEquals(1, countCompleted);
+    verify(actionFeedbackPublisher, times(1)).sendFeedback(eq(mockedActionFeedback));
 
     verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
@@ -95,15 +94,17 @@ public class ActionInstructionReceiverImplTest {
             Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
-    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestInvalidData(), true));
+    actionInstructionReceiver.processInstruction(
+            ObjectBuilder.buildActionInstruction(
+                    "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,0774", true));
 
     verify(tracer, times(1)).createSpan(any(String.class));
-    verify(notifyService, times(2)).process(any(ActionRequest.class));
+    verify(notifyService, times(0)).process(any(ActionRequest.class));
 
     ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
-    verify(actionFeedbackPublisher, times(6)).sendFeedback(argumentCaptor.capture());
+    verify(actionFeedbackPublisher, times(2)).sendFeedback(argumentCaptor.capture());
     List<ActionFeedback> actionFeedbackList = argumentCaptor.getAllValues();
-    assertEquals(6, actionFeedbackList.size());
+    assertEquals(2, actionFeedbackList.size());
     int countAccepted = 0; int countDeclined = 0; int countCompleted = 0;
     for (ActionFeedback anActionFeedback :  actionFeedbackList) {
       if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_ACCEPTED)) {
@@ -116,10 +117,10 @@ public class ActionInstructionReceiverImplTest {
         countCompleted += 1;
       }
     }
-    assertEquals(3, countAccepted);
+    assertEquals(1, countAccepted);
     assertEquals(1, countDeclined);
-    assertEquals(2, countCompleted);
-    verify(actionFeedbackPublisher, times(2)).sendFeedback(eq(mockedActionFeedback));
+    assertEquals(0, countCompleted);
+    verify(actionFeedbackPublisher, times(0)).sendFeedback(eq(mockedActionFeedback));
 
     verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
@@ -133,7 +134,9 @@ public class ActionInstructionReceiverImplTest {
             Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
-    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestDataForCtpa1170(), true));
+    actionInstructionReceiver.processInstruction(
+            ObjectBuilder.buildActionInstruction(
+                    "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742 994131", true));
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(1)).process(any(ActionRequest.class));
@@ -167,7 +170,9 @@ public class ActionInstructionReceiverImplTest {
             Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
-    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestDataMultipleSpacesAndParentheses(), true));
+    actionInstructionReceiver.processInstruction(
+            ObjectBuilder.buildActionInstruction(
+                    "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,(4)77   42 99 41 31", true));
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(1)).process(any(ActionRequest.class));
@@ -198,24 +203,26 @@ public class ActionInstructionReceiverImplTest {
     CTPException exception = new CTPException(CTPException.Fault.SYSTEM_ERROR);
     when(notifyService.process(any(ActionRequest.class))).thenThrow(exception);
 
-    actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(buildTestData(), true));
+    actionInstructionReceiver.processInstruction(
+            ObjectBuilder.buildActionInstruction(
+                    "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742994131", true));
 
     verify(tracer, times(1)).createSpan(any(String.class));
-    verify(notifyService, times(3)).process(any(ActionRequest.class));
+    verify(notifyService, times(1)).process(any(ActionRequest.class));
 
     ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
-    verify(actionFeedbackPublisher, times(3)).sendFeedback(argumentCaptor.capture());
+    verify(actionFeedbackPublisher, times(1)).sendFeedback(argumentCaptor.capture());
     List<ActionFeedback> actionFeedbackList = argumentCaptor.getAllValues();
-    assertEquals(3, actionFeedbackList.size());
+    assertEquals(1, actionFeedbackList.size());
     int countAccepted = 0;
     for (ActionFeedback anActionFeedback :  actionFeedbackList) {
       if (anActionFeedback.getOutcome().equals(Outcome.REQUEST_ACCEPTED)) {
         countAccepted += 1;
       }
     }
-    assertEquals(3, countAccepted);
+    assertEquals(1, countAccepted);
 
-    verify(actionInstructionPublisher, times(3)).send(any(ActionInstruction.class));
+    verify(actionInstructionPublisher, times(1)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
 }

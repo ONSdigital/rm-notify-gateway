@@ -2,8 +2,6 @@ package uk.gov.ons.ctp.response.notify.message.impl;
 
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 
-import java.math.BigInteger;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
@@ -62,6 +59,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
 
   /**
    * To process ActionInstructions from the input channel actionInstructionTransformed
+   *
    * @param instruction the ActionInstruction to be processed
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -70,41 +68,39 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     log.debug("entering process with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);
 
-    ActionRequests actionRequests = instruction.getActionRequests();
-    if (actionRequests != null) {
-      for (ActionRequest actionRequest : actionRequests.getActionRequests()) {
-        ActionFeedback actionFeedback = null;
-        boolean responseRequired = actionRequest.isResponseRequired();
-        BigInteger actionId = actionRequest.getActionId();
+    ActionRequest actionRequest = instruction.getActionRequest();
+    if (actionRequest != null) {
+      ActionFeedback actionFeedback = null;
+      String actionId = actionRequest.getActionId();
 
-        if (responseRequired) {
-          actionFeedback = new ActionFeedback(actionId,
-                  NOTIFY_GW.length() <= SITUATION_MAX_LENGTH ?
-                          NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
-                  Outcome.REQUEST_ACCEPTED);
-          actionFeedbackPublisher.sendFeedback(actionFeedback);
-          actionFeedback = null;
+      boolean responseRequired = actionRequest.isResponseRequired();
+      if (responseRequired) {
+        actionFeedback = new ActionFeedback(actionId,
+                NOTIFY_GW.length() <= SITUATION_MAX_LENGTH ? NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
+                Outcome.REQUEST_ACCEPTED);
+        actionFeedbackPublisher.sendFeedback(actionFeedback);
+        actionFeedback = null;
+      }
+
+      actionRequest = tidyUp(actionRequest);
+
+      if (validate(actionRequest)) {
+        try {
+          actionFeedback = notifyService.process(actionRequest);
+        } catch (CTPException e) {
+          String errorMsg = String.format("%s %s - %s", ERROR_PROCESSING_ACTION_REQUEST, actionId, e.getMessage());
+          log.error(errorMsg);
+          actionInstructionPublisher.send(buildActionInstruction(actionRequest));
         }
-
-        actionRequest = tidyUp(actionRequest);
-
-        if (validate(actionRequest)) {
-          try {
-            actionFeedback = notifyService.process(actionRequest);
-          } catch (CTPException e) {
-            String errorMsg = String.format("%s %d - %s", ERROR_PROCESSING_ACTION_REQUEST, actionId, e.getMessage());
-            log.error(errorMsg);
-            actionInstructionPublisher.send(buildActionInstruction(actionRequest));
-          }
-        } else {
-          log.error("Data validation failed for actionRequest with action id {}", actionRequest.getActionId());
-          actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH ?
+      } else {
+        log.error("Data validation failed for actionRequest with action id {}", actionRequest.getActionId());
+        actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH ?
                   NOTIFY_SMS_NOT_SENT : NOTIFY_SMS_NOT_SENT.substring(0, SITUATION_MAX_LENGTH),
                   Outcome.REQUEST_DECLINED);
-        }
-        if (actionFeedback != null && responseRequired) {
-          actionFeedbackPublisher.sendFeedback(actionFeedback);
-        }
+      }
+
+      if (actionFeedback != null && responseRequired) {
+        actionFeedbackPublisher.sendFeedback(actionFeedback);
       }
     }
 
@@ -118,11 +114,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    * @return an ActionInstruction
    */
   private ActionInstruction buildActionInstruction(ActionRequest actionRequest) {
-    ActionRequests actionRequests = new ActionRequests();
-    List<ActionRequest> actionRequestList = actionRequests.getActionRequests();
-    actionRequestList.add(actionRequest);
     ActionInstruction actionInstruction = new ActionInstruction();
-    actionInstruction.setActionRequests(actionRequests);
+    actionInstruction.setActionRequest(actionRequest);
     return actionInstruction;
   }
 
