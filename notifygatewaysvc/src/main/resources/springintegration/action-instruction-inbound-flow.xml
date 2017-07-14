@@ -34,7 +34,7 @@
     <int-amqp:outbound-channel-adapter id="invalidActionInstructionOutboundAmqp" channel="actionInstructionInvalidXml" exchange-name="action-invalid-exchange" routing-key="Action.ActionInstruction.binding" />
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int-xml:validating-filter id="actionInstructionValidator" input-channel="actionInstructionXml"
-                               output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionInvalidXml"/>
+                               output-channel="actionInstructionXmlValid" schema-location="classpath:actionsvc/xsd/actionInstruction.xsd" discard-channel="actionInstructionInvalidXml"/>
 
     <!-- The now validated xml is transformed into the jaxb generated object model -->
     <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction" />
