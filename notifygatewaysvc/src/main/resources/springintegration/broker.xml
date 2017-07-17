@@ -18,6 +18,8 @@
             <entry key="x-dead-letter-routing-key" value="Action.Notify.binding" />
         </rabbit:queue-arguments>
     </rabbit:queue>
+    
+    <rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>
 
     <rabbit:queue name="Action.NotifyDLQ" durable="true" />
 
