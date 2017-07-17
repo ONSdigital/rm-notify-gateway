@@ -1,9 +1,10 @@
 info:
-  contactEmail: philippe.brossier@ons.gov.uk
+  name: ${project.artifactId}
   version: ${project.version}
+  origin: ${scm.url}
   commit: ${buildNumber}
   branch: ${scmBranch}
-  buildTime: ${timestamp}
+  built: ${timestamp}
 
 spring:
   output:
@@ -32,14 +33,12 @@ logging:
 
 security:
   basic:
-    enabled: true
+    enabled: false
   user:
     name: notifygw
     password: ctp
 
 management:
-  port: 8281
-  context-path: /mgmt
   security:
     roles: SUPERUSER
     enabled: true
@@ -47,9 +46,41 @@ management:
     rabbit:
       enabled: false
 
+server:
+  port: 8181
+  servlet-path: /
+
 endpoints:
-  enabled: true
-  sensitive: true
+  autoconfig:
+    enabled: true
+    sensitive: true
+  beans:
+    enabled: true
+    sensitive: true
+  configprops:
+    enabled: true
+    sensitive: true
+  dump:
+    enabled: true
+    sensitive: true
+  env:
+    enabled: true
+    sensitive: true
+  info:
+    enabled: true
+    sensitive: false
+  metrics:
+    enabled: true
+    sensitive: true
+  mappings:
+    enabled: true
+    sensitive: true
+  shutdown:
+    enabled: true
+    sensitive: true
+  trace:
+    enabled: true
+    sensitive: true
 
 redelivery-policy:
   maxRedeliveries: 10
