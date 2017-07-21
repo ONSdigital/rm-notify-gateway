@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
+import static uk.gov.ons.ctp.response.notify.representation.TextMessageRequestDTO.TELEPHONE_REGEX;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 
 import java.util.regex.Pattern;
@@ -37,7 +38,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
           "An exception occurred while processing action request with action id";
   private static final String NOTIFY_GW = "NotifyGateway";
   private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
-  private static final String TELEPHONE_REGEX = "[\\d]{7,11}";
 
   public static final int SITUATION_MAX_LENGTH = 100;
 

@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.notify.service.impl;
 import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -51,7 +52,7 @@ public class NotifyServiceImpl implements NotifyService {
 
       ActionContact actionContact = actionRequest.getContact();
       String phoneNumber = actionContact.getPhoneNumber();
-      HashMap<String, String> personalisation = new HashMap<>();
+      Map<String, String> personalisation = new HashMap<>();
       personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
 
       log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for actionId = {}",
@@ -84,7 +85,7 @@ public class NotifyServiceImpl implements NotifyService {
     try {
       String templateId = textMessageRequest.getTemplateId();
       String phoneNumber = textMessageRequest.getPhoneNumber();
-      HashMap<String, String> personalisation = new HashMap<>();
+      Map<String, String> personalisation = new HashMap<>();
       // TODO
       log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {}",
               templateId, phoneNumber, personalisation);

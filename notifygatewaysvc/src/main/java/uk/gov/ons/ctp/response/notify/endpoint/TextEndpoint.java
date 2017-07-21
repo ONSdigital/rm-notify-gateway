@@ -55,6 +55,8 @@ public class TextEndpoint implements CTPEndpoint {
             throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
         }
 
+        // TODO Publish to queue here rather than processing straight away.
+
         TextMessageRequest textMessageRequest = mapperFacade.map(textMessageRequestDTO, TextMessageRequest.class);
         textMessageRequest.setTemplateId(templateId);
         SendSmsResponse sendSmsResponse = notifyService.process(textMessageRequest);

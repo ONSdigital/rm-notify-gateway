@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Pattern;
+
 /**
  * Domain model object
  */
@@ -12,7 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class TextMessageRequestDTO {
-    // TODO ADd regex validation
+
+    public static final String TELEPHONE_REGEX = "[\\d]{7,11}";
+
+    @Pattern(regexp=TELEPHONE_REGEX)
     private String phoneNumber;
 
     // TODO personalisation
