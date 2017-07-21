@@ -1,0 +1,5 @@
+########################################################################
+# To test the info endpoint
+########################################################################
+curl http://localhost:8181/info/ -v -X GET
+200 {"name":"notifygatewaysvc","version":"10.42.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-notify-gateway.git","commit":"cebe2f2d4d4f36f4c3365f56ce6eef8cfdfe7303","branch":"master","built":"2017-07-21T09:51:11Z"}
