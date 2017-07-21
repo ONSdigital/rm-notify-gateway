@@ -44,7 +44,7 @@ public class TextEndpointTest {
 
     private static final String INVALID_JSON = "{\"some\":\"text\"}";
     private static final String VALID_JSON_BAD_PHONE_NUMBER = "{\"phoneNumber\":\"01234\"}";
-    private static final String VALID_JSON_GOOD_PHONE_NUMBER = "{\"phoneNumber\":\"01234567890\"}";
+    private static final String VALID_JSON_VALID_PHONE_NUMBER = "{\"phoneNumber\":\"01234567890\"}";
 
     /**
      * Set up of tests
@@ -63,6 +63,7 @@ public class TextEndpointTest {
 
     /**
      * a test providing bad json
+     *
      * @throws Exception if the postJson fails
      */
     @Test
@@ -77,9 +78,15 @@ public class TextEndpointTest {
         actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
     }
 
+    /**
+     * a test providing correct json but invalid phone number
+     *
+     * @throws Exception if the postJson fails
+     */
     @Test
     public void textInvalidPhoneNumber() throws Exception {
-        ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID), VALID_JSON_BAD_PHONE_NUMBER));
+        ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID),
+                VALID_JSON_BAD_PHONE_NUMBER));
 
         actions.andExpect(status().isBadRequest());
         actions.andExpect(handler().handlerType(TextEndpoint.class));
@@ -87,5 +94,20 @@ public class TextEndpointTest {
         actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
         actions.andExpect(jsonPath("$.error.message", is(RestExceptionHandler.INVALID_JSON)));
         actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    }
+
+    /**
+     * a test providing correct json and valid phone number
+     *
+     * @throws Exception if the postJson fails
+     */
+    @Test
+    public void textHappyPath() throws Exception {
+        ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID),
+                VALID_JSON_VALID_PHONE_NUMBER));
+
+        actions.andExpect(status().is2xxSuccessful());
+        actions.andExpect(handler().handlerType(TextEndpoint.class));
+        actions.andExpect(handler().methodName(SEND_TEXT_MSG));
     }
 }

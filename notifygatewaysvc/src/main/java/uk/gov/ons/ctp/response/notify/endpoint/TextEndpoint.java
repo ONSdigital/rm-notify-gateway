@@ -35,8 +35,7 @@ public class TextEndpoint implements CTPEndpoint {
     private NotifyService notifyService;
 
     /**
-     * To create a case event being given a parent case and json to describe the
-     * case event to be created
+     * To send a text message using template id
      *
      * @param templateId the GOV.UK Notify text message template id
      * @param textMessageRequestDTO the TextMessageRequestDTO containing phoneNumber and personalisation
