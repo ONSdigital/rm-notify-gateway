@@ -14,6 +14,7 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
+import uk.gov.ons.ctp.response.notify.domain.TextMessageRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.NotificationClient;
@@ -74,6 +75,29 @@ public class NotifyServiceImpl implements NotifyService {
                 NOTIFY_SMS_NOT_SENT : NOTIFY_SMS_NOT_SENT.substring(0, SITUATION_MAX_LENGTH),
                 Outcome.REQUEST_COMPLETED);
       }
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
+    }
+  }
+
+  @Override
+  public SendSmsResponse process(TextMessageRequest textMessageRequest) throws CTPException {
+    try {
+      String templateId = textMessageRequest.getTemplateId();
+      String phoneNumber = textMessageRequest.getPhoneNumber();
+      HashMap<String, String> personalisation = new HashMap<>();
+      // TODO
+      log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {}",
+              templateId, phoneNumber, personalisation);
+      SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
+
+      if (log.isDebugEnabled()) {
+        log.debug("status = {}", notificationClient.getNotificationById(response.getNotificationId().toString()).getStatus());
+      }
+
+      return response;
+    } catch (NotificationClientException e) {
+      String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
+      log.error(errorMsg);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }
   }
