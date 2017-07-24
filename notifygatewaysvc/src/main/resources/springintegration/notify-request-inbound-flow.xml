@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+    <bean id="notifyRequestListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="queueNames" value="Notify.NotifyRequest" />
+        <property name="concurrentConsumers" value="${messaging.consumingThreads}" />
+        <property name="prefetchCount" value="${messaging.prefetchCount}" />
+        <property name="txSize" value="${messaging.prefetchCount}" />
+        <property name="channelTransacted" value="true" />
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+
+    <!-- Xml msg is taken off the queue Notify.NotifyRequest and put on the channel notifyRequestXml -->
+    <int:channel id="notifyRequestXml" />
+    <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
+    <int-amqp:inbound-channel-adapter id="notifyRequestInboundAmqp" listener-container="notifyRequestListenerContainer"
+                                      message-converter="simpleMessageConverter" channel="notifyRequestXml" />
+
+    <!-- Xml validated against the inbound schema -->
+    <int:channel id="notifyRequestInvalidXml" />
+    <int-amqp:outbound-channel-adapter id="invalidNotifyRequestOutboundAmqp" channel="notifyRequestInvalidXml" exchange-name="notify-invalid-exchange" routing-key="Notify.NotifyRequest.binding" />
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int-xml:validating-filter id="notifyRequestValidator" input-channel="notifyRequestXml"
+                               output-channel="notifyRequestInvalidXml" schema-location="classpath:notifygatewaysvc/xsd/inbound/notifyRequest.xsd" discard-channel="notifyRequestInvalidXml"/>
+
+    <!-- The now validated xml is transformed into the jaxb generated object model -->
+    <int:channel id="notifyRequestTransformed" datatype="uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest" />
+    <int-xml:unmarshalling-transformer
+            input-channel="notifyRequestXml" output-channel="notifyRequestTransformed"
+            unmarshaller="notifyRequestMarshaller" />
+
+    <!-- Finally see the @ServiceActivator(inputChannel="notifyRequestTransformed") -->
+
+    <!-- Start of section to deal with retries and DLQ after max attempts -->
+    <int:channel id="notifyRequestDlqChannel" />
+
+    <bean class="org.springframework.integration.handler.advice.RequestHandlerRetryAdvice" id="notifyRequestRetryAdvice">
+        <property name="recoveryCallback">
+            <bean class="org.springframework.integration.handler.advice.ErrorMessageSendingRecoverer">
+                <constructor-arg ref="notifyRequestDlqChannel" />
+            </bean>
+        </property>
+        <property name="retryStateGenerator"> <!-- Important to make it a Stateful Retry -->
+            <bean class="org.springframework.integration.handler.advice.SpelExpressionRetryStateGenerator">
+                <constructor-arg value="headers.ID"/>
+            </bean>
+        </property>
+        <property name="retryTemplate" ref="retryTemplate" />
+    </bean>
+    <bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
+        <property name="backOffPolicy">
+            <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+                <property name="initialInterval" value="${messaging.backoffInitial}" />
+                <property name="multiplier" value="${messaging.backoffMultiplier}" />
+                <property name="maxInterval" value="${messaging.backoffMax}" />
+            </bean>
+        </property>
+        <property name="retryPolicy">
+            <bean class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
+                <constructor-arg type="int">
+                    <value>${messaging.maxAttempts}</value>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+    <int:handler-retry-advice id="notifyRequestRetryAdvice" recovery-channel="notifyRequestDlqChannel" max-attempts="${messaging.maxAttempts}"/>
+
+    <int:channel id="notifyRequestDlqInterimChannel" />
+    <int:transformer input-channel="notifyRequestDlqChannel" output-channel="notifyRequestDlqInterimChannel" expression="payload.failedMessage.payload" />
+
+    <int:channel id="notifyRequestDlqChannelXml" />
+    <int-xml:marshalling-transformer
+            input-channel="notifyRequestDlqInterimChannel" output-channel="notifyRequestDlqChannelXml"
+            marshaller="notifyRequestMarshaller"
+            result-transformer="notifyRequestOutboundTransformer"/>
+    <bean id="notifyRequestOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <int-amqp:outbound-channel-adapter id="notifyRequestDlqAmqp" channel="notifyRequestDlqChannelXml" exchange-name="notify-deadletter-exchange" routing-key="Notify.NotifyRequest.binding" />
+    <!-- End of section to deal with retries and DLQ after max attempts -->
+
+</beans>

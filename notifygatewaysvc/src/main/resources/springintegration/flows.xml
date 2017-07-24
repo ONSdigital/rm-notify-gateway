@@ -9,7 +9,8 @@
     <int:annotation-config/>
 
     <import resource="action-instruction-inbound-flow.xml"/>
-    <import resource="action-instruction-outbound-flow.xml"/>
     <import resource="action-feedback-outbound-flow.xml"/>
+    <import resource="notify-request-outbound-flow.xml"/>
+    <import resource="notify-request-inbound-flow.xml"/>
 </beans>
 

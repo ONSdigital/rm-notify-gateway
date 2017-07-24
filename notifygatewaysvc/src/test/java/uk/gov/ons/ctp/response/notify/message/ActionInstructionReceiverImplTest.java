@@ -11,7 +11,6 @@ import org.springframework.cloud.sleuth.Tracer;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
@@ -20,6 +19,7 @@ import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -41,9 +41,6 @@ public class ActionInstructionReceiverImplTest {
 
   @Mock
   private ActionFeedbackPublisher actionFeedbackPublisher;
-
-  @Mock
-  private ActionInstructionPublisher actionInstructionPublisher;
 
   @Mock
   private NotifyService notifyService;
@@ -82,7 +79,6 @@ public class ActionInstructionReceiverImplTest {
     assertEquals(1, countCompleted);
     verify(actionFeedbackPublisher, times(1)).sendFeedback(eq(mockedActionFeedback));
 
-    verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -122,7 +118,6 @@ public class ActionInstructionReceiverImplTest {
     assertEquals(0, countCompleted);
     verify(actionFeedbackPublisher, times(0)).sendFeedback(eq(mockedActionFeedback));
 
-    verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -158,7 +153,6 @@ public class ActionInstructionReceiverImplTest {
     assertEquals(1, countCompleted);
     verify(actionFeedbackPublisher, times(1)).sendFeedback(eq(mockedActionFeedback));
 
-    verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -194,7 +188,6 @@ public class ActionInstructionReceiverImplTest {
     assertEquals(1, countCompleted);
     verify(actionFeedbackPublisher, times(1)).sendFeedback(eq(mockedActionFeedback));
 
-    verify(actionInstructionPublisher, times(0)).send(any(ActionInstruction.class));
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -203,9 +196,14 @@ public class ActionInstructionReceiverImplTest {
     CTPException exception = new CTPException(CTPException.Fault.SYSTEM_ERROR);
     when(notifyService.process(any(ActionRequest.class))).thenThrow(exception);
 
-    actionInstructionReceiver.processInstruction(
-            ObjectBuilder.buildActionInstruction(
-                    "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742994131", true));
+    try {
+      actionInstructionReceiver.processInstruction(
+              ObjectBuilder.buildActionInstruction(
+                      "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742994131", true));
+      fail();
+    } catch (CTPException e) {
+      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
+    }
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(1)).process(any(ActionRequest.class));
@@ -222,7 +220,6 @@ public class ActionInstructionReceiverImplTest {
     }
     assertEquals(1, countAccepted);
 
-    verify(actionInstructionPublisher, times(1)).send(any(ActionInstruction.class));
-    verify(tracer, times(1)).close(any(Span.class));
+    verify(tracer, times(0)).close(any(Span.class));
   }
 }

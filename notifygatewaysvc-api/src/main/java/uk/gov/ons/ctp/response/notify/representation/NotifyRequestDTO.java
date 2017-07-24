@@ -13,7 +13,7 @@ import javax.validation.constraints.Pattern;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class TextMessageRequestDTO {
+public class NotifyRequestDTO {
 
     public static final String TELEPHONE_REGEX = "[\\d]{7,11}";
 

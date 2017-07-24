@@ -3,9 +3,9 @@ package uk.gov.ons.ctp.response.notify;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.ctp.response.notify.domain.TextMessageRequest;
+import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.representation.NotifyRequestDTO;
 import uk.gov.ons.ctp.response.notify.representation.SendSmsResponseDTO;
-import uk.gov.ons.ctp.response.notify.representation.TextMessageRequestDTO;
 import uk.gov.service.notify.SendSmsResponse;
 
 /**
@@ -23,7 +23,7 @@ public class NotifySvcBeanMapper extends ConfigurableMapper {
      */
     protected final void configure(final MapperFactory factory) {
         factory
-                .classMap(TextMessageRequest.class, TextMessageRequestDTO.class)
+                .classMap(NotifyRequest.class, NotifyRequestDTO.class)
                 .byDefault()
                 .register();
 

@@ -98,6 +98,9 @@ rabbitmq:
   cron: "* * * * * ?"
 
 messaging:
+  backoffInitial: 5000
+  backoffMultiplier: 3
+  backoffMax: 45000
   consumingThreads: 1
   maxAttempts: 1
   prefetchCount: 10

@@ -3,7 +3,7 @@ package uk.gov.ons.ctp.response.notify.service;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
-import uk.gov.ons.ctp.response.notify.domain.TextMessageRequest;
+import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.service.notify.SendSmsResponse;
 
 /**
@@ -20,11 +20,10 @@ public interface NotifyService {
   ActionFeedback process(ActionRequest actionRequest) throws CTPException;
 
   /**
-   * To process a TextMessageRequest. It sends an SMS using GOV.UK Notify.
+   * To process a NotifyRequest. It sends an SMS or an email using GOV.UK Notify.
    *
-   * @param textMessageRequest to be processed
-   * @return the GOV.UK Notify SendSmsResponse
+   * @param notifyRequest to be processed
    * @throws CTPException if GOV.UK Notify gives an issue
    */
-  SendSmsResponse process(TextMessageRequest textMessageRequest) throws CTPException;
+  void process(NotifyRequest notifyRequest) throws CTPException;
 }

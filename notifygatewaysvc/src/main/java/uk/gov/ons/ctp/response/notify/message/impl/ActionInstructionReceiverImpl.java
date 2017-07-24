@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
-import static uk.gov.ons.ctp.response.notify.representation.TextMessageRequestDTO.TELEPHONE_REGEX;
+import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestDTO.TELEPHONE_REGEX;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 
 import java.util.regex.Pattern;
@@ -23,7 +23,6 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
-import uk.gov.ons.ctp.response.notify.message.ActionInstructionPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
@@ -34,8 +33,6 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 @MessageEndpoint
 public class ActionInstructionReceiverImpl implements ActionInstructionReceiver {
 
-  private static final String ERROR_PROCESSING_ACTION_REQUEST =
-          "An exception occurred while processing action request with action id";
   private static final String NOTIFY_GW = "NotifyGateway";
   private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
 
@@ -52,9 +49,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   private NotifyService notifyService;
 
   @Autowired
-  private ActionInstructionPublisher actionInstructionPublisher;
-
-  @Autowired
   private ActionFeedbackPublisher actionFeedbackPublisher;
 
   /**
@@ -64,7 +58,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
-  public final void processInstruction(final ActionInstruction instruction) {
+  public final void processInstruction(final ActionInstruction instruction) throws CTPException {
     log.debug("entering process with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);
 
@@ -79,19 +73,12 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
                 NOTIFY_GW.length() <= SITUATION_MAX_LENGTH ? NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
                 Outcome.REQUEST_ACCEPTED);
         actionFeedbackPublisher.sendFeedback(actionFeedback);
-        actionFeedback = null;
       }
 
       actionRequest = tidyUp(actionRequest);
 
       if (validate(actionRequest)) {
-        try {
-          actionFeedback = notifyService.process(actionRequest);
-        } catch (CTPException e) {
-          String errorMsg = String.format("%s %s - %s", ERROR_PROCESSING_ACTION_REQUEST, actionId, e.getMessage());
-          log.error(errorMsg);
-          actionInstructionPublisher.send(buildActionInstruction(actionRequest));
-        }
+        actionFeedback = notifyService.process(actionRequest);
       } else {
         log.error("Data validation failed for actionRequest with action id {}", actionRequest.getActionId());
         actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH ?
@@ -105,18 +92,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     }
 
     tracer.close(span);
-  }
-
-  /**
-   * To build an ActionInstruction containing one ActionRequest
-   *
-   * @param actionRequest the ActionRequest
-   * @return an ActionInstruction
-   */
-  private ActionInstruction buildActionInstruction(ActionRequest actionRequest) {
-    ActionInstruction actionInstruction = new ActionInstruction();
-    actionInstruction.setActionRequest(actionRequest);
-    return actionInstruction;
   }
 
   /**

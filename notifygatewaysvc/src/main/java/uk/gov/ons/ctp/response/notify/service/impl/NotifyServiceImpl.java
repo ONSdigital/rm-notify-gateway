@@ -15,7 +15,7 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.ons.ctp.response.notify.domain.TextMessageRequest;
+import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.NotificationClient;
@@ -81,10 +81,11 @@ public class NotifyServiceImpl implements NotifyService {
   }
 
   @Override
-  public SendSmsResponse process(TextMessageRequest textMessageRequest) throws CTPException {
+  public void process(NotifyRequest notifyRequest) throws CTPException {
     try {
-      String templateId = textMessageRequest.getTemplateId();
-      String phoneNumber = textMessageRequest.getPhoneNumber();
+      String templateId = notifyRequest.getTemplateId();
+      String phoneNumber = notifyRequest.getContactDetails().getPhoneNumber();
+      // TODO Check for phone or email address : separate service for sms and email?
       Map<String, String> personalisation = new HashMap<>();
       // TODO
       log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {}",
@@ -94,8 +95,6 @@ public class NotifyServiceImpl implements NotifyService {
       if (log.isDebugEnabled()) {
         log.debug("status = {}", notificationClient.getNotificationById(response.getNotificationId().toString()).getStatus());
       }
-
-      return response;
     } catch (NotificationClientException e) {
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
       log.error(errorMsg);

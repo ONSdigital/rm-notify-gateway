@@ -36,6 +36,17 @@
             <entry key="x-dead-letter-routing-key" value="Action.Feedback.binding" />
         </rabbit:queue-arguments>
     </rabbit:queue>
+
+    <rabbit:queue name="Notify.NotifyRequest" durable="true">
+        <rabbit:queue-arguments value-type="java.lang.String">
+            <entry key="x-dead-letter-exchange" value="notify-deadletter-exchange" />
+            <entry key="x-dead-letter-routing-key" value="Notify.NotifyRequest.binding" />
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+
+    <rabbit:queue name="Notify.InvalidNotifyRequest" durable="true" />
+
+    <rabbit:queue name="Notify.NotifyRequestDLQ" durable="true" />
     <!-- End of Queues -->
 
     <!-- Start of Exchanges -->
@@ -55,6 +66,24 @@
     <rabbit:direct-exchange name="action-invalid-exchange">
         <rabbit:bindings>
             <rabbit:binding queue="Action.InvalidActionInstructions" key="Action.ActionInstruction.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <rabbit:direct-exchange name="notify-outbound-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Notify.NotifyRequest" key="Notify.NotifyRequest.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <rabbit:direct-exchange name="notify-invalid-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Notify.InvalidNotifyRequest" key="Notify.NotifyRequest.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <rabbit:direct-exchange name="notify-deadletter-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="Notify.NotifyRequestDLQ" key="Notify.NotifyRequest.binding" />
         </rabbit:bindings>
     </rabbit:direct-exchange>
     <!-- End of Exchanges -->

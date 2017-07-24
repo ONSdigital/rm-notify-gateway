@@ -36,6 +36,10 @@
     <int-xml:validating-filter id="actionInstructionValidator" input-channel="actionInstructionXml"
                                output-channel="actionInstructionXmlValid" schema-location="classpath:actionsvc/xsd/actionInstruction.xsd" discard-channel="actionInstructionInvalidXml"/>
 
+    <bean id="actionInstructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
+    </bean>
+
     <!-- The now validated xml is transformed into the jaxb generated object model -->
     <int:channel id="actionInstructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction" />
     <int-xml:unmarshalling-transformer
