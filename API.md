@@ -17,7 +17,7 @@ This page documents the Notify Gateway service API endpoints. All endpoints retu
 ```
 
 ## Send Text Message
-* `POST /texts/f3778220-f877-4a3d-80ed-e8fa7d104563` will send a text message using the GOV.UK Notify text message template with an ID of `f3778220-f877-4a3d-80ed-e8fa7d104563`.
+* `POST /texts/f3778220-f877-4a3d-80ed-e8fa7d104563` will asynchronously send a text message using the GOV.UK Notify text message template with an ID of `f3778220-f877-4a3d-80ed-e8fa7d104563`.
 
 **Required parameters:** `phoneNumber` as the phone number of the recipient.
 
@@ -26,7 +26,7 @@ This page documents the Notify Gateway service API endpoints. All endpoints retu
 ### Example JSON Response
 ```json
 {
-    "notificationId": "de0da3c1-2cad-421a-bddd-054ef374c6ab",
+    "id": "de0da3c1-2cad-421a-bddd-054ef374c6ab",
     "reference": "Test text message",
     "templateId": "f3778220-f877-4a3d-80ed-e8fa7d104563",
     "templateVersion": 1,
@@ -34,11 +34,11 @@ This page documents the Notify Gateway service API endpoints. All endpoints retu
 }
 ```
 
-An `HTTP 201 Created` status code is returned if the text message request was successfully accepted by GOV.UK Notify. An `HTTP 400 Bad Request` is returned if the required parameter is missing, if the Notify Gateway is configured to use a team-only GOV.UK Notify API key, or if the GOV.UK Notify service is in trial mode.
+An `HTTP 201 Created` status code is returned if the text message request was successfully enqueued ready for sending by GOV.UK Notify. An `HTTP 400 Bad Request` is returned if the required parameter is missing.
 
 
 ## Send Email
-* `POST /emails/290b93f2-04c2-413d-8f9b-93841e684e90` will send an email using the GOV.UK Notify email template with an ID of `290b93f2-04c2-413d-8f9b-93841e684e90`.
+* `POST /emails/290b93f2-04c2-413d-8f9b-93841e684e90` will asynchronously send an email using the GOV.UK Notify email template with an ID of `290b93f2-04c2-413d-8f9b-93841e684e90`.
 
 **Required parameters:** `emailAddress` as the email address of the recipient.
 
@@ -47,7 +47,7 @@ An `HTTP 201 Created` status code is returned if the text message request was su
 ### Example JSON Response
 ```json
 {
-    "notificationId": "845c73f5-e016-4610-8bfe-7699e9f4a3c2",
+    "id": "845c73f5-e016-4610-8bfe-7699e9f4a3c2",
     "reference": "Test email",
     "templateId": "290b93f2-04c2-413d-8f9b-93841e684e90",
     "templateVersion": 1,
@@ -55,15 +55,15 @@ An `HTTP 201 Created` status code is returned if the text message request was su
 }
 ```
 
-An `HTTP 201 Created` status code is returned if the email request was successfully accepted by GOV.UK Notify. An `HTTP 400 Bad Request` is returned if the required parameter is missing, if the Notify Gateway is configured to use a team-only GOV.UK Notify API key, or if the GOV.UK Notify service is in trial mode.
+An `HTTP 201 Created` status code is returned if the email request was successfully enqueued ready for sending by GOV.UK Notify. An `HTTP 400 Bad Request` is returned if the required parameter is missing.
 
 ## Get Message Status
-* `GET /notifications/de0da3c1-2cad-421a-bddd-054ef374c6ab` will get the status of the text message or email with a GOV.UK Notify notification ID of `de0da3c1-2cad-421a-bddd-054ef374c6ab`.
+* `GET /messages/de0da3c1-2cad-421a-bddd-054ef374c6ab` will get the status of the text message or email with an ID of `de0da3c1-2cad-421a-bddd-054ef374c6ab`.
 
 ### Example JSON Response
 ```json
 {
-    "notificationId": "de0da3c1-2cad-421a-bddd-054ef374c6ab",
+    "id": "de0da3c1-2cad-421a-bddd-054ef374c6ab",
     "reference": "Test text message",
     "emailAddress": null,
     "phoneNumber": "07707654321",
@@ -77,4 +77,4 @@ An `HTTP 201 Created` status code is returned if the email request was successfu
 }
 ```
 
-An `HTTP 404 Not Found` status code is returned if the GOV.UK Notify notification with the specified ID could not be found. An `HTTP 400 Bad Request` is returned if the provided GOV.UK Notification ID is not a valid UUID.
+An `HTTP 404 Not Found` status code is returned if the message with the specified ID could not be found. An `HTTP 503 Service Unavailable` status code is returned if GOV.UK Notify was not able to process the message, perhaps because the service was down.
