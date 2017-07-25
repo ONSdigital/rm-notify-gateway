@@ -5,6 +5,7 @@ import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionRecei
 import java.util.HashMap;
 import java.util.Map;
 
+import liquibase.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
 
 /**
@@ -83,19 +85,32 @@ public class NotifyServiceImpl implements NotifyService {
   @Override
   public void process(NotifyRequest notifyRequest) throws CTPException {
     try {
-      String templateId = notifyRequest.getTemplateId();
       String phoneNumber = notifyRequest.getPhoneNumber();
-      // TODO Check for phone or email address : separate service for sms and email?
-      Map<String, String> personalisation = new HashMap<>();
-      // TODO
-      log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {}",
-              templateId, phoneNumber, personalisation);
-      SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
+      String emailAddress = notifyRequest.getEmailAddress();
+      String templateId = notifyRequest.getTemplateId();
+      String reference = notifyRequest.getReference();
 
-      if (log.isDebugEnabled()) {
-        log.debug("status = {}", notificationClient.getNotificationById(response.getNotificationId().toString()).getStatus());
+      if (StringUtils.isEmpty(phoneNumber)) {
+        Map<String, String> personalisation = new HashMap<>(); // TODO
+        log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {}",
+                templateId, phoneNumber, personalisation);
+        SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation, reference);
+        if (log.isDebugEnabled()) {
+          log.debug("status = {}", notificationClient.getNotificationById(response.getNotificationId().toString())
+                  .getStatus());
+        }
+      } else {
+        // The xsd enforces to have either a phoneNumber OR an emailAddress
+        Map<String, String> personalisation = new HashMap<>(); // TODO
+        log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {}",
+                templateId, phoneNumber, personalisation);
+        SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress, personalisation, reference);
+        if (log.isDebugEnabled()) {
+          log.debug("status = {}", notificationClient.getNotificationById(response.getNotificationId().toString())
+                  .getStatus());
+        }
       }
-    } catch (NotificationClientException e) {
+    } catch (NotificationClientException e) { // TODO Do we want to catch this. Think of retry policy
       String errorMsg = String.format("%s%s", EXCEPTION_NOTIFY_SERVICE, e.getMessage());
       log.error(errorMsg);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);

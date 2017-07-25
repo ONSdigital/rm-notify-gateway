@@ -20,14 +20,13 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 @MessageEndpoint
 public class NotifyRequestReceiverImpl implements NotifyRequestReceiver {
 
+    // TODO Do we need this?
     @Autowired
     @Qualifier("notifyRequestMarshaller")
     Marshaller marshaller;
 
     @Autowired
     private NotifyService notifyService;
-
-    private static final String PROCESS_NOTIFY_REQUEST = "ProcessingNotifyRequest";
 
     /**
      * To process NotifyRequests from the input channel notifyRequestTransformed
@@ -38,7 +37,6 @@ public class NotifyRequestReceiverImpl implements NotifyRequestReceiver {
     @ServiceActivator(inputChannel = "notifyRequestTransformed", adviceChain = "notifyRequestRetryAdvice")
     public void process(final NotifyRequest notifyRequest) throws CTPException {
         log.debug("entering process with notifyRequest {}", notifyRequest);
-
         notifyService.process(notifyRequest);
     }
 }
