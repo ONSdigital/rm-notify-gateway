@@ -2,4 +2,10 @@
 # To test the info endpoint
 ########################################################################
 curl http://localhost:8181/info/ -v -X GET
-200 {"name":"notifygatewaysvc","version":"10.43.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-notify-gateway.git","commit":"cebe2f2d4d4f36f4c3365f56ce6eef8cfdfe7303","branch":"master","built":"2017-07-21T09:51:11Z"}
+200 {"name":"notifygatewaysvc","version":"10.44.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-notify-gateway.git","commit":"cebe2f2d4d4f36f4c3365f56ce6eef8cfdfe7303","branch":"master","built":"2017-07-21T09:51:11Z"}
+
+
+########################################################################
+# To test the SMS endpoint
+########################################################################
+curl http://localhost:8181/texts/f3778220-f877-4a3d-80ed-e8fa7d104563 -H "Content-Type: application/json" -v -X POST -d '{"phoneNumber":"02380555444"}'

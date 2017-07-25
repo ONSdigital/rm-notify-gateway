@@ -14,11 +14,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class SendSmsResponseDTO {
-    private UUID notificationId;
+    private UUID id;
     private UUID templateId;
 
     private String reference;
     private String fromNumber;
-
-    private int templateVersion;
 }

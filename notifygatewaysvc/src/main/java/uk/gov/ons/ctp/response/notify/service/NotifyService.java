@@ -4,7 +4,6 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
-import uk.gov.service.notify.SendSmsResponse;
 
 /**
  * Service to interact with GOV.UK Notify

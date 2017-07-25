@@ -41,7 +41,7 @@ public class NotifyRequestReceiverImpl implements NotifyRequestReceiver {
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @ServiceActivator(inputChannel = "notifyRequestTransformed", adviceChain = "notifyRequestRetryAdvice")
-    public final void process(final NotifyRequest notifyRequest) throws CTPException {
+    public void process(final NotifyRequest notifyRequest) throws CTPException {
         log.debug("entering process with notifyRequest {}", notifyRequest);
         Span span = tracer.createSpan(PROCESS_NOTIFY_REQUEST);
 

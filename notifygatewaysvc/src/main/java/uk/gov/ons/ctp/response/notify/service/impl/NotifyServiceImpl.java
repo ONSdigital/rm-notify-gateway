@@ -84,7 +84,7 @@ public class NotifyServiceImpl implements NotifyService {
   public void process(NotifyRequest notifyRequest) throws CTPException {
     try {
       String templateId = notifyRequest.getTemplateId();
-      String phoneNumber = notifyRequest.getContactDetails().getPhoneNumber();
+      String phoneNumber = notifyRequest.getPhoneNumber();
       // TODO Check for phone or email address : separate service for sms and email?
       Map<String, String> personalisation = new HashMap<>();
       // TODO

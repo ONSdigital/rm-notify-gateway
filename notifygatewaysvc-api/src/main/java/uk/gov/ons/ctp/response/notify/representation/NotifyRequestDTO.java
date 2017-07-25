@@ -20,5 +20,7 @@ public class NotifyRequestDTO {
     @Pattern(regexp=TELEPHONE_REGEX)
     private String phoneNumber;
 
+    private String reference;
+
     // TODO personalisation
 }

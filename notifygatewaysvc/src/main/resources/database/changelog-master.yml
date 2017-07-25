@@ -1,0 +1,4 @@
+databaseChangeLog:
+
+  - include:
+      file: database/changes/release-10.44.0/changelog.yml

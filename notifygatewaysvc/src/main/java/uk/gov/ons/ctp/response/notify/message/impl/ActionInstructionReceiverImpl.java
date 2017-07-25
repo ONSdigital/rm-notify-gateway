@@ -58,7 +58,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
-  public final void processInstruction(final ActionInstruction instruction) throws CTPException {
+  public void processInstruction(final ActionInstruction instruction) throws CTPException {
     log.debug("entering process with instruction {}", instruction);
     Span span = tracer.createSpan(PROCESS_INSTRUCTION);
 

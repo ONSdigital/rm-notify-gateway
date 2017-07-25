@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.InvalidRequestException;
-import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.representation.SendSmsResponseDTO;
 import uk.gov.ons.ctp.response.notify.representation.NotifyRequestDTO;
-import uk.gov.service.notify.SendSmsResponse;
+import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -32,7 +31,7 @@ public class TextEndpoint implements CTPEndpoint {
     private MapperFacade mapperFacade;
 
     @Autowired
-    private NotifyRequestPublisher notifyRequestPublisher;
+    private ResilienceService resilienceService;
 
     /**
      * To send a text message using template id
@@ -47,8 +46,8 @@ public class TextEndpoint implements CTPEndpoint {
     @RequestMapping(value = "/{templateId}", method = RequestMethod.POST)
     public ResponseEntity<SendSmsResponseDTO> sendTextMessage(@PathVariable("templateId") final String templateId,
                                                               @RequestBody @Valid final NotifyRequestDTO notifyRequestDTO,
-                                                              BindingResult bindingResult) throws CTPException, InvalidRequestException {
-        log.info("Entering sendTextMessage with templateId {} and requestObject {}", templateId, notifyRequestDTO);
+                                                              BindingResult bindingResult) throws InvalidRequestException {
+        log.debug("Entering sendTextMessage with templateId {} and requestObject {}", templateId, notifyRequestDTO);
 
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
@@ -56,12 +55,9 @@ public class TextEndpoint implements CTPEndpoint {
 
         NotifyRequest notifyRequest = mapperFacade.map(notifyRequestDTO, NotifyRequest.class);
         notifyRequest.setTemplateId(templateId);
-        notifyRequestPublisher.send(notifyRequest);
-
-        // TODO Store to DB?
 
         // TODO Define URI
-        return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(new SendSmsResponse("TODO"),
-                SendSmsResponseDTO.class));
+        return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(
+                resilienceService.process(notifyRequest), SendSmsResponseDTO.class));
     }
 }
