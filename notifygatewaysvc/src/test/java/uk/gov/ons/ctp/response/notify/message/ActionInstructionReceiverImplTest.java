@@ -6,8 +6,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
@@ -45,9 +43,6 @@ public class ActionInstructionReceiverImplTest {
   @Mock
   private NotifyService notifyService;
 
-  @Mock
-  private Tracer tracer;
-
   @Test
   public void testProcessInstructionHappyPath() throws CTPException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
@@ -59,7 +54,6 @@ public class ActionInstructionReceiverImplTest {
     actionInstructionReceiver.processInstruction(ObjectBuilder.buildActionInstruction(
             "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742994131", true));
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(1)).process(any(ActionRequest.class));
 
     ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
@@ -78,8 +72,6 @@ public class ActionInstructionReceiverImplTest {
     assertEquals(1, countAccepted);
     assertEquals(1, countCompleted);
     verify(actionFeedbackPublisher, times(1)).sendFeedback(eq(mockedActionFeedback));
-
-    verify(tracer, times(1)).close(any(Span.class));
   }
 
   @Test
@@ -94,7 +86,6 @@ public class ActionInstructionReceiverImplTest {
             ObjectBuilder.buildActionInstruction(
                     "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,0774", true));
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(0)).process(any(ActionRequest.class));
 
     ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
@@ -117,8 +108,6 @@ public class ActionInstructionReceiverImplTest {
     assertEquals(1, countDeclined);
     assertEquals(0, countCompleted);
     verify(actionFeedbackPublisher, times(0)).sendFeedback(eq(mockedActionFeedback));
-
-    verify(tracer, times(1)).close(any(Span.class));
   }
 
   @Test
@@ -133,7 +122,6 @@ public class ActionInstructionReceiverImplTest {
             ObjectBuilder.buildActionInstruction(
                     "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742 994131", true));
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(1)).process(any(ActionRequest.class));
 
     ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
@@ -152,8 +140,6 @@ public class ActionInstructionReceiverImplTest {
     assertEquals(1, countAccepted);
     assertEquals(1, countCompleted);
     verify(actionFeedbackPublisher, times(1)).sendFeedback(eq(mockedActionFeedback));
-
-    verify(tracer, times(1)).close(any(Span.class));
   }
 
   @Test
@@ -168,7 +154,6 @@ public class ActionInstructionReceiverImplTest {
             ObjectBuilder.buildActionInstruction(
                     "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,(4)77   42 99 41 31", true));
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(1)).process(any(ActionRequest.class));
 
     ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
@@ -187,8 +172,6 @@ public class ActionInstructionReceiverImplTest {
     assertEquals(1, countAccepted);
     assertEquals(1, countCompleted);
     verify(actionFeedbackPublisher, times(1)).sendFeedback(eq(mockedActionFeedback));
-
-    verify(tracer, times(1)).close(any(Span.class));
   }
 
   @Test
@@ -205,7 +188,6 @@ public class ActionInstructionReceiverImplTest {
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
     }
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(notifyService, times(1)).process(any(ActionRequest.class));
 
     ArgumentCaptor<ActionFeedback> argumentCaptor = ArgumentCaptor.forClass(ActionFeedback.class);
@@ -219,7 +201,5 @@ public class ActionInstructionReceiverImplTest {
       }
     }
     assertEquals(1, countAccepted);
-
-    verify(tracer, times(0)).close(any(Span.class));
   }
 }

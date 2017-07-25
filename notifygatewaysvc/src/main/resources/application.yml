@@ -14,10 +14,6 @@ spring:
   application:
     name: Notify Gateway API
 
-  sleuth:
-    sampler:
-      percentage: 10
-
   datasource:
     url: jdbc:postgresql://localhost:6432/postgres
     username: notifygatewaysvc
@@ -36,18 +32,12 @@ spring:
       hibernate:
         ddl-auto: update
 
-  zipkin:
-    enabled: true # true is the default to post to a Zipkin server at 9411
-
 # logging config here as a reminder as to how to override logback from cmd line
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
     uk.gov.ons.ctp: debug
-    org.springframework.amqp: debug
-    org.springframework.integration: debug
-    org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
-    org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
+    org.springframework.integration: warn
 
 liquibase:
   user: notifygatewaysvc

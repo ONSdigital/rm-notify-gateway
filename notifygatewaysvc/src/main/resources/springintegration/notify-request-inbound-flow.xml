@@ -24,7 +24,7 @@
     <!-- Xml msg is taken off the queue Notify.NotifyRequest and put on the channel notifyRequestXml -->
     <int:channel id="notifyRequestXml" />
     <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
-    <int-amqp:inbound-channel-adapter id="notifyRequestInboundAmqp" listener-container="notifyRequestListenerContainer"
+    <int-amqp:inbound-channel-adapter id="actionInstructionInboundAmqp" listener-container="notifyRequestListenerContainer"
                                       message-converter="simpleMessageConverter" channel="notifyRequestXml" />
 
     <!-- Xml validated against the inbound schema -->
@@ -32,12 +32,12 @@
     <int-amqp:outbound-channel-adapter id="invalidNotifyRequestOutboundAmqp" channel="notifyRequestInvalidXml" exchange-name="notify-invalid-exchange" routing-key="Notify.NotifyRequest.binding" />
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int-xml:validating-filter id="notifyRequestValidator" input-channel="notifyRequestXml"
-                               output-channel="notifyRequestInvalidXml" schema-location="classpath:notifygatewaysvc/xsd/inbound/notifyRequest.xsd" discard-channel="notifyRequestInvalidXml"/>
+                               output-channel="notifyRequestXmlValid" schema-location="classpath:notifygatewaysvc/xsd/inbound/notifyRequest.xsd" discard-channel="notifyRequestInvalidXml"/>
 
     <!-- The now validated xml is transformed into the jaxb generated object model -->
     <int:channel id="notifyRequestTransformed" datatype="uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest" />
     <int-xml:unmarshalling-transformer
-            input-channel="notifyRequestXml" output-channel="notifyRequestTransformed"
+            input-channel="notifyRequestXmlValid" output-channel="notifyRequestTransformed"
             unmarshaller="notifyRequestMarshaller" />
 
     <!-- Finally see the @ServiceActivator(inputChannel="notifyRequestTransformed") -->

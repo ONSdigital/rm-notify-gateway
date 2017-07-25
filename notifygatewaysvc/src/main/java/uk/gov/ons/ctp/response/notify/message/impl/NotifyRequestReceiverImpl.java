@@ -3,8 +3,6 @@ package uk.gov.ons.ctp.response.notify.message.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.oxm.Marshaller;
@@ -23,10 +21,7 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 public class NotifyRequestReceiverImpl implements NotifyRequestReceiver {
 
     @Autowired
-    private Tracer tracer;
-
-    @Autowired
-    @Qualifier("actionInstructionMarshaller")
+    @Qualifier("notifyRequestMarshaller")
     Marshaller marshaller;
 
     @Autowired
@@ -43,11 +38,7 @@ public class NotifyRequestReceiverImpl implements NotifyRequestReceiver {
     @ServiceActivator(inputChannel = "notifyRequestTransformed", adviceChain = "notifyRequestRetryAdvice")
     public void process(final NotifyRequest notifyRequest) throws CTPException {
         log.debug("entering process with notifyRequest {}", notifyRequest);
-        Span span = tracer.createSpan(PROCESS_NOTIFY_REQUEST);
 
         notifyService.process(notifyRequest);
-
-        tracer.close(span);
     }
-
 }

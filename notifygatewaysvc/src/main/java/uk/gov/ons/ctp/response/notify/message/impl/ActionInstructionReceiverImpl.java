@@ -7,8 +7,6 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.oxm.Marshaller;
@@ -39,9 +37,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   public static final int SITUATION_MAX_LENGTH = 100;
 
   @Autowired
-  private Tracer tracer;
-
-  @Autowired
   @Qualifier("actionInstructionMarshaller")
   Marshaller marshaller;
 
@@ -60,7 +55,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
   public void processInstruction(final ActionInstruction instruction) throws CTPException {
     log.debug("entering process with instruction {}", instruction);
-    Span span = tracer.createSpan(PROCESS_INSTRUCTION);
 
     ActionRequest actionRequest = instruction.getActionRequest();
     if (actionRequest != null) {
@@ -90,8 +84,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
         actionFeedbackPublisher.sendFeedback(actionFeedback);
       }
     }
-
-    tracer.close(span);
   }
 
   /**
