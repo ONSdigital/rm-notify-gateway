@@ -6,4 +6,5 @@ applications:
   memory: 1024M
   path: notifygatewaysvc/target/notifygatewaysvc.jar
   services:
+    - rm-pg-db
     - rm-rabbitmq

@@ -14,6 +14,16 @@ spring:
   application:
     name: ONS Notify Gateway API
 
+  datasource:
+    driverClassName: org.postgresql.Driver
+    tomcat:
+      initial-size: 5
+      max-active: 10
+      max-idle: 5
+      min-idle: 3
+    continue-on-error: true
+    schema: classpath:/schema-cloud.sql
+
 # logging config here as a reminder as to how to override logback from cmd line
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
