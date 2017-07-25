@@ -56,7 +56,6 @@ public class TextEndpoint implements CTPEndpoint {
         NotifyRequest notifyRequest = mapperFacade.map(notifyRequestDTO, NotifyRequest.class);
         notifyRequest.setTemplateId(templateId);
 
-        // TODO Define URI
         return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(
                 resilienceService.process(notifyRequest), SendSmsResponseDTO.class));
     }

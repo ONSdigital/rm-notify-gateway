@@ -26,7 +26,9 @@ public class ResilienceServiceImpl implements ResilienceService {
     @Transactional(readOnly = false)
     @Override
     public SendSmsResponse process(NotifyRequest notifyRequest) {
-        log.debug("Entering process with {}", notifyRequest);
+        String templateId = notifyRequest.getTemplateId();
+        String phoneNumber = notifyRequest.getPhoneNumber();
+        log.debug("Entering process with templateId {} - phoneNumber {}", templateId, phoneNumber);
 
         UUID theId = UUID.randomUUID();
         messageRepository.save(Message.builder().id(theId).build());
@@ -39,8 +41,8 @@ public class ResilienceServiceImpl implements ResilienceService {
         return SendSmsResponse.builder()
                 .id(theId)
                 .reference(notifyRequest.getReference())
-                .templateId(UUID.fromString(notifyRequest.getTemplateId()))
-                .fromNumber(notifyRequest.getPhoneNumber())
+                .templateId(UUID.fromString(templateId))
+                .fromNumber(phoneNumber)
                 .build();
     }
 }

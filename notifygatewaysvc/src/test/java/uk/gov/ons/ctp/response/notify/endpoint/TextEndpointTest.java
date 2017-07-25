@@ -16,7 +16,6 @@ import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.notify.NotifySvcBeanMapper;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
-import uk.gov.ons.ctp.response.notify.service.NotifyService;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
