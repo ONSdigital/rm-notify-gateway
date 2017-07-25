@@ -18,6 +18,16 @@ spring:
     sampler:
       percentage: 1
 
+  datasource:
+    driverClassName: org.postgresql.Driver
+    tomcat:
+      initial-size: 5
+      max-active: 10
+      max-idle: 5
+      min-idle: 3
+    continue-on-error: true
+    schema: classpath:/schema-cloud.sql
+
   zipkin:
     enabled: true # true is the default to post to a Zipkin server at 9411
 
