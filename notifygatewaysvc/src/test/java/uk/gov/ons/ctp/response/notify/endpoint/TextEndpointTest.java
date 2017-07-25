@@ -54,10 +54,12 @@ public class TextEndpointTest {
 
     private static final String BAD_PHONE_NUMBER = "01234";
     private static final String VALID_PHONE_NUMBER = "01234567890";
-    private static final String JSON_SKELETON = "{\"phoneNumber\":\"%s\"}";
-    private static final String VALID_JSON_BAD_PHONE_NUMBER = String.format(JSON_SKELETON, BAD_PHONE_NUMBER);
-    private static final String VALID_JSON_VALID_PHONE_NUMBER = String.format(JSON_SKELETON, VALID_PHONE_NUMBER);
     private static final String MESSAGE_REFERENCE = "the reference";
+    private static final String JSON_SKELETON = "{\"phoneNumber\":\"%s\", \"reference\":\"%s\"}";
+    private static final String VALID_JSON_BAD_PHONE_NUMBER = String.format(JSON_SKELETON, BAD_PHONE_NUMBER,
+            MESSAGE_REFERENCE);
+    private static final String VALID_JSON_VALID_PHONE_NUMBER = String.format(JSON_SKELETON, VALID_PHONE_NUMBER,
+            MESSAGE_REFERENCE);
 
     private static final UUID MESSAGE_ID = UUID.fromString("de0da3c1-2cad-421a-bddd-054ef374c6ab");
 
