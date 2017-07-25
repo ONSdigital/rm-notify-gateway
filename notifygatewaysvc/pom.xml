@@ -38,12 +38,6 @@
             <version>10.44.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-<<<<<<< HEAD
-=======
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-zipkin</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-spring-service-connector</artifactId>
         </dependency>
@@ -53,7 +47,6 @@
             <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
         </dependency>
         <dependency>
->>>>>>> 34691789728c736eefc9f8156792b40f87e5085d
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>

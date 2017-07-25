@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.notify.endpoint;
 
 import ma.glasnost.orika.MapperFacade;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -15,10 +17,16 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.notify.NotifySvcBeanMapper;
-import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
+import uk.gov.ons.ctp.response.notify.domain.SendSmsResponse;
+import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.service.ResilienceService;
+
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +40,7 @@ public class TextEndpointTest {
     private TextEndpoint textEndpoint;
 
     @Mock
-    private NotifyRequestPublisher notifyRequestPublisher;
+    private ResilienceService resilienceService;
 
     @Spy
     private MapperFacade mapperFacade = new NotifySvcBeanMapper();
@@ -43,8 +51,15 @@ public class TextEndpointTest {
     private static final String TEMPLATE_ID = "f3778220-f877-4a3d-80ed-e8fa7d104563";
 
     private static final String INVALID_JSON = "{\"some\":\"text\"}";
-    private static final String VALID_JSON_BAD_PHONE_NUMBER = "{\"phoneNumber\":\"01234\"}";
-    private static final String VALID_JSON_VALID_PHONE_NUMBER = "{\"phoneNumber\":\"01234567890\"}";
+
+    private static final String BAD_PHONE_NUMBER = "01234";
+    private static final String VALID_PHONE_NUMBER = "01234567890";
+    private static final String JSON_SKELETON = "{\"phoneNumber\":\"%s\"}";
+    private static final String VALID_JSON_BAD_PHONE_NUMBER = String.format(JSON_SKELETON, BAD_PHONE_NUMBER);
+    private static final String VALID_JSON_VALID_PHONE_NUMBER = String.format(JSON_SKELETON, VALID_PHONE_NUMBER);
+    private static final String MESSAGE_REFERENCE = "the reference";
+
+    private static final UUID MESSAGE_ID = UUID.fromString("de0da3c1-2cad-421a-bddd-054ef374c6ab");
 
     /**
      * Set up of tests
@@ -70,12 +85,12 @@ public class TextEndpointTest {
     public void textInvalidJson() throws Exception {
         ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID), INVALID_JSON));
 
-        actions.andExpect(status().isBadRequest());
-        actions.andExpect(handler().handlerType(TextEndpoint.class));
-        actions.andExpect(handler().methodName(SEND_TEXT_MSG));
-        actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-        actions.andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)));
-        actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+        actions.andExpect(status().isBadRequest())
+                .andExpect(handler().handlerType(TextEndpoint.class))
+                .andExpect(handler().methodName(SEND_TEXT_MSG))
+                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+                .andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)))
+                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
     }
 
     /**
@@ -88,12 +103,12 @@ public class TextEndpointTest {
         ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID),
                 VALID_JSON_BAD_PHONE_NUMBER));
 
-        actions.andExpect(status().isBadRequest());
-        actions.andExpect(handler().handlerType(TextEndpoint.class));
-        actions.andExpect(handler().methodName(SEND_TEXT_MSG));
-        actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-        actions.andExpect(jsonPath("$.error.message", is(RestExceptionHandler.INVALID_JSON)));
-        actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+        actions.andExpect(status().isBadRequest())
+                .andExpect(handler().handlerType(TextEndpoint.class))
+                .andExpect(handler().methodName(SEND_TEXT_MSG))
+                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+                .andExpect(jsonPath("$.error.message", is(RestExceptionHandler.INVALID_JSON)))
+                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
     }
 
     /**
@@ -101,14 +116,26 @@ public class TextEndpointTest {
      *
      * @throws Exception if the postJson fails
      */
-    // TODO
-//    @Test
-//    public void textHappyPath() throws Exception {
-//        ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID),
-//                VALID_JSON_VALID_PHONE_NUMBER));
-//
-//        actions.andExpect(status().is2xxSuccessful());
-//        actions.andExpect(handler().handlerType(TextEndpoint.class));
-//        actions.andExpect(handler().methodName(SEND_TEXT_MSG));
-//    }
+    @Test
+    public void textHappyPath() throws Exception {
+        SendSmsResponse sendSmsResponse = SendSmsResponse.builder()
+                .id(MESSAGE_ID)
+                .reference(MESSAGE_REFERENCE)
+                .templateId(UUID.fromString(TEMPLATE_ID))
+                .fromNumber(VALID_PHONE_NUMBER)
+                .build();
+        when(resilienceService.process(any(NotifyRequest.class))).thenReturn(sendSmsResponse);
+
+        ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID),
+                VALID_JSON_VALID_PHONE_NUMBER));
+
+        actions.andExpect(status().is2xxSuccessful())
+                .andExpect(handler().handlerType(TextEndpoint.class))
+                .andExpect(handler().methodName(SEND_TEXT_MSG))
+                .andExpect(jsonPath("$.*", Matchers.hasSize(4)))
+                .andExpect(jsonPath("$.id", CoreMatchers.is(MESSAGE_ID.toString())))
+                .andExpect(jsonPath("$.reference", CoreMatchers.is(MESSAGE_REFERENCE)))
+                .andExpect(jsonPath("$.templateId", CoreMatchers.is(TEMPLATE_ID.toString())))
+                .andExpect(jsonPath("$.fromNumber", CoreMatchers.is(VALID_PHONE_NUMBER)));
+    }
 }
