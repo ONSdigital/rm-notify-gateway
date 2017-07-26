@@ -45,4 +45,17 @@ public class ResilienceServiceImpl implements ResilienceService {
                 .fromNumber(phoneNumber)
                 .build();
     }
+
+    @Override
+    public void update(Message message) {
+        Message existingMessage = messageRepository.findById(message.getId());
+        if (existingMessage != null) {
+            message.setMessagePK(existingMessage.getMessagePK());
+            messageRepository.saveAndFlush(message);
+        } else {
+            // We should never come here as prior to the request being sent to UK Gov Notify, a message was stored in
+            // the DB.
+            log.error("No existing message found to update with notificationID from UK Gov Notify");
+        }
+    }
 }

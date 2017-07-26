@@ -6,6 +6,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.service.notify.Notification;
+import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
 
 import java.math.BigDecimal;
@@ -91,6 +92,22 @@ public class ObjectBuilder {
             "\t\"reference\": \"testReference\",\n" +
             "\t\"content\": {\n" +
             "\t\t\"body\": \"thebody\"\n" +
+            "\t},\n" +
+            "\t\"template\": {\n" +
+            "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +
+            "\t\t\"version\": 1,\n" +
+            "\t\t\"uri\": \"theUri\"\n" +
+            "\t}\n" +
+            "}");
+  }
+
+  public static SendEmailResponse buildSendEmailResponse() {
+    return new SendEmailResponse("{\n" +
+            "\t\"id\": \"067e6162-3b6f-4ae2-a171-2470b63dff00\",\n" +
+            "\t\"reference\": \"testReference\",\n" +
+            "\t\"content\": {\n" +
+            "\t\t\"body\": \"thebody\",\n" +
+            "\t\t\"subject\": \"thesubject\"\n" +
             "\t},\n" +
             "\t\"template\": {\n" +
             "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +

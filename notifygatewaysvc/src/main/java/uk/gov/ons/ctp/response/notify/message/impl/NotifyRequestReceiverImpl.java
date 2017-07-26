@@ -12,6 +12,7 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestReceiver;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
+import uk.gov.service.notify.NotificationClientException;
 
 /**
  * The service that reads NotifyRequests from the inbound channel
@@ -32,10 +33,11 @@ public class NotifyRequestReceiverImpl implements NotifyRequestReceiver {
      * To process NotifyRequests from the input channel notifyRequestTransformed
      *
      * @param notifyRequest the NotifyRequest to be processed
+     * @throws NotificationClientException when UK Gov Notify does
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @ServiceActivator(inputChannel = "notifyRequestTransformed", adviceChain = "notifyRequestRetryAdvice")
-    public void process(final NotifyRequest notifyRequest) throws CTPException {
+    public void process(final NotifyRequest notifyRequest) throws NotificationClientException {
         log.debug("entering process with notifyRequest {}", notifyRequest);
         notifyService.process(notifyRequest);
     }
