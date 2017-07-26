@@ -11,7 +11,7 @@ public interface NotifyRequestReceiver {
     /**
      * To process NotifyRequests from the input channel notifyRequestTransformed
      * @param notifyRequest the NotifyRequest to be processed
-     * @throws NotificationClientException when UK Gov Notify does
+     * @throws NotificationClientException when GOV.UK Notify does
      */
     void process(NotifyRequest notifyRequest) throws NotificationClientException;
 }

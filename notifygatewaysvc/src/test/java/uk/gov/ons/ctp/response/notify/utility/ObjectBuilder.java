@@ -18,8 +18,13 @@ public class ObjectBuilder {
   public static final String IAC_AS_DISPLAYED_IN_SMS = "123A BC45 6DEF";
   public static final String IAC_AS_STORED_IN_DB = "123abc456def";
   public static final String INVALIDPHONENUMBER = "0798567515";
+  public static final String NOTIFICATION_ID = "067e6162-3b6f-4ae2-a171-2470b63dff00";
   public static final String PHONENUMBER = "07985675157";
+  public static final String REFERENCE = "Test text message";
+  public static final String SENT = "sent";
+  public static final String SMS = "sms";
   public static final String SURNAME = "Blogg";
+  public static final String TEMPLATE_ID = "966731dc-ef2e-41ad-a828-8cdd95c81ebc";
 
   private static final BigDecimal LATITYUDE = new BigDecimal("1000.00");
   private static final BigDecimal LONGITUDE = new BigDecimal("1000.00");
@@ -27,6 +32,7 @@ public class ObjectBuilder {
   private static final String ACTION_PLAN = "abc";
   private static final String CASE_ID = "9a5f2be5-f944-41f9-982c-3517cfcfef3c";
   private static final String CASE_REF = "1";
+  private static final String CREATED_AT = "2004-12-13T21:39:45.618-08:00";
   private static final String NOTIFY = "notify";
   private static final String POSTCODE = "PO157RR";
   private static final String QUESTION_SET = "simple";
@@ -88,8 +94,8 @@ public class ObjectBuilder {
 
   public static SendSmsResponse buildSendSmsResponse() {
     return new SendSmsResponse("{\n" +
-            "\t\"id\": \"067e6162-3b6f-4ae2-a171-2470b63dff00\",\n" +
-            "\t\"reference\": \"testReference\",\n" +
+            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
+            "\t\"reference\": \"" + REFERENCE + "\",\n" +
             "\t\"content\": {\n" +
             "\t\t\"body\": \"thebody\"\n" +
             "\t},\n" +
@@ -103,8 +109,8 @@ public class ObjectBuilder {
 
   public static SendEmailResponse buildSendEmailResponse() {
     return new SendEmailResponse("{\n" +
-            "\t\"id\": \"067e6162-3b6f-4ae2-a171-2470b63dff00\",\n" +
-            "\t\"reference\": \"testReference\",\n" +
+            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
+            "\t\"reference\": \"" + REFERENCE + "\",\n" +
             "\t\"content\": {\n" +
             "\t\t\"body\": \"thebody\",\n" +
             "\t\t\"subject\": \"thesubject\"\n" +
@@ -117,18 +123,20 @@ public class ObjectBuilder {
             "}");
   }
 
-  public static Notification buildNotification() {
+  public static Notification buildNotificationForSMS() {
     return new Notification("{\n" +
-            "\t\"id\": \"067e6162-3b6f-4ae2-a171-2470b63dff00\",\n" +
-            "\t\"type\": \"sms\",\n" +
+            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
+            "\t\"reference\": \"" + REFERENCE + "\",\n" +
+            "\t\"phone_number\": \"" + PHONENUMBER + "\",\n" +
+            "\t\"type\": \"" + SMS + "\",\n" +
             "\t\"template\": {\n" +
-            "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +
+            "\t\t\"id\": \"" + TEMPLATE_ID + "\",\n" +
             "\t\t\"version\": 1,\n" +
             "\t\t\"uri\": \"theUri\"\n" +
             "\t},\n" +
             "\t\"body\": \"theBody\",\n" +
-            "\t\"status\": \"sent\",\n" +
-            "\t\"created_at\": \"2004-12-13T21:39:45.618-08:00\"\n" +
+            "\t\"status\": \"" + SENT + "\",\n" +
+            "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
             "}");
   }
 }

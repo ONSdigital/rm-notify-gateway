@@ -33,7 +33,7 @@ public class NotifyRequestReceiverImpl implements NotifyRequestReceiver {
      * To process NotifyRequests from the input channel notifyRequestTransformed
      *
      * @param notifyRequest the NotifyRequest to be processed
-     * @throws NotificationClientException when UK Gov Notify does
+     * @throws NotificationClientException when GOV.UK Notify does
      */
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @ServiceActivator(inputChannel = "notifyRequestTransformed", adviceChain = "notifyRequestRetryAdvice")

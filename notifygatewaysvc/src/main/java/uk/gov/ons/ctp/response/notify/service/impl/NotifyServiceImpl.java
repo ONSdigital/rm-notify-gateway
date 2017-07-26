@@ -22,10 +22,7 @@ import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
-import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.NotificationClientException;
-import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendSmsResponse;
+import uk.gov.service.notify.*;
 
 /**
  * The service implementation for NotifyService
@@ -127,5 +124,10 @@ public class NotifyServiceImpl implements NotifyService {
                     .notificationId(notificationId)
                     .build());
         }
+    }
+
+    @Override
+    public Notification findNotificationById(UUID notificationId) throws NotificationClientException {
+        return notificationClient.getNotificationById(notificationId.toString());
     }
 }

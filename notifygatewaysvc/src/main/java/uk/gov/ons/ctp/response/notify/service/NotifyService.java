@@ -4,7 +4,10 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
+
+import java.util.UUID;
 
 /**
  * Service to interact with GOV.UK Notify
@@ -26,4 +29,13 @@ public interface NotifyService {
    * @throws NotificationClientException if GOV.UK Notify gives an issue
    */
   void process(NotifyRequest notifyRequest) throws NotificationClientException;
+
+  /**
+   * To retrieve the full details of a Notification by Id from GOV.UK Notify.
+   *
+   * @param notificationId to search for
+   * @return the associated Notification
+   * @throws NotificationClientException if GOV.UK Notify gives an issue
+   */
+  Notification findNotificationById(UUID notificationId) throws NotificationClientException;
 }

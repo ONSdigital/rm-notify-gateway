@@ -62,7 +62,7 @@ public class NotifyServiceImplTest {
   @Test
   public void testProcessActionRequestHappyPath() throws CTPException, NotificationClientException {
     Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotification());
+    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
 
     ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER, true));
     assertEquals(ACTION_ID, result.getActionId());
@@ -75,7 +75,7 @@ public class NotifyServiceImplTest {
   }
 
   /**
-   * To test the processing of an ActionRequest when an exception is received from UK Gov Notify
+   * To test the processing of an ActionRequest when an exception is received from GOV.UK Notify
    *
    * @throws NotificationClientException when notificationClient does
    */
@@ -107,7 +107,7 @@ public class NotifyServiceImplTest {
     Mockito.when(notificationClient.sendSms(
             any(String.class), any(String.class), any(HashMap.class),any(String.class)))
             .thenReturn(buildSendSmsResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotification());
+    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
 
     notifyService.process(NotifyRequest.builder()
             .withId(NOTIFY_REQUEST_ID)
@@ -135,7 +135,7 @@ public class NotifyServiceImplTest {
     Mockito.when(notificationClient.sendEmail(
             any(String.class), any(String.class), any(HashMap.class),any(String.class)))
             .thenReturn(buildSendEmailResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotification());
+    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
 
     notifyService.process(NotifyRequest.builder()
             .withId(NOTIFY_REQUEST_ID)
