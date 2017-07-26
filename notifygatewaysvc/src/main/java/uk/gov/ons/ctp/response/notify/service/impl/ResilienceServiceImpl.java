@@ -4,16 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.notify.domain.SendSmsResponse;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
-import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
-import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.NotificationClientException;
 
 import java.util.UUID;
 
@@ -26,12 +22,6 @@ public class ResilienceServiceImpl implements ResilienceService {
 
     @Autowired
     private NotifyRequestPublisher notifyRequestPublisher;
-
-    @Autowired
-    private NotifyService notifyService;
-
-    private static final String GOV_UK_NOTIFY_ISSUE =
-            "An error occurred retrieving Notification from GOV.UK Notify. Message is %s. Cause is %s.";
 
     @Transactional(readOnly = false)
     @Override
@@ -72,21 +62,8 @@ public class ResilienceServiceImpl implements ResilienceService {
     }
 
     @Override
-    public Notification findNotificationByMessageId(UUID messageId) throws CTPException {
-        log.debug("Entering findNotificationByMessageId with messageId {}", messageId);
-        Notification result = null;
-
-        Message existingMessage = messageRepository.findById(messageId);
-        if (existingMessage != null) {
-            try {
-                result = notifyService.findNotificationById(existingMessage.getNotificationId());
-            } catch(NotificationClientException e) {
-                String errorMsg = String.format(GOV_UK_NOTIFY_ISSUE, e.getMessage(), e.getCause());
-                log.error(errorMsg);
-                throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
-            }
-        }
-
-        return result;
+    public Message findMessageById(UUID id) {
+        log.debug("Entering findMessageById with id {}", id);
+        return messageRepository.findById(id);
     }
 }

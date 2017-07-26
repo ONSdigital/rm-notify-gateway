@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.representation.NotificationDTO;
+import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 import uk.gov.service.notify.Notification;
+import uk.gov.service.notify.NotificationClientException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -27,12 +30,19 @@ import java.util.UUID;
 public class StatusEndpoint {
 
     @Autowired
+    private NotifyService notifyService;
+
+    @Autowired
     private ResilienceService resilienceService;
 
     @Qualifier("notifySvcBeanMapper")
     @Autowired
     private MapperFacade mapperFacade;
 
+    public static final String ERRORMSG_MESSAGE_NOTFOUND = "Message not found for message id %s";
+    public static final String ERRORMSG_NOTIFICATION_ISSUE = "Error encountered while retrieving notification. " +
+            "Message is %s. Cause is %s";
+    public static final String ERRORMSG_NOTIFICATION_NOTDEFINED = "Notification not yet defined for message id %s";
     public static final String ERRORMSG_NOTIFICATION_NOTFOUND = "Notification not found for message id %s";
 
     /**
@@ -43,16 +53,34 @@ public class StatusEndpoint {
      * @throws CTPException if GOV.UK Notify has thrown an exception or if no resource found for messageId
      */
     @RequestMapping(value = "/{messageId}", method = RequestMethod.GET)
-    public ResponseEntity<NotificationDTO> getStatus(@PathVariable("messageId") final UUID messageId) throws CTPException {
+    public ResponseEntity<NotificationDTO> getStatus(@PathVariable("messageId") final UUID messageId)
+            throws CTPException {
         log.debug("Entering getStatus with messageId {}", messageId);
 
-        Notification notification = resilienceService.findNotificationByMessageId(messageId);
-        if (notification == null) {
+        Message message = resilienceService.findMessageById(messageId);
+        if (message == null) {
             throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-                    String.format(ERRORMSG_NOTIFICATION_NOTFOUND, messageId));
+                    String.format(ERRORMSG_MESSAGE_NOTFOUND, messageId));
+        } else {
+            UUID notificationId = message.getNotificationId();
+            if (notificationId != null) {
+                try {
+                    Notification notification = notifyService.findNotificationById(notificationId);
+                    if (notification == null) {
+                        throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+                                String.format(ERRORMSG_NOTIFICATION_NOTFOUND, messageId));
+                    }
+                    return ResponseEntity.ok(map(notification));
+                } catch (NotificationClientException e) {
+                    String errorMsg = String.format(ERRORMSG_NOTIFICATION_ISSUE, e.getMessage(), e.getCause());
+                    log.error(errorMsg);
+                    throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
+                }
+            } else {
+                throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+                        String.format(ERRORMSG_NOTIFICATION_NOTDEFINED, messageId));
+            }
         }
-
-        return ResponseEntity.ok(map(notification));
     }
 
     // TODO Attempted to use mapperFacade but was getting the exception:

@@ -47,7 +47,7 @@ public class TextEndpointTest {
 
     private MockMvc mockMvc;
 
-    private static final String SEND_TEXT_MSG = "sendTextMessage";
+    private static final String SEND_TEXT_MSG = "sendMessage";
     private static final String TEMPLATE_ID = "f3778220-f877-4a3d-80ed-e8fa7d104563";
 
     private static final String INVALID_JSON = "{\"some\":\"text\"}";

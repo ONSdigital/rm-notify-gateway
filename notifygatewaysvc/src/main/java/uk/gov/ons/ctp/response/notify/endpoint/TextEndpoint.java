@@ -40,13 +40,12 @@ public class TextEndpoint implements CTPEndpoint {
      * @param notifyRequestDTO the NotifyRequestDTO containing phoneNumber and personalisation
      * @param bindingResult the bindingResult used to validate requests
      * @return the created SendSmsResponseDTO
-     * @throws CTPException on failure to create CaseEvent
      * @throws InvalidRequestException if binding errors
      */
     @RequestMapping(value = "/{templateId}", method = RequestMethod.POST)
-    public ResponseEntity<SendSmsResponseDTO> sendTextMessage(@PathVariable("templateId") final String templateId,
-                                                              @RequestBody @Valid final NotifyRequestDTO notifyRequestDTO,
-                                                              BindingResult bindingResult) throws InvalidRequestException {
+    public ResponseEntity<SendSmsResponseDTO> sendMessage(@PathVariable("templateId") final String templateId,
+                                                          @RequestBody @Valid final NotifyRequestDTO notifyRequestDTO,
+                                                          BindingResult bindingResult) throws InvalidRequestException {
         log.debug("Entering sendTextMessage with templateId {} and requestObject {}", templateId, notifyRequestDTO);
 
         if (bindingResult.hasErrors()) {

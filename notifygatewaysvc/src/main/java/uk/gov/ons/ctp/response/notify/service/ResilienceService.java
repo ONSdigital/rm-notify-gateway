@@ -1,10 +1,8 @@
 package uk.gov.ons.ctp.response.notify.service;
 
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.notify.domain.SendSmsResponse;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
-import uk.gov.service.notify.Notification;
 
 import java.util.UUID;
 
@@ -31,12 +29,10 @@ public interface ResilienceService {
     void update(Message message);
 
     /**
-     * Retrieves the NotificationID associated with messageId
-     * Asks GOV.UK Notify for full details on the Notification
+     * Retrieves the Message associated with messageId
      *
      * @param messageId to search for
-     * @return the GOV.UK Notify Notification
-     * @throws throws CTPException if GOV.UK Notify has thrown an exception
+     * @return the associated Message
      */
-    Notification findNotificationByMessageId(UUID messageId) throws CTPException;
+    Message findMessageById(UUID messageId);
 }
