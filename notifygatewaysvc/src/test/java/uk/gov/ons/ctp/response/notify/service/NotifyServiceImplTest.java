@@ -10,7 +10,6 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
@@ -43,9 +42,6 @@ public class NotifyServiceImplTest {
 
   @Mock
   private NotifyConfiguration notifyConfiguration;
-
-  @Mock
-  private ResilienceService resilienceService;
 
   private static final String NOTIFY_REQUEST_ID = "f3778220-f877-4a3d-80ed-e8fa7d104564";
   private static final String TEMPLATE_ID = "f3778220-f877-4a3d-80ed-e8fa7d104563";
@@ -122,7 +118,6 @@ public class NotifyServiceImplTest {
     // TODO any(String.class), eq(PHONENUMBER), eq(personalisation), any(String.class));
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(VALID_PHONE_NUMBER),
             any(Map.class),eq(MESSAGE_REFERENCE));
-    verify(resilienceService, times(1)).update(any(Message.class));
   }
 
   /**
@@ -150,6 +145,5 @@ public class NotifyServiceImplTest {
     // TODO any(String.class), eq(PHONENUMBER), eq(personalisation), any(String.class));
     verify(notificationClient, times(1)).sendEmail(any(String.class), eq(VALID_EMAIL_ADDRESS),
             any(Map.class),eq(MESSAGE_REFERENCE));
-    verify(resilienceService, times(1)).update(any(Message.class));
   }
 }

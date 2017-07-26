@@ -17,10 +17,8 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
-import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.*;
 
@@ -36,9 +34,6 @@ public class NotifyServiceImpl implements NotifyService {
 
     @Autowired
     private NotificationClient notificationClient;
-
-    @Autowired
-    private ResilienceService resilienceService;
 
     private static final String BAD_REQUEST = "Status code: 400";
 
@@ -86,7 +81,7 @@ public class NotifyServiceImpl implements NotifyService {
     }
 
     @Override
-    public void process(NotifyRequest notifyRequest) throws NotificationClientException {
+    public UUID process(NotifyRequest notifyRequest) throws NotificationClientException {
         String phoneNumber = notifyRequest.getPhoneNumber();
         String emailAddress = notifyRequest.getEmailAddress();
         String templateId = notifyRequest.getTemplateId();
@@ -102,11 +97,7 @@ public class NotifyServiceImpl implements NotifyService {
                         .getStatus());
             }
 
-            UUID notificationId = response.getNotificationId();
-            resilienceService.update(Message.builder()
-                    .id(UUID.fromString(notifyRequest.getId()))
-                    .notificationId(notificationId)
-                    .build());
+            return response.getNotificationId();
         } else {
             // The xsd enforces to have either a phoneNumber OR an emailAddress
             Map<String, String> personalisation = new HashMap<>(); // TODO
@@ -118,11 +109,7 @@ public class NotifyServiceImpl implements NotifyService {
                         .getStatus());
             }
 
-            UUID notificationId = response.getNotificationId();
-            resilienceService.update(Message.builder()
-                    .id(UUID.fromString(notifyRequest.getId()))
-                    .notificationId(notificationId)
-                    .build());
+            return response.getNotificationId();
         }
     }
 

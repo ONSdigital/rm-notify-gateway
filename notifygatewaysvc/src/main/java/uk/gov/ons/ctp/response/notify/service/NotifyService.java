@@ -26,9 +26,10 @@ public interface NotifyService {
    * To process a NotifyRequest. It sends an SMS or an email using GOV.UK Notify.
    *
    * @param notifyRequest to be processed
+   * @return the associated notificationId
    * @throws NotificationClientException if GOV.UK Notify gives an issue
    */
-  void process(NotifyRequest notifyRequest) throws NotificationClientException;
+  UUID process(NotifyRequest notifyRequest) throws NotificationClientException;
 
   /**
    * To retrieve the full details of a Notification by Id from GOV.UK Notify.
