@@ -8,23 +8,16 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 /**
- * Created by stevee on 17/07/2017.
+ * Domain model object
  */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class SendEmailDTO {
+public class ResponseDTO {
+    private UUID id;
+    private UUID templateId;
 
-  UUID notificationId;
-
-  String reference;
-
-  UUID templateId;
-
-  Integer templateVersion;
-
-  String fromEmail;
-
-
+    private String fromEmail;
+    private String fromNumber;
+    private String reference;
 }

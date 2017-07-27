@@ -12,10 +12,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SendSmsResponse {
+public class Response {
     private UUID id;
     private UUID templateId;
 
-    private String reference;
+    private String fromEmail;
     private String fromNumber;
+    private String reference;
 }

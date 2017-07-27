@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
-import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestDTO.TELEPHONE_REGEX;
+import static uk.gov.ons.ctp.response.notify.representation.NotifySMSRequestDTO.TELEPHONE_REGEX;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 
 import java.util.regex.Pattern;

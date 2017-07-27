@@ -30,14 +30,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.error.RestExceptionHandler.PROVIDED_JSON_INCORRECT;
 import static uk.gov.ons.ctp.common.MvcHelper.postJson;
+import static uk.gov.ons.ctp.common.error.RestExceptionHandler.PROVIDED_JSON_INCORRECT;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
-public class TextEndpointTest {
+public class EmailEndpointTest {
 
     @InjectMocks
-    private TextEndpoint textEndpoint;
+    private EmailEndpoint emailEndpoint;
 
     @Mock
     private ResilienceService resilienceService;
@@ -47,18 +47,18 @@ public class TextEndpointTest {
 
     private MockMvc mockMvc;
 
-    private static final String SEND_TEXT_MSG = "sendSMS";
+    private static final String SEND_EMAIL_MSG = "sendEmail";
     private static final String TEMPLATE_ID = "f3778220-f877-4a3d-80ed-e8fa7d104563";
 
     private static final String INVALID_JSON = "{\"some\":\"text\"}";
 
-    private static final String BAD_PHONE_NUMBER = "01234";
-    private static final String VALID_PHONE_NUMBER = "01234567890";
+    private static final String BAD_EMAIL_ADDRESS = "something";
+    private static final String VALID_EMAIL_ADDRESS = "tester@ons.gov.uk";
     private static final String MESSAGE_REFERENCE = "the reference";
-    private static final String JSON_SKELETON = "{\"phoneNumber\":\"%s\", \"reference\":\"%s\"}";
-    private static final String VALID_JSON_BAD_PHONE_NUMBER = String.format(JSON_SKELETON, BAD_PHONE_NUMBER,
+    private static final String JSON_SKELETON = "{\"emailAddress\":\"%s\", \"reference\":\"%s\"}";
+    private static final String VALID_JSON_BAD_EMAIL_ADDRESS = String.format(JSON_SKELETON, BAD_EMAIL_ADDRESS,
             MESSAGE_REFERENCE);
-    private static final String VALID_JSON_VALID_PHONE_NUMBER = String.format(JSON_SKELETON, VALID_PHONE_NUMBER,
+    private static final String VALID_JSON_VALID_EMAIL_ADDRESS = String.format(JSON_SKELETON, VALID_EMAIL_ADDRESS,
             MESSAGE_REFERENCE);
 
     private static final UUID MESSAGE_ID = UUID.fromString("de0da3c1-2cad-421a-bddd-054ef374c6ab");
@@ -72,7 +72,7 @@ public class TextEndpointTest {
         MockitoAnnotations.initMocks(this);
 
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(textEndpoint)
+                .standaloneSetup(emailEndpoint)
                 .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(new CustomObjectMapper()))
                 .build();
@@ -85,36 +85,36 @@ public class TextEndpointTest {
      */
     @Test
     public void textInvalidJson() throws Exception {
-        ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID), INVALID_JSON));
+        ResultActions actions = mockMvc.perform(postJson(String.format("/emails/%s", TEMPLATE_ID), INVALID_JSON));
 
         actions.andExpect(status().isBadRequest())
-                .andExpect(handler().handlerType(TextEndpoint.class))
-                .andExpect(handler().methodName(SEND_TEXT_MSG))
+                .andExpect(handler().handlerType(EmailEndpoint.class))
+                .andExpect(handler().methodName(SEND_EMAIL_MSG))
                 .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
                 .andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)))
                 .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
     }
 
     /**
-     * a test providing correct json but invalid phone number
+     * a test providing correct json but invalid email address
      *
      * @throws Exception if the postJson fails
      */
     @Test
-    public void textInvalidPhoneNumber() throws Exception {
-        ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID),
-                VALID_JSON_BAD_PHONE_NUMBER));
+    public void textInvalidEmailAddress() throws Exception {
+        ResultActions actions = mockMvc.perform(postJson(String.format("/emails/%s", TEMPLATE_ID),
+                VALID_JSON_BAD_EMAIL_ADDRESS));
 
         actions.andExpect(status().isBadRequest())
-                .andExpect(handler().handlerType(TextEndpoint.class))
-                .andExpect(handler().methodName(SEND_TEXT_MSG))
+                .andExpect(handler().handlerType(EmailEndpoint.class))
+                .andExpect(handler().methodName(SEND_EMAIL_MSG))
                 .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
                 .andExpect(jsonPath("$.error.message", is(RestExceptionHandler.INVALID_JSON)))
                 .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
     }
 
     /**
-     * a test providing correct json and valid phone number
+     * a test providing correct json and valid email address
      *
      * @throws Exception if the postJson fails
      */
@@ -124,20 +124,20 @@ public class TextEndpointTest {
                 .id(MESSAGE_ID)
                 .reference(MESSAGE_REFERENCE)
                 .templateId(UUID.fromString(TEMPLATE_ID))
-                .fromNumber(VALID_PHONE_NUMBER)
+                .fromEmail(VALID_EMAIL_ADDRESS)
                 .build();
         when(resilienceService.process(any(NotifyRequest.class))).thenReturn(response);
 
-        ResultActions actions = mockMvc.perform(postJson(String.format("/texts/%s", TEMPLATE_ID),
-                VALID_JSON_VALID_PHONE_NUMBER));
+        ResultActions actions = mockMvc.perform(postJson(String.format("/emails/%s", TEMPLATE_ID),
+                VALID_JSON_VALID_EMAIL_ADDRESS));
 
         actions.andExpect(status().is2xxSuccessful())
-                .andExpect(handler().handlerType(TextEndpoint.class))
-                .andExpect(handler().methodName(SEND_TEXT_MSG))
+                .andExpect(handler().handlerType(EmailEndpoint.class))
+                .andExpect(handler().methodName(SEND_EMAIL_MSG))
                 .andExpect(jsonPath("$.*", Matchers.hasSize(5)))
                 .andExpect(jsonPath("$.id", CoreMatchers.is(MESSAGE_ID.toString())))
                 .andExpect(jsonPath("$.reference", CoreMatchers.is(MESSAGE_REFERENCE)))
                 .andExpect(jsonPath("$.templateId", CoreMatchers.is(TEMPLATE_ID.toString())))
-                .andExpect(jsonPath("$.fromNumber", CoreMatchers.is(VALID_PHONE_NUMBER)));
+                .andExpect(jsonPath("$.fromEmail", CoreMatchers.is(VALID_EMAIL_ADDRESS)));
     }
 }

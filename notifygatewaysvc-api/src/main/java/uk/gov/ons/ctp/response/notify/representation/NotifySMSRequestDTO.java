@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
+import javax.validation.constraints.Pattern;
 
 /**
  * Domain model object
@@ -13,10 +13,14 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class SendSmsResponseDTO {
-    private UUID id;
-    private UUID templateId;
+public class NotifySMSRequestDTO {
+
+    public static final String TELEPHONE_REGEX = "[\\d]{7,11}";
+
+    @Pattern(regexp=TELEPHONE_REGEX)
+    private String phoneNumber;
 
     private String reference;
-    private String fromNumber;
+
+    // TODO personalisation
 }

@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.notify.service;
 
-import uk.gov.ons.ctp.response.notify.domain.SendSmsResponse;
+import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 
@@ -19,7 +19,7 @@ public interface ResilienceService {
      * @param notifyRequest the request to process
      * @return
      */
-    SendSmsResponse process(NotifyRequest notifyRequest);
+    Response process(NotifyRequest notifyRequest);
 
     /**
      * Updates a message in the DB

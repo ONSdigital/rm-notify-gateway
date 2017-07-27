@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NotifyRequestReceiverTest {
+
     @InjectMocks
     private NotifyRequestReceiverImpl notifyRequestReceiver;
 

@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.ctp.response.notify.domain.SendSmsResponse;
+import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
@@ -45,7 +45,7 @@ public class ResilienceServiceImplTest {
                 .withPhoneNumber(PHONE_NUMBER)
                 .withReference(MESSAGE_REFERENCE)
                 .build();
-        SendSmsResponse response = resilienceService.process(notifyRequest);
+        Response response = resilienceService.process(notifyRequest);
 
         assertNotNull(response);
         assertNotNull(response.getId());

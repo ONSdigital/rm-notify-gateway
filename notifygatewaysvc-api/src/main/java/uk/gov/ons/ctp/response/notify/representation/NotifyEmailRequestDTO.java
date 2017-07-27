@@ -13,12 +13,13 @@ import javax.validation.constraints.Pattern;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class NotifyRequestDTO {
+public class NotifyEmailRequestDTO {
 
-    public static final String TELEPHONE_REGEX = "[\\d]{7,11}";
+    public static final String EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";;
 
-    @Pattern(regexp=TELEPHONE_REGEX)
-    private String phoneNumber;
+    @Pattern(regexp=EMAIL_REGEX)
+    private String emailAddress;
 
     private String reference;
 
