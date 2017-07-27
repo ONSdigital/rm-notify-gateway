@@ -134,7 +134,7 @@ public class EmailEndpointTest {
         actions.andExpect(status().is2xxSuccessful())
                 .andExpect(handler().handlerType(EmailEndpoint.class))
                 .andExpect(handler().methodName(SEND_EMAIL_MSG))
-                .andExpect(jsonPath("$.*", Matchers.hasSize(5)))
+                .andExpect(jsonPath("$.*", Matchers.hasSize(4)))
                 .andExpect(jsonPath("$.id", CoreMatchers.is(MESSAGE_ID.toString())))
                 .andExpect(jsonPath("$.reference", CoreMatchers.is(MESSAGE_REFERENCE)))
                 .andExpect(jsonPath("$.templateId", CoreMatchers.is(TEMPLATE_ID.toString())))

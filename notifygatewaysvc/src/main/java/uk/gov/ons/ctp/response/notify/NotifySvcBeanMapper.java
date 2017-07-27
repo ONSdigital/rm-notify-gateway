@@ -5,7 +5,6 @@ import ma.glasnost.orika.impl.ConfigurableMapper;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
-import uk.gov.ons.ctp.response.notify.representation.NotifyRequestDTO;
 import uk.gov.ons.ctp.response.notify.representation.NotifyRequestForEmailDTO;
 import uk.gov.ons.ctp.response.notify.representation.NotifyRequestForSMSDTO;
 import uk.gov.ons.ctp.response.notify.representation.ResponseDTO;
