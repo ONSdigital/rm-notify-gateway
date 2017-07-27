@@ -6,7 +6,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.oxm.Marshaller;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.message.impl.NotifyRequestReceiverImpl;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
@@ -31,10 +30,6 @@ public class NotifyRequestReceiverTest {
 
     @InjectMocks
     private NotifyRequestReceiverImpl notifyRequestReceiver;
-
-    // TODO Do we need this?
-    @Mock
-    Marshaller marshaller;
 
     @Mock
     private NotifyService notifyService;
