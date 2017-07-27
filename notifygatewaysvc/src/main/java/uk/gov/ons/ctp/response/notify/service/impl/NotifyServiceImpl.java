@@ -101,9 +101,10 @@ public class NotifyServiceImpl implements NotifyService {
         } else {
             // The xsd enforces to have either a phoneNumber OR an emailAddress
             Map<String, String> personalisation = new HashMap<>(); // TODO
-            log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {}",
-                    templateId, phoneNumber, personalisation);
-            SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress, personalisation, reference);
+            log.debug("About to invoke sendEmail with templateId {} - emailAddress {} - personalisation {}",
+                    templateId , emailAddress, personalisation);
+            SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress, personalisation,
+                    reference);
             if (log.isDebugEnabled()) {
                 log.debug("status = {}", notificationClient.getNotificationById(response.getNotificationId().toString())
                         .getStatus());

@@ -13,15 +13,11 @@ import javax.validation.constraints.Pattern;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class NotifyEmailRequestDTO {
+public class NotifyRequestForEmailDTO extends NotifyRequestDTO {
 
     public static final String EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";;
 
     @Pattern(regexp=EMAIL_REGEX)
     private String emailAddress;
-
-    private String reference;
-
-    // TODO personalisation
 }

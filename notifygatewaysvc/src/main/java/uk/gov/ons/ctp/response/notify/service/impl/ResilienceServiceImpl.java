@@ -28,7 +28,9 @@ public class ResilienceServiceImpl implements ResilienceService {
     public Response process(NotifyRequest notifyRequest) {
         String templateId = notifyRequest.getTemplateId();
         String phoneNumber = notifyRequest.getPhoneNumber();
-        log.debug("Entering process with templateId {} - phoneNumber {}", templateId, phoneNumber);
+        String emailAddress = notifyRequest.getEmailAddress();
+        log.debug("Entering process with templateId {} - phoneNumber {} - emailAddress {}", templateId, phoneNumber,
+                emailAddress);
 
         UUID theId = UUID.randomUUID();
         messageRepository.save(Message.builder().id(theId).build());
@@ -43,6 +45,7 @@ public class ResilienceServiceImpl implements ResilienceService {
                 .reference(notifyRequest.getReference())
                 .templateId(UUID.fromString(templateId))
                 .fromNumber(phoneNumber)
+                .fromEmail(emailAddress)
                 .build();
     }
 
