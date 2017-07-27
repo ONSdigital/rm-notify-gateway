@@ -119,14 +119,15 @@ public class NotifyServiceImplTest {
             .withTemplateId(TEMPLATE_ID)
             .withReference(MESSAGE_REFERENCE)
             .withPhoneNumber(VALID_PHONE_NUMBER)
+            .withPersonalisation(String.format(PERSONALISATION_FORMAT_FROM_ORIKA, IAC_KEY, IAC_VALUE, OTHER_FIELD_KEY,
+                    OTHER_FIELD_VALUE))
             .build());
 
     HashMap<String, String> personalisation = new HashMap<>();
-    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    // TODO Be specific on personalisation once implemented verify(notificationClient, times(1)).sendSms(
-    // TODO any(String.class), eq(PHONENUMBER), eq(personalisation), any(String.class));
+    personalisation.put(IAC_KEY, IAC_VALUE);
+    personalisation.put(OTHER_FIELD_KEY, OTHER_FIELD_VALUE);
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(VALID_PHONE_NUMBER),
-            any(Map.class),eq(MESSAGE_REFERENCE));
+            eq(personalisation),eq(MESSAGE_REFERENCE));
   }
 
   /**
@@ -146,14 +147,15 @@ public class NotifyServiceImplTest {
             .withTemplateId(TEMPLATE_ID)
             .withReference(MESSAGE_REFERENCE)
             .withEmailAddress(VALID_EMAIL_ADDRESS)
+            .withPersonalisation(String.format(PERSONALISATION_FORMAT_FROM_ORIKA, IAC_KEY, IAC_VALUE, OTHER_FIELD_KEY,
+                    OTHER_FIELD_VALUE))
             .build());
 
     HashMap<String, String> personalisation = new HashMap<>();
-    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    // TODO Be specific on personalisation once implemented verify(notificationClient, times(1)).sendSms(
-    // TODO any(String.class), eq(PHONENUMBER), eq(personalisation), any(String.class));
+    personalisation.put(IAC_KEY, IAC_VALUE);
+    personalisation.put(OTHER_FIELD_KEY, OTHER_FIELD_VALUE);
     verify(notificationClient, times(1)).sendEmail(any(String.class), eq(VALID_EMAIL_ADDRESS),
-            any(Map.class),eq(MESSAGE_REFERENCE));
+            eq(personalisation),eq(MESSAGE_REFERENCE));
   }
 
   /**

@@ -16,6 +16,7 @@ import uk.gov.service.notify.NotificationClientException;
 import java.util.UUID;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -57,9 +58,28 @@ public class NotifyRequestReceiverTest {
         ArgumentCaptor<Message> argument = ArgumentCaptor.forClass(Message.class);
         verify(resilienceService, times(1)).update(argument.capture());
         Message message = argument.getValue();
-        assertEquals(NOTIFY_REQUEST_ID.toString(), message.getId().toString());  // TODO we need the toString?
+        assertEquals(NOTIFY_REQUEST_ID, message.getId().toString());
         assertEquals(NOTIFICATION_ID, message.getNotificationId());
     }
 
-    // TODO test for error scenarios
+    /**
+     * Scenario where GOV.UK Notify throws an exception when processing the request
+     *
+     * @throws NotificationClientException when notifyRequestReceiver does
+     */
+    @Test
+    public void testGovUKNotifyException() throws NotificationClientException {
+        when(notifyService.process(any(NotifyRequest.class))).thenThrow(
+                new NotificationClientException(new Exception()));
+
+        NotifyRequest notifyRequest = NotifyRequest.builder().withId(NOTIFY_REQUEST_ID).build();
+        try {
+            notifyRequestReceiver.process(notifyRequest);
+            fail();
+        } catch (NotificationClientException e) {
+        }
+
+        verify(notifyService, times(1)).process(eq(notifyRequest));
+        verify(resilienceService, times(0)).update(any(Message.class));
+    }
 }
