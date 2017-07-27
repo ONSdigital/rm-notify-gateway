@@ -16,9 +16,11 @@ import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -42,6 +44,13 @@ public class NotifyServiceImplTest {
 
   @Mock
   private NotifyConfiguration notifyConfiguration;
+
+  private static final String IAC_KEY = "iac";
+  private static final String IAC_VALUE = "ABCD-EFGH-IJKL-MNOP";
+  private static final String OTHER_FIELD_KEY = "otherfield";
+  private static final String OTHER_FIELD_VALUE = "other,value";
+  private static final String PERSONALISATION_FORMAT_FROM_ORIKA = "{%s=%s, %s=%s}";
+  private static final String PRIVATE_METHOD_NAME = "buildMapFromString";
 
   private static final String NOTIFY_REQUEST_ID = "f3778220-f877-4a3d-80ed-e8fa7d104564";
   private static final String TEMPLATE_ID = "f3778220-f877-4a3d-80ed-e8fa7d104563";
@@ -146,4 +155,66 @@ public class NotifyServiceImplTest {
     verify(notificationClient, times(1)).sendEmail(any(String.class), eq(VALID_EMAIL_ADDRESS),
             any(Map.class),eq(MESSAGE_REFERENCE));
   }
+
+  /**
+   * Happy path with string provided by orika as expected
+   * {iac=ABCD-EFGH-IJKL-MNOP, otherfield=other,value}
+   *
+   * @throws Exception thrown if Java Reflexion issues
+   */
+  @Test
+  public void testBuildMapFromStringHappyPath() throws Exception {
+    Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+    methodUndertest.setAccessible(true);
+    Map<String, String> result = (Map<String, String>)methodUndertest.invoke(notifyService,
+            String.format(PERSONALISATION_FORMAT_FROM_ORIKA, IAC_KEY, IAC_VALUE, OTHER_FIELD_KEY, OTHER_FIELD_VALUE));
+    assertEquals(2, result.size());
+    assertEquals(IAC_VALUE, result.get(IAC_KEY));
+    assertEquals(OTHER_FIELD_VALUE, result.get(OTHER_FIELD_KEY));
+  }
+
+  /**
+   * string provided is null
+   *
+   * @throws Exception thrown if Java Reflexion issues
+   */
+  @Test
+  public void testBuildMapFromStringNullString() throws Exception {
+    Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+    methodUndertest.setAccessible(true);
+    String parameter = null;
+    Map<String, String> result = (Map<String, String>)methodUndertest.invoke(notifyService, parameter);
+    assertNull(result);
+  }
+
+  /**
+   * string provided is empty
+   *
+   * @throws Exception thrown if Java Reflexion issues
+   */
+  @Test
+  public void testBuildMapFromStringEmptyString() throws Exception {
+    Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+    methodUndertest.setAccessible(true);
+    String parameter = "";
+    Map<String, String> result = (Map<String, String>)methodUndertest.invoke(notifyService, parameter);
+    assertNull(result);
+  }
+
+  /**
+   * string provided is in an unexpected format
+   *
+   * @throws Exception thrown if Java Reflexion issues
+   */
+  @Test
+  public void testBuildMapFromStringUnexpectedFormat() throws Exception {
+    Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+    methodUndertest.setAccessible(true);
+    String parameter = "something";
+    Map<String, String> result = (Map<String, String>)methodUndertest.invoke(notifyService, parameter);
+    assertNull(result);
+  }
+
+
+
 }

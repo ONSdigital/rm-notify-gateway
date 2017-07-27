@@ -2,17 +2,16 @@ package uk.gov.ons.ctp.response.notify.service.impl;
 
 import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
 
+import com.google.common.base.Splitter;
+
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import liquibase.util.StringUtils;
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
@@ -131,12 +130,25 @@ public class NotifyServiceImpl implements NotifyService {
      * An example is {iac=ABCD-EFGH-IJKL-MNOP, otherfield=other,value} which was built from
      * "personalisation": {"iac":"ABCD-EFGH-IJKL-MNOP", "otherfield":"other,value"}
      *
+     * TODO Other option = find a way to define a notifyRequest.xsd so a Map field ends up in NotifyRequest.java
+     * TODO http://blog.bdoughan.com/2013/03/jaxb-and-javautilmap.html
+     * TODO http://blog.bdoughan.com/2011/08/xml-schema-to-java-generating.html
+     *
      * @param personalisation the string built originally by orika
      * @return
      */
     private Map<String, String> buildMapFromString(String personalisation) {
-        Map<String, String > result = new LinkedHashMap();
-        // TODO
+        Map<String, String> result = null;
+
+        if (!StringUtils.isEmpty(personalisation)) {
+            try {
+                result = Splitter.on(", ").withKeyValueSeparator("=").split(personalisation.substring(1,
+                        personalisation.length() - 1));
+            } catch (java.lang.IllegalArgumentException e) {
+                log.error("Unexpected personalisation - message is {} - cause is {}", e.getMessage(), e.getCause());
+            }
+        }
+
         return result;
     }
 }
