@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 /**
  * Domain model object
  */
@@ -12,7 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public abstract class NotifyRequestDTO {
+
     private String reference;
 
-    // TODO personalisation
+    private Map<String, String> personalisation;
 }

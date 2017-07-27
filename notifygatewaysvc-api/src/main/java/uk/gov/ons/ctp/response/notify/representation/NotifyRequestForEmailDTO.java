@@ -1,9 +1,6 @@
 package uk.gov.ons.ctp.response.notify.representation;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -12,6 +9,7 @@ import javax.validation.constraints.Pattern;
  * Domain model object
  */
 @Data
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class NotifyRequestForEmailDTO extends NotifyRequestDTO {
