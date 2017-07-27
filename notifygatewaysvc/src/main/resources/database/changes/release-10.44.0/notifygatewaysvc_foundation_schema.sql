@@ -10,7 +10,7 @@ CREATE SEQUENCE messageseq
 
 CREATE TABLE "message" (
     messagepk bigint NOT NULL,
-    id character varying(128),
+    id uuid NOT NULL,
     notificationid character varying(128),
     optlockversion integer DEFAULT 0
 );
