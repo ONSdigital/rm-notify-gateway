@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.MessageEndpoint;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 
@@ -24,6 +26,8 @@ public class ActionFeedbackPublisherImpl implements ActionFeedbackPublisher {
    * To put an ActionFeedback on the queue
    * @param actionFeedback the ActionFeedback to put on the queue
    */
+  @Transactional(propagation = Propagation.REQUIRED)
+  @Override
   public void sendFeedback(ActionFeedback actionFeedback) {
     log.debug("Entering sendFeedback for actionId {}", actionFeedback.getActionId());
     rabbitTemplate.convertAndSend(actionFeedback);

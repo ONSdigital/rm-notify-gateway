@@ -17,5 +17,5 @@
     </bean>
 
     <rabbit:template id="actionFeedbackRabbitTemplate" connection-factory="connectionFactory" exchange="action-outbound-exchange" routing-key="Action.Feedback.binding"
-                     message-converter="actionFeedbackMarshallingMessageConverter" channel-transacted="true"/>
+                     message-converter="actionFeedbackMarshallingMessageConverter" channel-transacted="true" mandatory="true"/>
 </beans>

@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.MessageEndpoint;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
 
@@ -20,6 +22,7 @@ public class NotifyRequestPublisherImpl implements NotifyRequestPublisher {
   @Autowired
   private RabbitTemplate rabbitTemplate;
 
+  @Transactional(propagation = Propagation.REQUIRED)
   @Override
   public void send(NotifyRequest notifyRequest) {
     log.debug("send to queue notifyRequest {}", notifyRequest);

@@ -18,7 +18,6 @@
         <property name="prefetchCount" value="${messaging.prefetchCount}" />
         <property name="txSize" value="${messaging.prefetchCount}" />
         <property name="channelTransacted" value="true" />
-        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <!-- Xml msg is taken off the queue Notify.NotifyRequest and put on the channel notifyRequestXml -->

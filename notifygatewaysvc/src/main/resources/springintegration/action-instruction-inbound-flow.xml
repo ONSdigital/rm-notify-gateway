@@ -11,8 +11,6 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
-
     <bean id="actionInstructionListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
         <property name="queueNames" value="Action.Notify" />
@@ -20,7 +18,6 @@
         <property name="prefetchCount" value="${messaging.prefetchCount}" />
         <property name="txSize" value="${messaging.prefetchCount}" />
         <property name="channelTransacted" value="true" />
-        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <!-- Xml msg is taken off the queue Action.Notify and put on the channel actionInstructionXml -->

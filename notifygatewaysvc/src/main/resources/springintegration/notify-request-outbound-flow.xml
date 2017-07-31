@@ -17,5 +17,5 @@
     </bean>
 
     <rabbit:template id="notifyRequestRabbitTemplate" connection-factory="connectionFactory" exchange="notify-outbound-exchange" routing-key="Notify.NotifyRequest.binding"
-                     message-converter="notifyRequestMarshallingMessageConverter" channel-transacted="true"/>
+                     message-converter="notifyRequestMarshallingMessageConverter" channel-transacted="true" mandatory="true"/>
 </beans>
