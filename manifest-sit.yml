@@ -1,0 +1,10 @@
+applications:
+- name: notifygatewaysvc-sit
+  instances: 1
+  timeout: 180
+  host: notifygatewaysvc-sit
+  memory: 1024M
+  path: notifygatewaysvc/target/notifygatewaysvc.jar
+  services:
+    - rm-pg-db
+    - rm-rabbitmq
