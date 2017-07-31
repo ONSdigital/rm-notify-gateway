@@ -73,8 +73,6 @@
         </property>
     </bean>
 
-    <int:handler-retry-advice id="notifyRequestRetryAdvice" recovery-channel="notifyRequestDlqChannel" max-attempts="${messaging.maxAttempts}"/>
-
     <int:channel id="notifyRequestDlqInterimChannel" />
     <int:transformer input-channel="notifyRequestDlqChannel" output-channel="notifyRequestDlqInterimChannel" expression="payload.failedMessage.payload" />
 
