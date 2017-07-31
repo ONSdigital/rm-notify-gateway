@@ -23,8 +23,7 @@
 
     <!-- Xml msg is taken off the queue Notify.NotifyRequest and put on the channel notifyRequestXml -->
     <int:channel id="notifyRequestXml" />
-    <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
-    <int-amqp:inbound-channel-adapter id="actionInstructionInboundAmqp" listener-container="notifyRequestListenerContainer"
+    <int-amqp:inbound-channel-adapter id="notifyRequestInboundAmqp" listener-container="notifyRequestListenerContainer"
                                       message-converter="simpleMessageConverter" channel="notifyRequestXml" />
 
     <!-- Xml validated against the inbound schema -->

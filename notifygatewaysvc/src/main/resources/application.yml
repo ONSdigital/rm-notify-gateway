@@ -37,6 +37,7 @@ spring:
 logging:
   level:
     uk.gov.ons.ctp: debug
+    org.springframework.amqp: warn
     org.springframework.integration: warn
 
 liquibase:
