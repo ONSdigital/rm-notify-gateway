@@ -6,10 +6,8 @@ import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTI
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.oxm.Marshaller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +32,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   private static final String NOTIFY_GW = "NotifyGateway";
 
   public static final int SITUATION_MAX_LENGTH = 100;
-
-  @Autowired
-  @Qualifier("actionInstructionMarshaller")
-  Marshaller marshaller;
 
   @Autowired
   private NotifyService notifyService;
