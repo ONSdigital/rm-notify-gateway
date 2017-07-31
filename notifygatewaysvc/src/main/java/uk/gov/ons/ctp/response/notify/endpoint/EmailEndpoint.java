@@ -36,22 +36,22 @@ public class EmailEndpoint implements CTPEndpoint {
      * To send an email message using template id
      *
      * @param templateId the GOV.UK Notify email message template id
-     * @param notifyRequestForEmailDTO the NotifyRequestForEmailDTO containing emailAddress and personalisation
+     * @param requestForEmailDTO the NotifyRequestForEmailDTO containing emailAddress and personalisation
      * @param bindingResult the bindingResult used to validate requests
      * @return the created ResponseDTO
      * @throws InvalidRequestException if binding errors
      */
     @RequestMapping(value = "/{templateId}", method = RequestMethod.POST)
     public ResponseEntity<ResponseDTO> sendEmail(@PathVariable("templateId") final String templateId,
-                                                 @RequestBody @Valid final NotifyRequestForEmailDTO notifyRequestForEmailDTO,
+                                                 @RequestBody @Valid final NotifyRequestForEmailDTO requestForEmailDTO,
                                                  BindingResult bindingResult) throws InvalidRequestException {
-        log.debug("Entering sendEmail with templateId {} and requestObject {}", templateId, notifyRequestForEmailDTO);
+        log.debug("Entering sendEmail with templateId {} and requestObject {}", templateId, requestForEmailDTO);
 
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
         }
 
-        NotifyRequest notifyRequest = mapperFacade.map(notifyRequestForEmailDTO, NotifyRequest.class);
+        NotifyRequest notifyRequest = mapperFacade.map(requestForEmailDTO, NotifyRequest.class);
         notifyRequest.setTemplateId(templateId);
 
         return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(

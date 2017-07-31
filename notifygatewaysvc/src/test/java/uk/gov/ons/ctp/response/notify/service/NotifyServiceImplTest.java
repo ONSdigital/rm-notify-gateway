@@ -66,17 +66,20 @@ public class NotifyServiceImplTest {
    */
   @Test
   public void testProcessActionRequestHappyPath() throws CTPException, NotificationClientException {
-    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
+    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
+            any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
 
-    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER, true));
+    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
+            PHONENUMBER, true));
     assertEquals(ACTION_ID, result.getActionId());
     assertEquals(NOTIFY_SMS_SENT, result.getSituation());
     assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
 
     HashMap<String, String> personalisation = new HashMap<>();
     personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER), eq(personalisation),any(String.class));
+    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
+            eq(personalisation), any(String.class));
   }
 
   /**
@@ -87,7 +90,8 @@ public class NotifyServiceImplTest {
   @Test
   public void testProcessSendSmsException() throws NotificationClientException {
     NotificationClientException exception = new NotificationClientException(new Exception());
-    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class), any(String.class))).thenThrow(exception);
+    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class),
+            any(String.class))).thenThrow(exception);
 
     boolean exceptionThrown = false;
     try {
@@ -99,7 +103,8 @@ public class NotifyServiceImplTest {
     }
 
     assertTrue(exceptionThrown);
-    verify(notificationClient, times(1)).sendSms(any(String.class), any(String.class), any(HashMap.class), any(String.class));
+    verify(notificationClient, times(1)).sendSms(any(String.class), any(String.class),
+            any(HashMap.class), any(String.class));
   }
 
   /**
@@ -127,7 +132,7 @@ public class NotifyServiceImplTest {
     personalisation.put(IAC_KEY, IAC_VALUE);
     personalisation.put(OTHER_FIELD_KEY, OTHER_FIELD_VALUE);
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(VALID_PHONE_NUMBER),
-            eq(personalisation),eq(MESSAGE_REFERENCE));
+            eq(personalisation), eq(MESSAGE_REFERENCE));
   }
 
   /**
@@ -155,7 +160,7 @@ public class NotifyServiceImplTest {
     personalisation.put(IAC_KEY, IAC_VALUE);
     personalisation.put(OTHER_FIELD_KEY, OTHER_FIELD_VALUE);
     verify(notificationClient, times(1)).sendEmail(any(String.class), eq(VALID_EMAIL_ADDRESS),
-            eq(personalisation),eq(MESSAGE_REFERENCE));
+            eq(personalisation), eq(MESSAGE_REFERENCE));
   }
 
   /**
@@ -168,7 +173,7 @@ public class NotifyServiceImplTest {
   public void testBuildMapFromStringHappyPath() throws Exception {
     Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
-    Map<String, String> result = (Map<String, String>)methodUndertest.invoke(notifyService,
+    Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService,
             String.format(PERSONALISATION_FORMAT_FROM_ORIKA, IAC_KEY, IAC_VALUE, OTHER_FIELD_KEY, OTHER_FIELD_VALUE));
     assertEquals(2, result.size());
     assertEquals(IAC_VALUE, result.get(IAC_KEY));
@@ -185,7 +190,7 @@ public class NotifyServiceImplTest {
     Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = null;
-    Map<String, String> result = (Map<String, String>)methodUndertest.invoke(notifyService, parameter);
+    Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
     assertNull(result);
   }
 
@@ -199,7 +204,7 @@ public class NotifyServiceImplTest {
     Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = "";
-    Map<String, String> result = (Map<String, String>)methodUndertest.invoke(notifyService, parameter);
+    Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
     assertNull(result);
   }
 
@@ -213,7 +218,7 @@ public class NotifyServiceImplTest {
     Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = "something";
-    Map<String, String> result = (Map<String, String>)methodUndertest.invoke(notifyService, parameter);
+    Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
     assertNull(result);
   }
 

@@ -46,7 +46,7 @@ public class StatusEndpoint {
     public static final String ERRORMSG_NOTIFICATION_NOTFOUND = "Notification not found for message id %s";
 
     /**
-     * To retrive the GOV.UK Notify Notification associated with the given messageId
+     * To retrieve the GOV.UK Notify Notification associated with the given messageId
      *
      * @param messageId to search for
      * @return the associated NotificationDTO

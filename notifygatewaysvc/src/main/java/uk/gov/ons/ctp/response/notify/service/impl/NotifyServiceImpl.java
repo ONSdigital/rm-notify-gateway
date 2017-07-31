@@ -57,8 +57,8 @@ public class NotifyServiceImpl implements NotifyService {
             Map<String, String> personalisation = new HashMap<>();
             personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
 
-            log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for " +
-                            "actionId = {}", templateId, phoneNumber, personalisation, actionId);
+            log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for "
+                    + "actionId = {}", templateId, phoneNumber, personalisation, actionId);
             SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation,
                     null);
 
@@ -98,11 +98,7 @@ public class NotifyServiceImpl implements NotifyService {
                     templateId, phoneNumber, personalisationMap);
             SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisationMap,
                     reference);
-            if (log.isDebugEnabled()) {
-                log.debug("status = {}", notificationClient.getNotificationById(response.getNotificationId().
-                        toString()).getStatus());
-            }
-
+            log.debug("response = {}", response);
             return response.getNotificationId();
         } else {
             // The xsd enforces to have either a phoneNumber OR an emailAddress
@@ -110,11 +106,7 @@ public class NotifyServiceImpl implements NotifyService {
                     templateId , emailAddress, personalisationMap);
             SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress, personalisationMap,
                     reference);
-            if (log.isDebugEnabled()) {
-                log.debug("status = {}", notificationClient.getNotificationById(response.getNotificationId().
-                        toString()).getStatus());
-            }
-
+            log.debug("response = {}", response);
             return response.getNotificationId();
         }
     }
@@ -135,7 +127,7 @@ public class NotifyServiceImpl implements NotifyService {
      * TODO http://blog.bdoughan.com/2011/08/xml-schema-to-java-generating.html
      *
      * @param personalisation the string built originally by orika
-     * @return
+     * @return the Map
      */
     private Map<String, String> buildMapFromString(String personalisation) {
         Map<String, String> result = null;
