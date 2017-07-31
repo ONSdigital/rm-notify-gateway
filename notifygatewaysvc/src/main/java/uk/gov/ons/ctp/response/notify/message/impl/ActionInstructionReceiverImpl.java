@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
@@ -23,6 +22,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
+import uk.gov.service.notify.NotificationClientException;
 
 /**
  * The service that reads ActionInstructions from the inbound channel
@@ -32,7 +32,6 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 public class ActionInstructionReceiverImpl implements ActionInstructionReceiver {
 
   private static final String NOTIFY_GW = "NotifyGateway";
-  private static final String PROCESS_INSTRUCTION = "ProcessingInstruction";
 
   public static final int SITUATION_MAX_LENGTH = 100;
 
@@ -53,7 +52,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
-  public void processInstruction(final ActionInstruction instruction) throws CTPException {
+  public void processInstruction(final ActionInstruction instruction) throws NotificationClientException {
     log.debug("entering process with instruction {}", instruction);
 
     ActionRequest actionRequest = instruction.getActionRequest();

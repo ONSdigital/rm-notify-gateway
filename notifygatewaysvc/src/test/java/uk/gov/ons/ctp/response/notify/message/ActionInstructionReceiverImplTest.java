@@ -6,13 +6,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
+import uk.gov.service.notify.NotificationClientException;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class ActionInstructionReceiverImplTest {
   private NotifyService notifyService;
 
   @Test
-  public void testProcessInstructionHappyPath() throws CTPException {
+  public void testProcessInstructionHappyPath() throws NotificationClientException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
             NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
             NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
@@ -75,7 +75,7 @@ public class ActionInstructionReceiverImplTest {
   }
 
   @Test
-  public void testProcessInstructionInvalidPhoneNumber() throws CTPException {
+  public void testProcessInstructionInvalidPhoneNumber() throws NotificationClientException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
             NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
             NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
@@ -111,7 +111,7 @@ public class ActionInstructionReceiverImplTest {
   }
 
   @Test
-  public void testProcessInstructionPhoneNumberForCtpa1170() throws CTPException {
+  public void testProcessInstructionPhoneNumberForCtpa1170() throws NotificationClientException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
             NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
                     NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
@@ -143,7 +143,7 @@ public class ActionInstructionReceiverImplTest {
   }
 
   @Test
-  public void testProcessInstructionPhoneNumberMultipleSpacesAndParentheses() throws CTPException {
+  public void testProcessInstructionPhoneNumberMultipleSpacesAndParentheses() throws NotificationClientException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
             NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
                     NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
@@ -175,8 +175,8 @@ public class ActionInstructionReceiverImplTest {
   }
 
   @Test
-  public void testProcessInstructionNotifyThrowsException() throws CTPException {
-    CTPException exception = new CTPException(CTPException.Fault.SYSTEM_ERROR);
+  public void testProcessInstructionNotifyThrowsException() throws NotificationClientException {
+    NotificationClientException exception = new NotificationClientException(new Exception());
     when(notifyService.process(any(ActionRequest.class))).thenThrow(exception);
 
     try {
@@ -184,8 +184,7 @@ public class ActionInstructionReceiverImplTest {
               ObjectBuilder.buildActionInstruction(
                       "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742994131", true));
       fail();
-    } catch (CTPException e) {
-      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
+    } catch (NotificationClientException e) {
     }
 
     verify(notifyService, times(1)).process(any(ActionRequest.class));

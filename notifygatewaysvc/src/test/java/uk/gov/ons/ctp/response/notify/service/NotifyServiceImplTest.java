@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -80,31 +79,6 @@ public class NotifyServiceImplTest {
     personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
             eq(personalisation), any(String.class));
-  }
-
-  /**
-   * To test the processing of an ActionRequest when an exception is received from GOV.UK Notify
-   *
-   * @throws NotificationClientException when notificationClient does
-   */
-  @Test
-  public void testProcessSendSmsException() throws NotificationClientException {
-    NotificationClientException exception = new NotificationClientException(new Exception());
-    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class), any(HashMap.class),
-            any(String.class))).thenThrow(exception);
-
-    boolean exceptionThrown = false;
-    try {
-      notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER, true));
-    } catch(CTPException e) {
-      exceptionThrown = true;
-      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
-      assertTrue(e.getMessage().startsWith(EXCEPTION_NOTIFY_SERVICE));
-    }
-
-    assertTrue(exceptionThrown);
-    verify(notificationClient, times(1)).sendSms(any(String.class), any(String.class),
-            any(HashMap.class), any(String.class));
   }
 
   /**

@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.notify.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
@@ -23,7 +24,7 @@ public class ResilienceServiceImpl implements ResilienceService {
     @Autowired
     private NotifyRequestPublisher notifyRequestPublisher;
 
-    @Transactional(readOnly = false)
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     @Override
     public Response process(NotifyRequest notifyRequest) {
         String templateId = notifyRequest.getTemplateId();

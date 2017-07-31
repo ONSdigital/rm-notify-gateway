@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.notify.service;
 
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
@@ -18,9 +17,9 @@ public interface NotifyService {
    *
    * @param actionRequest to be processed
    * @return the associated ActionFeedback
-   * @throws CTPException if GOV.UK Notify gives an issue
+   * @throws NotificationClientException if GOV.UK Notify gives an issue
    */
-  ActionFeedback process(ActionRequest actionRequest) throws CTPException;
+  ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException;
 
   /**
    * To process a NotifyRequest. It sends an SMS or an email using GOV.UK Notify.
