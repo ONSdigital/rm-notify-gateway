@@ -4,21 +4,24 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.gov.ons.ctp.product</groupId>
   <artifactId>notifygatewayservice</artifactId>
-  <version>10.44.0-SNAPSHOT</version>
+  <version>10.45.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>CTP : NotifyGatewayService</name>
   <description>CTP : NotifyGatewayService</description>
 
   <properties>
-    <commonbom.version>10.41.0-SNAPSHOT</commonbom.version>
-    <skip.integration.tests>true</skip.integration.tests>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
-    <java.version>1.8</java.version>
+    <commonbom.version>10.45.0-SNAPSHOT</commonbom.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
+
+  <!-- Section below required to inherit plugins version & config -->
+  <parent>
+    <groupId>uk.gov.ons.ctp.product</groupId>
+    <artifactId>rm-common-config</artifactId>
+    <version>10.45.0-SNAPSHOT</version>
+  </parent>
 
   <modules>
     <module>notifygatewaysvc</module>
@@ -44,149 +47,26 @@
   </scm>
 
   <build>
-  <pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>uk.gov.ons.ctp.product</groupId>
-        <artifactId>rm-common-config</artifactId>
-        <version>${commonbom.version}</version>
-      </plugin>
-    </plugins>
-  </pluginManagement>
-
     <defaultGoal>clean install</defaultGoal>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19.1</version>
-        <configuration>
-          <properties>
-            <property>
-              <name>junit</name>
-              <value>false</value>
-            </property>
-          </properties>
-          <threadCount>1</threadCount>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>2.19.1</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-testng</artifactId>
-            <version>2.19.1</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <!-- required for integration tests -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <!-- IMPORTANT: old version used below because https://github.com/spring-projects/spring-boot/issues/6254
-          Once a newer version than 2.19.1 is developed, try to move to it. -->
-        <version>2.18.1</version>
-        <configuration>
-          <skipTests>${skip.integration.tests}</skipTests>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-        </configuration>
-        <version>2.17</version>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>6.16.1</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>test</id>
-            <phase>test</phase>
-            <configuration>
-              <configLocation>https://raw.githubusercontent.com/ONSdigital/rm-common-config/master/checkstyle/ons-checkstyle-config.xml</configLocation>
-              <encoding>UTF-8</encoding>
-              <consoleOutput>true</consoleOutput>
-              <failsOnError>true</failsOnError>
-            </configuration>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>buildnumber-maven-plugin</artifactId>
-        <version>1.4</version>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>create</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
-          <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm:ss'Z'}</timestampFormat>
-          <items>
-            <item>timestamp</item>
-          </items>
-        </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.9</version>
-        <configuration>
-          <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.7</version>
-        <configuration>
-          <quiet>true</quiet>
-          <formats>
-            <format>html</format>
-          </formats>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <profiles>
     <profile>
