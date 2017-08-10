@@ -3,6 +3,8 @@
 # Notify Gateway Service
 This repository contains the Notify Gateway service. This microservice is a web service implemented using [Spring Boot](http://projects.spring.io/spring-boot/). It provides a wrapper around [GOV.UK Notify](https://www.notifications.service.gov.uk/), offering both a RESTful and queue interface to clients.
 
+The Notify Gateway provides an interface for Response Management to send communications to users using the [GOV.UK Notify](https://www.gov.uk/government/publications/govuk-notify/govuk-notify) service. It is implemented using [Spring Boot](http://projects.spring.io/spring-boot/).
+
 ## Running
     mvn clean install
     cd notifygatewaysvc
