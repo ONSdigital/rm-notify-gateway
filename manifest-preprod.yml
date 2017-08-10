@@ -1,0 +1,10 @@
+applications:
+- name: notifygatewaysvc-preprod
+  instances: 1
+  timeout: 180
+  host: notifygatewaysvc-preprod
+  memory: 1024M
+  path: target/notifygatewaysvc.jar
+  services:
+    - rm-notifygateway-db
+    - rm-rabbitmq
