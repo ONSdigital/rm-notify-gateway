@@ -4,7 +4,7 @@ applications:
   timeout: 180
   host: notifygatewaysvc-demo
   memory: 1024M
-  path: notifygatewaysvc/target/notifygatewaysvc.jar
+  path: target/notifygatewaysvc.jar
   services:
     - rm-pg-db
     - rm-rabbitmq
