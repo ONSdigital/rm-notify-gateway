@@ -1,0 +1,10 @@
+applications:
+- name: notifygatewaysvc-SPACE
+  instances: INSTANCES
+  timeout: 180
+  host: notifygatewaysvc-SPACE
+  memory: 1024M
+  path: target/notifygatewaysvc.jar
+  services:
+    - DATABASE
+    - rm-rabbitmq
