@@ -8,3 +8,6 @@ applications:
   services:
     - DATABASE
     - rm-rabbitmq
+  env:
+    endpoints_enabled: ENDPOINT_ENABLED
+    endpoints_info_enabled: true
