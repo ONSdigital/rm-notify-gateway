@@ -41,10 +41,11 @@ liquibase:
 
 security:
   basic:
-    enabled: false
+    enabled: true
+    realm: sdc
   user:
-    name: notifygw
-    password: ctp
+    name: admin
+    password: secret
 
 management:
   security:
