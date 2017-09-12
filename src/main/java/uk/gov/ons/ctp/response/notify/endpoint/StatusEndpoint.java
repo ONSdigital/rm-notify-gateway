@@ -74,6 +74,7 @@ public class StatusEndpoint {
                 } catch (NotificationClientException e) {
                     String errorMsg = String.format(ERRORMSG_NOTIFICATION_ISSUE, e.getMessage(), e.getCause());
                     log.error(errorMsg);
+                    log.error("Stack trace: " + e);
                     throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
                 }
             } else {
