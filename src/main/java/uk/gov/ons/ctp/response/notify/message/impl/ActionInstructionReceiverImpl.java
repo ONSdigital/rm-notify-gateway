@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
+import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForEmailDTO.EMAIL_ADDRESS_REGEX;
 import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForSMSDTO.TELEPHONE_REGEX;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 
@@ -80,7 +81,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   }
 
   /**
-   * To tidy up phone number within an ActionRequest as we have got no control on the regex expressions used upstream
+   * To tidy up phone number & email address within an ActionRequest as we have got no control on the upstream
    *
    * @param actionRequest the ActionRequest to tidy up
    * @return the tidied ActionRequest
@@ -90,28 +91,54 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     if (actionContact != null) {
       String phoneNumber = actionContact.getPhoneNumber();
       if (phoneNumber != null) {
-        phoneNumber = phoneNumber.replaceAll("\\s+","");  // removes all whitespaces and non-visible characters (e.g., tab, \n).
-        phoneNumber = phoneNumber.replaceAll("\\(", "");
-        phoneNumber = phoneNumber.replaceAll("\\)", "");
-        actionContact.setPhoneNumber(phoneNumber);
-        actionRequest.setContact(actionContact);
+        // TODO For BRES, currently removing the number to stop any SMS being sent. Plan for when we go back to Census?
+//        phoneNumber = phoneNumber.replaceAll("\\s+","");  // removes all whitespaces and non-visible characters (e.g., tab, \n).
+//        phoneNumber = phoneNumber.replaceAll("\\(", "");
+//        phoneNumber = phoneNumber.replaceAll("\\)", "");
+//        actionContact.setPhoneNumber(phoneNumber);
+        actionContact.setPhoneNumber(null);
       }
+
+      String emailAddress = actionContact.getEmailAddress();
+      if (emailAddress != null) {
+        actionContact.setEmailAddress(emailAddress.trim());
+      }
+
+      actionRequest.setContact(actionContact);
     }
+
     return actionRequest;
   }
 
   /**
-   * This validates the phone number in the given ActionRequest
+   * This validates the phone number (Census) or the email address (BRES) in the given ActionRequest
    * @param actionRequest the ActionRequest
-   * @return true if the phone number is valid
+   * @return true if the phone number or the email address is valid
    */
   private boolean validate(ActionRequest actionRequest) {
     boolean result = false;
-    if (actionRequest != null && actionRequest.getContact() != null) {
-      String phoneNumber = actionRequest.getContact().getPhoneNumber();
-      Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
-      result = pattern.matcher(phoneNumber).matches();
+
+    if (actionRequest != null) {
+      ActionContact actionContact = actionRequest.getContact();
+      if (actionContact != null) {
+        String phoneNumber = actionContact.getPhoneNumber();
+        log.debug("phoneNumber is {}", phoneNumber);
+        if (phoneNumber == null) {
+          // BRES scenario
+          String emailAddress = actionContact.getEmailAddress();
+          log.debug("emailAddress is {}", emailAddress);
+          if (emailAddress != null) {
+            Pattern pattern = Pattern.compile(EMAIL_ADDRESS_REGEX);
+            result = pattern.matcher(emailAddress).matches();
+          }
+        } else {
+          // Census scenario
+          Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
+          result = pattern.matcher(phoneNumber).matches();
+        }
+      }
     }
+
     return result;
   }
 }

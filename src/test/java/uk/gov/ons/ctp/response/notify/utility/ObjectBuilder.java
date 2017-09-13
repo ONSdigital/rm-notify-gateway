@@ -14,10 +14,12 @@ import java.math.BigDecimal;
 public class ObjectBuilder {
 
   public static final String ACTION_ID = "9a5f2be5-f944-41f9-982c-3517cfcfef3c";
+  public static final String EMAIL_ADDRESS = "philippe.brossier@ons.gov.uk";
   public static final String FORENAME = "Joe";
   public static final String IAC_AS_DISPLAYED_IN_SMS = "123A BC45 6DEF";
   public static final String IAC_AS_STORED_IN_DB = "123abc456def";
-  public static final String INVALIDPHONENUMBER = "0798567515";
+  public static final String INVALID_EMAIL_ADDRESS = "@random";
+  public static final String INVALID_PHONENUMBER = "0798567515";
   public static final String NOTIFICATION_ID = "067e6162-3b6f-4ae2-a171-2470b63dff00";
   public static final String PHONENUMBER = "07985675157";
   public static final String REFERENCE = "Test text message";
@@ -42,7 +44,7 @@ public class ObjectBuilder {
    * This builds an ActionInstruction.
    *
    * @param actionId is the actionId
-   * @param params is a String containing first name, surname, telephoneNumber
+   * @param params is a String containing first name, surname, telephoneNumber, email address
    * @param valid true if valid ActionInstruction
    * @return an ActionInstruction
    */
@@ -50,7 +52,7 @@ public class ObjectBuilder {
     ActionInstruction actionInstruction = new ActionInstruction();
     String[] paramsArray = params.split(",");
     actionInstruction.setActionRequest(buildActionRequest(actionId, paramsArray[0], paramsArray[1], paramsArray[2],
-            valid));
+        paramsArray[3], valid));
     return actionInstruction;
   }
 
@@ -64,7 +66,7 @@ public class ObjectBuilder {
    * @return
    */
   public static ActionRequest buildActionRequest(String actionId, String forename, String surname, String phoneNumber,
-                                                 boolean valid) {
+                                                 String emailAddress, boolean valid) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setResponseRequired(true);
     actionRequest.setActionId(actionId);
@@ -72,6 +74,7 @@ public class ObjectBuilder {
     actionContact.setForename(forename);
     actionContact.setSurname(surname);
     actionContact.setPhoneNumber(phoneNumber);
+    actionContact.setEmailAddress(emailAddress);
     actionRequest.setContact(actionContact);
     if (valid) {
       actionRequest.setActionPlan(ACTION_PLAN);

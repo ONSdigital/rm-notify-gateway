@@ -4,12 +4,7 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.ACTION_ID;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.FORENAME;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.INVALIDPHONENUMBER;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.PHONENUMBER;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.SURNAME;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildActionRequest;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +34,7 @@ public class NotifyServiceImplITManualCase {
   @Test
   public void testProcessHappyPath() throws NotificationClientException {
     ActionFeedback actionFeedback = notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER,
-            true));
+        EMAIL_ADDRESS, true));
     assertNotNull(actionFeedback);
     assertEquals(ACTION_ID, actionFeedback.getActionId());
     assertEquals(Outcome.REQUEST_COMPLETED, actionFeedback.getOutcome());
@@ -49,7 +44,7 @@ public class NotifyServiceImplITManualCase {
   @Test
   public void testProcessInvalidPhoneNumber() throws NotificationClientException {
     ActionFeedback actionFeedback = notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME,
-            INVALIDPHONENUMBER, true));
+        INVALID_PHONENUMBER, INVALID_EMAIL_ADDRESS,true));
     assertNotNull(actionFeedback);
     assertEquals(ACTION_ID, actionFeedback.getActionId());
     assertEquals(Outcome.REQUEST_COMPLETED, actionFeedback.getOutcome());

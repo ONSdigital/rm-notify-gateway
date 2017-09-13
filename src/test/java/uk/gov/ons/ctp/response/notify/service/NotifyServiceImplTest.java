@@ -57,29 +57,29 @@ public class NotifyServiceImplTest {
   private static final String VALID_PHONE_NUMBER = "01234567890";
   private static final String MESSAGE_REFERENCE = "the reference";
 
-  /**
-   * To test the happy path when processing an ActionRequest
-   *
-   * @throws CTPException when notifyService.process does
-   * @throws NotificationClientException when notificationClient does
-   */
-  @Test
-  public void testProcessActionRequestHappyPath() throws CTPException, NotificationClientException {
-    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
-            any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
-
-    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
-            PHONENUMBER, true));
-    assertEquals(ACTION_ID, result.getActionId());
-    assertEquals(NOTIFY_SMS_SENT, result.getSituation());
-    assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
-
-    HashMap<String, String> personalisation = new HashMap<>();
-    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
-            eq(personalisation), any(String.class));
-  }
+//  /**
+//   * To test the happy path when processing an ActionRequest for Census.
+//   *
+//   * @throws CTPException when notifyService.process does
+//   * @throws NotificationClientException when notificationClient does
+//   */
+//  @Test
+//  public void testProcessActionRequestHappyPath() throws CTPException, NotificationClientException {
+//    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
+//            any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
+//    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
+//
+//    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
+//            PHONENUMBER, true));
+//    assertEquals(ACTION_ID, result.getActionId());
+//    assertEquals(NOTIFY_SMS_SENT, result.getSituation());
+//    assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
+//
+//    HashMap<String, String> personalisation = new HashMap<>();
+//    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
+//    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
+//            eq(personalisation), any(String.class));
+//  }
 
   /**
    * To test the happy path when processing a NotifyRequest (SMS scenario)
@@ -195,7 +195,4 @@ public class NotifyServiceImplTest {
     Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
     assertNull(result);
   }
-
-
-
 }

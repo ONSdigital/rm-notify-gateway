@@ -38,6 +38,7 @@ public class NotifyServiceImpl implements NotifyService {
 
     public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
     public static final String IAC_KEY = "iac";
+    public static final String NOTIFY_EMAIL_SENT = "Notify Email Sent";
     public static final String NOTIFY_SMS_NOT_SENT = "Notify Sms Not Sent";
     public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
