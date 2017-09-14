@@ -14,7 +14,8 @@ import java.math.BigDecimal;
 public class ObjectBuilder {
 
   public static final String ACTION_ID = "9a5f2be5-f944-41f9-982c-3517cfcfef3c";
-  public static final String EMAIL_ADDRESS = "bp@gmail.com";
+  public static final String EMAIL = "email";
+  public static final String EMAIL_ADDRESS = "tester@gmail.com";
   public static final String FORENAME = "Joe";
   public static final String IAC_AS_DISPLAYED_IN_SMS = "123A BC45 6DEF";
   public static final String IAC_AS_STORED_IN_DB = "123abc456def";
@@ -23,10 +24,16 @@ public class ObjectBuilder {
   public static final String NOTIFICATION_ID = "067e6162-3b6f-4ae2-a171-2470b63dff00";
   public static final String PHONENUMBER = "07985675147";
   public static final String REFERENCE = "Test text message";
+  public static final String RETURN_BY_DATE = "13/09/2017";
+  public static final String RU_NAME = "Tesco";
+  public static final String SAMPLE_UNIT_REF = "201201201201";
   public static final String SENT = "sent";
   public static final String SMS = "sms";
   public static final String SURNAME = "Blogg";
+  public static final String SURVEY_NAME = "BRES 2017";
+  public static final String SURVEY_REF = "221";
   public static final String TEMPLATE_ID = "966731dc-ef2e-41ad-a828-8cdd95c81ebc";
+  public static final String TRADING_STYLE = "Ltd";
 
   private static final BigDecimal LATITYUDE = new BigDecimal("1000.00");
   private static final BigDecimal LONGITUDE = new BigDecimal("1000.00");
@@ -38,12 +45,6 @@ public class ObjectBuilder {
   private static final String NOTIFY = "notify";
   private static final String POSTCODE = "PO157RR";
   private static final String QUESTION_SET = "simple";
-  private static final String RETURN_BY_DATE = "13/09/2017";
-  private static final String RU_NAME = "Tesco";
-  private static final String SAMPLE_UNIT_REF = "201201201201";
-  private static final String SURVEY_NAME = "BRES 2017";
-  private static final String SURVEY_REF = "221";
-  private static final String TRADING_STYLE = "Ltd";
 
   /**
    * This builds an ActionInstruction.
@@ -151,5 +152,22 @@ public class ObjectBuilder {
             "\t\"status\": \"" + SENT + "\",\n" +
             "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
             "}");
+  }
+
+  public static Notification buildNotificationForEmail() {
+    return new Notification("{\n" +
+        "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
+        "\t\"reference\": \"" + REFERENCE + "\",\n" +
+        "\t\"email_address\": \"" + EMAIL_ADDRESS + "\",\n" +
+        "\t\"type\": \"" + EMAIL + "\",\n" +
+        "\t\"template\": {\n" +
+        "\t\t\"id\": \"" + TEMPLATE_ID + "\",\n" +
+        "\t\t\"version\": 1,\n" +
+        "\t\t\"uri\": \"theUri\"\n" +
+        "\t},\n" +
+        "\t\"body\": \"theBody\",\n" +
+        "\t\"status\": \"" + SENT + "\",\n" +
+        "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
+        "}");
   }
 }

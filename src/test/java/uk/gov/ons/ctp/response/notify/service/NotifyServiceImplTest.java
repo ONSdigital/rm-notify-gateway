@@ -57,29 +57,60 @@ public class NotifyServiceImplTest {
   private static final String VALID_PHONE_NUMBER = "01234567890";
   private static final String MESSAGE_REFERENCE = "the reference";
 
-//  /**
-//   * To test the happy path when processing an ActionRequest for Census.
-//   *
-//   * @throws CTPException when notifyService.process does
-//   * @throws NotificationClientException when censusNotificationClient does
-//   */
-//  @Test
-//  public void testProcessActionRequestHappyPath() throws CTPException, NotificationClientException {
-//    Mockito.when(censusNotificationClient.sendSms(any(String.class), any(String.class),
-//            any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
-//    Mockito.when(censusNotificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
-//
-//    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
-//            PHONENUMBER, true));
-//    assertEquals(ACTION_ID, result.getActionId());
-//    assertEquals(NOTIFY_SMS_SENT, result.getSituation());
-//    assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
-//
-//    HashMap<String, String> personalisation = new HashMap<>();
-//    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-//    verify(censusNotificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
-//            eq(personalisation), any(String.class));
-//  }
+  /**
+   * To test the happy path when processing an ActionRequest for SMS. Note emailAddress is at null.
+   *
+   * @throws CTPException when notifyService.process does
+   * @throws NotificationClientException when censusNotificationClient does
+   */
+  @Test
+  public void testProcessActionRequestHappyPathSMS() throws CTPException, NotificationClientException {
+    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
+            any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
+    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
+
+    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
+            PHONENUMBER, null, true));
+    assertEquals(ACTION_ID, result.getActionId());
+    assertEquals(NOTIFY_SMS_SENT, result.getSituation());
+    assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
+
+    HashMap<String, String> personalisation = new HashMap<>();
+    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
+    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
+            eq(personalisation), any(String.class));
+  }
+
+  /**
+   * To test the happy path when processing an ActionRequest for Email. Note phonenumber is at null.
+   *
+   * @throws CTPException when notifyService.process does
+   * @throws NotificationClientException when censusNotificationClient does
+   */
+  @Test
+  public void testProcessActionRequestHappyPathEmail() throws CTPException, NotificationClientException {
+    Mockito.when(notificationClient.sendEmail(any(String.class), any(String.class),
+        any(HashMap.class),any(String.class))).thenReturn(buildSendEmailResponse());
+    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForEmail());
+
+    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
+        null, EMAIL_ADDRESS, true));
+    assertEquals(ACTION_ID, result.getActionId());
+    assertEquals(NOTIFY_EMAIL_SENT, result.getSituation());
+    assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
+
+    HashMap<String, String> personalisation = new HashMap<>();
+    personalisation.put(REPORTING_UNIT_REF_KEY, SAMPLE_UNIT_REF);
+    personalisation.put(SURVEY_NAME_KEY, SURVEY_NAME);
+    personalisation.put(SURVEY_ID_KEY, SURVEY_REF);
+    personalisation.put(FIRSTNAME_KEY, FORENAME);
+    personalisation.put(LASTNAME_KEY, SURNAME);
+    personalisation.put(RU_NAME_KEY, RU_NAME);
+    personalisation.put(TRADING_STYLE_KEY, TRADING_STYLE);
+    personalisation.put(RETURN_BY_DATE_KEY, RETURN_BY_DATE);
+    verify(notificationClient, times(1)).sendEmail(any(String.class), eq(EMAIL_ADDRESS),
+        eq(personalisation), any(String.class));
+  }
 
   /**
    * To test the happy path when processing a NotifyRequest (SMS scenario)

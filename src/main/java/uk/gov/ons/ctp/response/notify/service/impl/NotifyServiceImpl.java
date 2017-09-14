@@ -184,8 +184,8 @@ public class NotifyServiceImpl implements NotifyService {
 
         SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
             personalisation, null);
-        log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
-            response.getNotificationId().toString()).getStatus(), actionId);
+        Notification notif = notificationClient.getNotificationById(response.getNotificationId().toString());
+        log.debug("status = {} for actionId = {}", notif.getStatus(), actionId);
 
         return new ActionFeedback(actionId,
             NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
