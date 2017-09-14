@@ -55,18 +55,17 @@ public class NotifyServiceImpl implements NotifyService {
         String actionId = actionRequest.getActionId();
         log.debug("Entering process with actionId {}", actionId);
 
+        ActionFeedback actionFeedback;
+
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
         if (phoneNumber != null) {
-            processSms(actionRequest);
+            actionFeedback = processSms(actionRequest);
         } else {
-            processEmail(actionRequest);
+            actionFeedback = processEmail(actionRequest);
         }
 
-        return new ActionFeedback(actionId,
-                    NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
-                            NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
-                    Outcome.REQUEST_COMPLETED);
+        return actionFeedback;
     }
 
     @Override
@@ -133,9 +132,10 @@ public class NotifyServiceImpl implements NotifyService {
      * To process actionRequest for SMS
      *
      * @param actionRequest to process for SMS
+     * @return the ActionFeedback
      * @throws NotificationClientException
      */
-    private void processSms(ActionRequest actionRequest) throws NotificationClientException {
+    private ActionFeedback processSms(ActionRequest actionRequest) throws NotificationClientException {
         String actionId = actionRequest.getActionId();
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
@@ -151,6 +151,10 @@ public class NotifyServiceImpl implements NotifyService {
         log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
             response.getNotificationId().toString()).getStatus(), actionId);
 
+        return new ActionFeedback(actionId,
+            NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
+                NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
+            Outcome.REQUEST_COMPLETED);
     }
 
     /**
@@ -159,7 +163,7 @@ public class NotifyServiceImpl implements NotifyService {
      * @param actionRequest to process for Email
      * @throws NotificationClientException
      */
-    private void processEmail(ActionRequest actionRequest) throws NotificationClientException {
+    private ActionFeedback processEmail(ActionRequest actionRequest) throws NotificationClientException {
         String actionId = actionRequest.getActionId();
         ActionContact actionContact = actionRequest.getContact();
 
@@ -182,5 +186,10 @@ public class NotifyServiceImpl implements NotifyService {
             personalisation, null);
         log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
             response.getNotificationId().toString()).getStatus(), actionId);
+
+        return new ActionFeedback(actionId,
+            NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
+                NOTIFY_EMAIL_SENT : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH),
+            Outcome.REQUEST_COMPLETED);
     }
 }

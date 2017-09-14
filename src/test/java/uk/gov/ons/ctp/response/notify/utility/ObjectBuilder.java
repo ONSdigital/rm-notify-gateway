@@ -14,14 +14,14 @@ import java.math.BigDecimal;
 public class ObjectBuilder {
 
   public static final String ACTION_ID = "9a5f2be5-f944-41f9-982c-3517cfcfef3c";
-  public static final String EMAIL_ADDRESS = "philippe.brossier@ons.gov.uk";
+  public static final String EMAIL_ADDRESS = "bp@gmail.com";
   public static final String FORENAME = "Joe";
   public static final String IAC_AS_DISPLAYED_IN_SMS = "123A BC45 6DEF";
   public static final String IAC_AS_STORED_IN_DB = "123abc456def";
   public static final String INVALID_EMAIL_ADDRESS = "@random";
   public static final String INVALID_PHONENUMBER = "0798567515";
   public static final String NOTIFICATION_ID = "067e6162-3b6f-4ae2-a171-2470b63dff00";
-  public static final String PHONENUMBER = "07985675157";
+  public static final String PHONENUMBER = "07985675147";
   public static final String REFERENCE = "Test text message";
   public static final String SENT = "sent";
   public static final String SMS = "sms";
@@ -38,7 +38,12 @@ public class ObjectBuilder {
   private static final String NOTIFY = "notify";
   private static final String POSTCODE = "PO157RR";
   private static final String QUESTION_SET = "simple";
+  private static final String RETURN_BY_DATE = "13/09/2017";
+  private static final String RU_NAME = "Tesco";
   private static final String SAMPLE_UNIT_REF = "201201201201";
+  private static final String SURVEY_NAME = "BRES 2017";
+  private static final String SURVEY_REF = "221";
+  private static final String TRADING_STYLE = "Ltd";
 
   /**
    * This builds an ActionInstruction.
@@ -75,7 +80,12 @@ public class ObjectBuilder {
     actionContact.setSurname(surname);
     actionContact.setPhoneNumber(phoneNumber);
     actionContact.setEmailAddress(emailAddress);
+    actionContact.setRuName(RU_NAME);
+    actionContact.setTradingStyle(TRADING_STYLE);
     actionRequest.setContact(actionContact);
+    actionRequest.setSurveyName(SURVEY_NAME);
+    actionRequest.setSurveyRef(SURVEY_REF);
+    actionRequest.setReturnByDate(RETURN_BY_DATE);
     if (valid) {
       actionRequest.setActionPlan(ACTION_PLAN);
       actionRequest.setActionType(NOTIFY);
