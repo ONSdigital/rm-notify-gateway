@@ -59,7 +59,7 @@ public class NotifyServiceImpl implements NotifyService {
 
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
-        if (phoneNumber != null) {
+        if (!StringUtils.isEmpty(phoneNumber)) {
             actionFeedback = processSms(actionRequest);
         } else {
             actionFeedback = processEmail(actionRequest);
@@ -78,7 +78,7 @@ public class NotifyServiceImpl implements NotifyService {
         Map<String, String> personalisationMap = buildMapFromString(personalisation);
 
         if (!StringUtils.isEmpty(phoneNumber)) {
-            log.debug("About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - "
+            log.debug("About to invoke sendSms with templateId {} - phone number {} - "
                     + "personalisationMap {}", templateId, phoneNumber, personalisationMap);
             SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisationMap,
                     reference);
@@ -86,7 +86,7 @@ public class NotifyServiceImpl implements NotifyService {
             return response.getNotificationId();
         } else {
             // The xsd enforces to have either a phoneNumber OR an emailAddress
-            log.debug("About to invoke sendEmail with censusUacSmsTemplateId {} - emailAddress {} - personalisationMap "
+            log.debug("About to invoke sendEmail with templateId {} - emailAddress {} - personalisationMap "
                     + "{}", templateId , emailAddress, personalisationMap);
             SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
                 personalisationMap, reference);

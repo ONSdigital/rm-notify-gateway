@@ -65,8 +65,9 @@ redelivery-policy:
   redeliveryDelay: 1000
 
 notify:
-  apiKey: ctpnotifygateway-0e515090-7962-40e8-a8c7-acbacf079c21-ac979394-a989-4f79-b0e0-6abcca564393
+  apiKey: rmnotifygatewayserviceteamandwhitelist-ce3674b1-7b08-4377-a6a7-05b5722d4ea5-7d6e40b5-ea81-4c25-87c4-1b6dcc3d70a4
   censusUacSmsTemplateId: 966731dc-ef2e-41ad-a828-8cdd95c81ebc
+  onsSurveysRasEmailReminderTemplateId: 19a0aa89-797f-4a34-ad54-267fd581f2ef
 
 rabbitmq:
   username: ${cloud.services.rabbitmq.connection.username}

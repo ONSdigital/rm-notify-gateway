@@ -43,7 +43,6 @@ public class ActionInstructionReceiverImplTest {
   @Mock
   private NotifyService notifyService;
 
-
   @Test
   public void testProcessBRESInstructionHappyPath() throws NotificationClientException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,

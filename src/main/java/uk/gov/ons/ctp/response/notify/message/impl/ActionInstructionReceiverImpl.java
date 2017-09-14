@@ -91,7 +91,9 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     if (actionContact != null) {
       String phoneNumber = actionContact.getPhoneNumber();
       if (phoneNumber != null) {
-        // TODO For BRES, currently removing the number to stop any SMS being sent. Plan for when we go back to Census?
+        // TODO For BRES, currently removing the number to stop any SMS being sent by error. This null phone number is
+        // TODO also used as the switch in NotifyServiceImpl to determine whether to processSms or processEmail.
+        // TODO Plan for when we produce a solution serving both BRES & Census.
 //        phoneNumber = phoneNumber.replaceAll("\\s+","");  // removes all whitespaces and non-visible characters (e.g., tab, \n).
 //        phoneNumber = phoneNumber.replaceAll("\\(", "");
 //        phoneNumber = phoneNumber.replaceAll("\\)", "");
@@ -124,7 +126,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
         String phoneNumber = actionContact.getPhoneNumber();
         log.debug("phoneNumber is {}", phoneNumber);
         if (phoneNumber == null) {
-          // BRES scenario
           String emailAddress = actionContact.getEmailAddress();
           log.debug("emailAddress is {}", emailAddress);
           if (emailAddress != null) {
@@ -132,7 +133,6 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
             result = pattern.matcher(emailAddress).matches();
           }
         } else {
-          // Census scenario
           Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
           result = pattern.matcher(phoneNumber).matches();
         }
