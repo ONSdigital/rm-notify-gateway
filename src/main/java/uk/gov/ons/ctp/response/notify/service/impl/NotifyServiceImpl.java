@@ -59,7 +59,7 @@ public class NotifyServiceImpl implements NotifyService {
 
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
-        if (!StringUtils.isEmpty(phoneNumber)) {
+        if (!StringUtils.isEmpty(phoneNumber)) {    // TODO Switch used for BRES
             actionFeedback = processSms(actionRequest);
         } else {
             actionFeedback = processEmail(actionRequest);

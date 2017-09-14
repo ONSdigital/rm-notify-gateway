@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.*;
@@ -44,6 +46,7 @@ public class NotifyServiceImplTest {
   @Mock
   private NotifyConfiguration notifyConfiguration;
 
+  private static final String EXCEPTION_MSG = "java.lang.Exception";
   private static final String IAC_KEY = "iac";
   private static final String IAC_VALUE = "ABCD-EFGH-IJKL-MNOP";
   private static final String OTHER_FIELD_KEY = "otherfield";
@@ -79,6 +82,34 @@ public class NotifyServiceImplTest {
     personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
             eq(personalisation), any(String.class));
+    verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
+  }
+
+  /**
+   * To test the error path when processing an ActionRequest for SMS. Note emailAddress is at null.
+   *
+   * @throws CTPException when notifyService.process does
+   * @throws NotificationClientException when censusNotificationClient does
+   */
+  @Test
+  public void testProcessActionRequestErrorPathSMS() throws CTPException, NotificationClientException {
+    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
+        any(HashMap.class),any(String.class))).thenThrow(new NotificationClientException(new Exception()));
+
+    try {
+      notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
+          INVALID_PHONENUMBER, null, true));
+      fail();
+    } catch (NotificationClientException e) {
+      assertEquals(EXCEPTION_MSG, e.getMessage());
+
+    }
+
+    HashMap<String, String> personalisation = new HashMap<>();
+    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
+    verify(notificationClient, times(1)).sendSms(any(String.class), eq(INVALID_PHONENUMBER),
+        eq(personalisation), any(String.class));
+    verify(notificationClient, never()).getNotificationById(any(String.class));
   }
 
   /**
@@ -110,6 +141,41 @@ public class NotifyServiceImplTest {
     personalisation.put(RETURN_BY_DATE_KEY, RETURN_BY_DATE);
     verify(notificationClient, times(1)).sendEmail(any(String.class), eq(EMAIL_ADDRESS),
         eq(personalisation), any(String.class));
+    verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
+  }
+
+  /**
+   * To test the error path when processing an ActionRequest for Email. Note phonenumber is at null.
+   *
+   * @throws CTPException when notifyService.process does
+   * @throws NotificationClientException when censusNotificationClient does
+   */
+  @Test
+  public void testProcessActionRequestErrorPathEmail() throws CTPException, NotificationClientException {
+    Mockito.when(notificationClient.sendEmail(any(String.class), any(String.class),
+        any(HashMap.class),any(String.class))).thenThrow(new NotificationClientException(new Exception()));
+
+    try {
+      notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
+          null, INVALID_EMAIL_ADDRESS, true));
+      fail();
+    } catch (NotificationClientException e) {
+      assertEquals(EXCEPTION_MSG, e.getMessage());
+
+    }
+
+    HashMap<String, String> personalisation = new HashMap<>();
+    personalisation.put(REPORTING_UNIT_REF_KEY, SAMPLE_UNIT_REF);
+    personalisation.put(SURVEY_NAME_KEY, SURVEY_NAME);
+    personalisation.put(SURVEY_ID_KEY, SURVEY_REF);
+    personalisation.put(FIRSTNAME_KEY, FORENAME);
+    personalisation.put(LASTNAME_KEY, SURNAME);
+    personalisation.put(RU_NAME_KEY, RU_NAME);
+    personalisation.put(TRADING_STYLE_KEY, TRADING_STYLE);
+    personalisation.put(RETURN_BY_DATE_KEY, RETURN_BY_DATE);
+    verify(notificationClient, times(1)).sendEmail(any(String.class), eq(INVALID_EMAIL_ADDRESS),
+        eq(personalisation), any(String.class));
+    verify(notificationClient, never()).getNotificationById(any(String.class));
   }
 
   /**
