@@ -30,7 +30,7 @@ public class ResilienceServiceImpl implements ResilienceService {
         String templateId = notifyRequest.getTemplateId();
         String phoneNumber = notifyRequest.getPhoneNumber();
         String emailAddress = notifyRequest.getEmailAddress();
-        log.debug("Entering process with templateId {} - phoneNumber {} - emailAddress {}", templateId, phoneNumber,
+        log.debug("Entering process with censusUacSmsTemplateId {} - phoneNumber {} - emailAddress {}", templateId, phoneNumber,
                 emailAddress);
 
         UUID theId = UUID.randomUUID();

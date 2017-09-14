@@ -28,7 +28,7 @@ This page documents the Notify Gateway service API endpoints. All endpoints retu
 {
   "id": "de0da3c1-2cad-421a-bddd-054ef374c6ab",
   "reference": "Test text message",
-  "templateId": "f3778220-f877-4a3d-80ed-e8fa7d104563",
+  "censusUacSmsTemplateId": "f3778220-f877-4a3d-80ed-e8fa7d104563",
   "fromNumber": "07701234567"
 }
 ```
@@ -48,7 +48,7 @@ An `HTTP 201 Created` status code is returned if the text message request was su
 {
   "id": "845c73f5-e016-4610-8bfe-7699e9f4a3c2",
   "reference": "Test email",
-  "templateId": "290b93f2-04c2-413d-8f9b-93841e684e90",
+  "censusUacSmsTemplateId": "290b93f2-04c2-413d-8f9b-93841e684e90",
   "fromEmail": "surveys@ons.gov.uk"
 }
 ```
@@ -67,7 +67,7 @@ An `HTTP 201 Created` status code is returned if the email request was successfu
   "phoneNumber": "07707654321",
   "notificationType": "sms",
   "status": "sent",
-  "templateId": "f3778220-f877-4a3d-80ed-e8fa7d104563",
+  "censusUacSmsTemplateId": "f3778220-f877-4a3d-80ed-e8fa7d104563",
   "templateVersion": 1,
   "createdAt": "2017-07-15T16:25:30Z",
   "sentAt": "2017-07-15T16:28:02Z",

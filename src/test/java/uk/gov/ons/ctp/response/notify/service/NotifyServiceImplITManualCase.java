@@ -31,8 +31,13 @@ public class NotifyServiceImplITManualCase {
   @Autowired
   private NotifyService notifyService;
 
+  /**
+   * To test the sending of an SMS. Note the PHONENUMBER is not null.
+   *
+   * @throws NotificationClientException if GOV.UK Notify issue
+   */
   @Test
-  public void testProcessHappyPath() throws NotificationClientException {
+  public void testProcessHappyPathSMS() throws NotificationClientException {
     ActionFeedback actionFeedback = notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER,
         EMAIL_ADDRESS, true));
     assertNotNull(actionFeedback);
@@ -41,8 +46,13 @@ public class NotifyServiceImplITManualCase {
     assertEquals(NOTIFY_SMS_SENT, actionFeedback.getSituation());
   }
 
+  /**
+   * To test the sending of an SMS with an invalid phone number.
+   *
+   * @throws NotificationClientException if GOV.UK Notify issue
+   */
   @Test
-  public void testProcessInvalidPhoneNumber() throws NotificationClientException {
+  public void testProcessSMSInvalidPhoneNumber() throws NotificationClientException {
     ActionFeedback actionFeedback = notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME,
         INVALID_PHONENUMBER, INVALID_EMAIL_ADDRESS,true));
     assertNotNull(actionFeedback);

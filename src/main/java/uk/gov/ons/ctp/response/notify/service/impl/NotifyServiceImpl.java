@@ -36,8 +36,16 @@ public class NotifyServiceImpl implements NotifyService {
     @Autowired
     private NotificationClient notificationClient;
 
-    public static final String EXCEPTION_NOTIFY_SERVICE = "An error occurred contacting GOV.UK Notify: ";
+    public static final String FIRSTNAME_KEY = "firstname";
     public static final String IAC_KEY = "iac";
+    public static final String LASTNAME_KEY = "lastname";
+    public static final String REPORTING_UNIT_REF_KEY = "reporting unit reference";
+    public static final String RETURN_BY_DATE_KEY = "return by date";
+    public static final String RU_NAME_KEY = "RU name";
+    public static final String SURVEY_ID_KEY = "survey id";
+    public static final String SURVEY_NAME_KEY = "survey name";
+    public static final String TRADING_STYLE_KEY = "trading style";
+
     public static final String NOTIFY_EMAIL_SENT = "Notify Email Sent";
     public static final String NOTIFY_SMS_NOT_SENT = "Notify Sms Not Sent";
     public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
@@ -49,17 +57,12 @@ public class NotifyServiceImpl implements NotifyService {
 
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
+        if (phoneNumber != null) {
+            processSms(actionRequest);
+        } else {
+            processEmail(actionRequest);
+        }
 
-        Map<String, String> personalisation = new HashMap<>();
-        personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
-
-        String templateId = notifyConfiguration.getTemplateId();
-        log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisation {} for "
-                + "actionId = {}", templateId, phoneNumber, personalisation, actionId);
-
-        SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation,null);
-        log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(response.getNotificationId()
-                        .toString()).getStatus(),actionId);
         return new ActionFeedback(actionId,
                     NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
                             NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
@@ -76,18 +79,18 @@ public class NotifyServiceImpl implements NotifyService {
         Map<String, String> personalisationMap = buildMapFromString(personalisation);
 
         if (!StringUtils.isEmpty(phoneNumber)) {
-            log.debug("About to invoke sendSms with templateId {} - phone number {} - personalisationMap {}",
-                    templateId, phoneNumber, personalisationMap);
+            log.debug("About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - "
+                    + "personalisationMap {}", templateId, phoneNumber, personalisationMap);
             SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisationMap,
                     reference);
             log.debug("response = {}", response);
             return response.getNotificationId();
         } else {
             // The xsd enforces to have either a phoneNumber OR an emailAddress
-            log.debug("About to invoke sendEmail with templateId {} - emailAddress {} - personalisationMap {}",
-                    templateId , emailAddress, personalisationMap);
-            SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress, personalisationMap,
-                    reference);
+            log.debug("About to invoke sendEmail with censusUacSmsTemplateId {} - emailAddress {} - personalisationMap "
+                    + "{}", templateId , emailAddress, personalisationMap);
+            SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
+                personalisationMap, reference);
             log.debug("response = {}", response);
             return response.getNotificationId();
         }
@@ -124,5 +127,60 @@ public class NotifyServiceImpl implements NotifyService {
         }
 
         return result;
+    }
+
+    /**
+     * To process actionRequest for SMS
+     *
+     * @param actionRequest to process for SMS
+     * @throws NotificationClientException
+     */
+    private void processSms(ActionRequest actionRequest) throws NotificationClientException {
+        String actionId = actionRequest.getActionId();
+        ActionContact actionContact = actionRequest.getContact();
+        String phoneNumber = actionContact.getPhoneNumber();
+
+        Map<String, String> personalisation = new HashMap<>();
+        personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
+
+        String templateId = notifyConfiguration.getCensusUacSmsTemplateId();
+        log.debug("About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - personalisation {}"
+            + " for actionId = {}", templateId, phoneNumber, personalisation, actionId);
+
+        SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
+        log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
+            response.getNotificationId().toString()).getStatus(), actionId);
+
+    }
+
+    /**
+     * To process actionRequest for Email
+     *
+     * @param actionRequest to process for Email
+     * @throws NotificationClientException
+     */
+    private void processEmail(ActionRequest actionRequest) throws NotificationClientException {
+        String actionId = actionRequest.getActionId();
+        ActionContact actionContact = actionRequest.getContact();
+
+        Map<String, String> personalisation = new HashMap<>();
+        String emailAddress = actionContact.getEmailAddress();
+        personalisation.put(REPORTING_UNIT_REF_KEY, actionRequest.getAddress().getSampleUnitRef());
+        personalisation.put(SURVEY_NAME_KEY, actionRequest.getSurveyName());
+        personalisation.put(SURVEY_ID_KEY, actionRequest.getSurveyRef());
+        personalisation.put(FIRSTNAME_KEY, actionContact.getForename());
+        personalisation.put(LASTNAME_KEY, actionContact.getSurname());
+        personalisation.put(RU_NAME_KEY, actionContact.getRuName());
+        personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
+        personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
+
+        String templateId = notifyConfiguration.getOnsSurveysRasEmailReminderTemplateId();
+        log.debug("About to invoke sendEmail with onsSurveysRasEmailReminderTemplateId {} - emailAddress {} - "
+            + "personalisation {} for actionId = {}", templateId, emailAddress, personalisation, actionId);
+
+        SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
+            personalisation, null);
+        log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
+            response.getNotificationId().toString()).getStatus(), actionId);
     }
 }

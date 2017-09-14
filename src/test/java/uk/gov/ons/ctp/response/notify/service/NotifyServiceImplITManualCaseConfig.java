@@ -13,8 +13,11 @@ public class NotifyServiceImplITManualCaseConfig {
   @Value("${notify.apiKey}")
   private String apiKey;
 
-  @Value("${notify.templateId}")
-  private String templateId;
+  @Value("${notify.censusUacSmsTemplateId}")
+  private String censusUacSmsTemplateId;
+
+  @Value("${notify.onsSurveysRasEmailReminderTemplateId}")
+  private String onsSurveysRasEmailReminderTemplateId;
 
   @Bean
   public NotificationClient notificationClient() {
@@ -25,7 +28,8 @@ public class NotifyServiceImplITManualCaseConfig {
   public NotifyConfiguration notifyConfiguration() {
     NotifyConfiguration notifyConfiguration = new NotifyConfiguration();
     notifyConfiguration.setApiKey(apiKey);
-    notifyConfiguration.setTemplateId(templateId);
+    notifyConfiguration.setCensusUacSmsTemplateId(censusUacSmsTemplateId);
+    notifyConfiguration.setOnsSurveysRasEmailReminderTemplateId(onsSurveysRasEmailReminderTemplateId);
     return notifyConfiguration;
   }
 

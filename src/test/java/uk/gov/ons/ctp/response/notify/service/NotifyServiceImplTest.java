@@ -61,13 +61,13 @@ public class NotifyServiceImplTest {
 //   * To test the happy path when processing an ActionRequest for Census.
 //   *
 //   * @throws CTPException when notifyService.process does
-//   * @throws NotificationClientException when notificationClient does
+//   * @throws NotificationClientException when censusNotificationClient does
 //   */
 //  @Test
 //  public void testProcessActionRequestHappyPath() throws CTPException, NotificationClientException {
-//    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
+//    Mockito.when(censusNotificationClient.sendSms(any(String.class), any(String.class),
 //            any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
-//    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
+//    Mockito.when(censusNotificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
 //
 //    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
 //            PHONENUMBER, true));
@@ -77,14 +77,14 @@ public class NotifyServiceImplTest {
 //
 //    HashMap<String, String> personalisation = new HashMap<>();
 //    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-//    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
+//    verify(censusNotificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
 //            eq(personalisation), any(String.class));
 //  }
 
   /**
    * To test the happy path when processing a NotifyRequest (SMS scenario)
    *
-   * @throws NotificationClientException when notificationClient does
+   * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
   public void testProcessNotifyRequestHappyPathSMS() throws NotificationClientException {
@@ -112,7 +112,7 @@ public class NotifyServiceImplTest {
   /**
    * To test the happy path when processing a NotifyRequest (Email scenario)
    *
-   * @throws NotificationClientException when notificationClient does
+   * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
   public void testProcessNotifyRequestHappyPathEmail() throws NotificationClientException {

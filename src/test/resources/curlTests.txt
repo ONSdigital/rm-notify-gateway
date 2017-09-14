@@ -9,14 +9,14 @@ curl http://localhost:8181/info/ -v -X GET
 # To test the SMS endpoint
 ########################################################################
 curl http://localhost:8181/texts/f3778220-f877-4a3d-80ed-e8fa7d104563 -H "Content-Type: application/json" -v -X POST -d '{"phoneNumber":"02380555444", "personalisation": {"iac":"ABCD-EFGH-IJKL-MNOP", "otherfield":"other,value"}}'
-201 {"id":"cfedcc2a-8cae-4904-a534-fb8c471b5974","templateId":"f3778220-f877-4a3d-80ed-e8fa7d104563","fromNumber":"02380555444","reference":null}
+201 {"id":"cfedcc2a-8cae-4904-a534-fb8c471b5974","censusUacSmsTemplateId":"f3778220-f877-4a3d-80ed-e8fa7d104563","fromNumber":"02380555444","reference":null}
 
 
 ########################################################################
 # To test the Email endpoint
 ########################################################################
 curl http://localhost:8181/emails/f3778220-f877-4a3d-80ed-e8fa7d104563 -H "Content-Type: application/json" -v -X POST -d '{"emailAddress":"philippe.brossier@ons.gov.uk", "personalisation": {"iac":"ABCD-EFGH-IJKL-MNOP", "otherfield":"other,value"}}'
-201 {"id":"f01cadd0-c279-4aa3-950e-0f391a262f8f","templateId":"f3778220-f877-4a3d-80ed-e8fa7d104563","fromEmail":"philippe.brossier@ons.gov.uk","reference":null}
+201 {"id":"f01cadd0-c279-4aa3-950e-0f391a262f8f","censusUacSmsTemplateId":"f3778220-f877-4a3d-80ed-e8fa7d104563","fromEmail":"philippe.brossier@ons.gov.uk","reference":null}
 
 
 ########################################################################

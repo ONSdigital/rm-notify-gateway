@@ -14,10 +14,12 @@ import uk.gov.service.notify.NotificationClient;
 @Data
 public class NotifyConfiguration {
   private String apiKey;
-  private String templateId;
+
+  private String censusUacSmsTemplateId;
+  private String onsSurveysRasEmailReminderTemplateId;
 
   /**
-   * To set up the GOV.UK Notify notificationClient
+   * To set up the GOV.UK Notify NotificationClient
    * @return the notificationClient
    */
   @Bean

@@ -41,11 +41,11 @@ public class TextEndpoint implements CTPEndpoint {
      * @return the created ResponseDTO
      * @throws InvalidRequestException if binding errors
      */
-    @RequestMapping(value = "/{templateId}", method = RequestMethod.POST)
-    public ResponseEntity<ResponseDTO> sendSMS(@PathVariable("templateId") final String templateId,
+    @RequestMapping(value = "/{censusUacSmsTemplateId}", method = RequestMethod.POST)
+    public ResponseEntity<ResponseDTO> sendSMS(@PathVariable("censusUacSmsTemplateId") final String templateId,
                                                @RequestBody @Valid final NotifyRequestForSMSDTO notifyRequestForSMSDTO,
                                                BindingResult bindingResult) throws InvalidRequestException {
-        log.debug("Entering sendSMS with templateId {} and requestObject {}", templateId, notifyRequestForSMSDTO);
+        log.debug("Entering sendSMS with censusUacSmsTemplateId {} and requestObject {}", templateId, notifyRequestForSMSDTO);
 
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);

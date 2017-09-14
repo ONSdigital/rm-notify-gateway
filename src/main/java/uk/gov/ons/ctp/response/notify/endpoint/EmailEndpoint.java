@@ -41,11 +41,11 @@ public class EmailEndpoint implements CTPEndpoint {
      * @return the created ResponseDTO
      * @throws InvalidRequestException if binding errors
      */
-    @RequestMapping(value = "/{templateId}", method = RequestMethod.POST)
-    public ResponseEntity<ResponseDTO> sendEmail(@PathVariable("templateId") final String templateId,
+    @RequestMapping(value = "/{censusUacSmsTemplateId}", method = RequestMethod.POST)
+    public ResponseEntity<ResponseDTO> sendEmail(@PathVariable("censusUacSmsTemplateId") final String templateId,
                                                  @RequestBody @Valid final NotifyRequestForEmailDTO requestForEmailDTO,
                                                  BindingResult bindingResult) throws InvalidRequestException {
-        log.debug("Entering sendEmail with templateId {} and requestObject {}", templateId, requestForEmailDTO);
+        log.debug("Entering sendEmail with censusUacSmsTemplateId {} and requestObject {}", templateId, requestForEmailDTO);
 
         if (bindingResult.hasErrors()) {
             throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
