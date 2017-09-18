@@ -5,7 +5,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl;
-//import uk.gov.service.notify.NotificationClient;
+import uk.gov.service.notify.NotificationClient;
 
 @SpringBootConfiguration
 public class NotifyServiceImplITManualCaseConfig {
@@ -18,11 +18,11 @@ public class NotifyServiceImplITManualCaseConfig {
 
   @Value("${notify.onsSurveysRasEmailReminderTemplateId}")
   private String onsSurveysRasEmailReminderTemplateId;
-//
-//  @Bean
-//  public NotificationClient notificationClient() {
-//    return new NotificationClient(apiKey);
-//  }
+
+  @Bean
+  public NotificationClient notificationClient() {
+    return new NotificationClient(apiKey);
+  }
 
   @Bean
   public NotifyConfiguration notifyConfiguration() {
