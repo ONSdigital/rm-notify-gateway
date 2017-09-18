@@ -18,9 +18,9 @@ import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 @Slf4j
 public class ActionFeedbackPublisherImpl implements ActionFeedbackPublisher {
 
-//  @Qualifier("actionFeedbackRabbitTemplate")
-//  @Autowired
-//  private RabbitTemplate rabbitTemplate;
+  @Qualifier("actionFeedbackRabbitTemplate")
+  @Autowired
+  private RabbitTemplate rabbitTemplate;
 
   /**
    * To put an ActionFeedback on the queue
@@ -30,6 +30,6 @@ public class ActionFeedbackPublisherImpl implements ActionFeedbackPublisher {
   @Override
   public void sendFeedback(ActionFeedback actionFeedback) {
     log.debug("Entering sendFeedback for actionId {}", actionFeedback.getActionId());
-//    rabbitTemplate.convertAndSend(actionFeedback);
+    rabbitTemplate.convertAndSend(actionFeedback);
   }
 }

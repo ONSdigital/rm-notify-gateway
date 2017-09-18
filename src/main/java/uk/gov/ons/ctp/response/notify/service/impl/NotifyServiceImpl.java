@@ -18,10 +18,10 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-//import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
-//import uk.gov.service.notify.*;
+import uk.gov.service.notify.*;
 
 /**
  * The service implementation for NotifyService
@@ -32,9 +32,9 @@ public class NotifyServiceImpl implements NotifyService {
 
     @Autowired
     private NotifyConfiguration notifyConfiguration;
-//
-//    @Autowired
-//    private NotificationClient notificationClient;
+
+    @Autowired
+    private NotificationClient notificationClient;
 
     public static final String FIRSTNAME_KEY = "firstname";
     public static final String IAC_KEY = "iac";
@@ -60,45 +60,45 @@ public class NotifyServiceImpl implements NotifyService {
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
         if (!StringUtils.isEmpty(phoneNumber)) {    // TODO Switch used for BRES
-//            actionFeedback = processSms(actionRequest);
+//  zzz          actionFeedback = processSms(actionRequest);
         } else {
-//            actionFeedback = processEmail(actionRequest);
+//   zzz         actionFeedback = processEmail(actionRequest);
         }
 
         return actionFeedback;
     }
 
-//    @Override
-//    public UUID process(NotifyRequest notifyRequest) throws NotificationClientException {
-//        String phoneNumber = notifyRequest.getPhoneNumber();
-//        String emailAddress = notifyRequest.getEmailAddress();
-//        String templateId = notifyRequest.getTemplateId();
-//        String reference = notifyRequest.getReference();
-//        String personalisation = notifyRequest.getPersonalisation();
-//        Map<String, String> personalisationMap = buildMapFromString(personalisation);
-//
-//        if (!StringUtils.isEmpty(phoneNumber)) {
-//            log.debug("About to invoke sendSms with templateId {} - phone number {} - "
-//                    + "personalisationMap {}", templateId, phoneNumber, personalisationMap);
-//            SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisationMap,
-//                    reference);
-//            log.debug("response = {}", response);
-//            return response.getNotificationId();
-//        } else {
-//            // The xsd enforces to have either a phoneNumber OR an emailAddress
-//            log.debug("About to invoke sendEmail with templateId {} - emailAddress {} - personalisationMap "
-//                    + "{}", templateId , emailAddress, personalisationMap);
-//            SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
-//                personalisationMap, reference);
-//            log.debug("response = {}", response);
-//            return response.getNotificationId();
-//        }
-//    }
-//
-//    @Override
-//    public Notification findNotificationById(UUID notificationId) throws NotificationClientException {
-//        return notificationClient.getNotificationById(notificationId.toString());
-//    }
+    @Override
+    public UUID process(NotifyRequest notifyRequest) throws NotificationClientException {
+        String phoneNumber = notifyRequest.getPhoneNumber();
+        String emailAddress = notifyRequest.getEmailAddress();
+        String templateId = notifyRequest.getTemplateId();
+        String reference = notifyRequest.getReference();
+        String personalisation = notifyRequest.getPersonalisation();
+        Map<String, String> personalisationMap = buildMapFromString(personalisation);
+
+        if (!StringUtils.isEmpty(phoneNumber)) {
+            log.debug("About to invoke sendSms with templateId {} - phone number {} - "
+                    + "personalisationMap {}", templateId, phoneNumber, personalisationMap);
+            SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisationMap,
+                    reference);
+            log.debug("response = {}", response);
+            return response.getNotificationId();
+        } else {
+            // The xsd enforces to have either a phoneNumber OR an emailAddress
+            log.debug("About to invoke sendEmail with templateId {} - emailAddress {} - personalisationMap "
+                    + "{}", templateId , emailAddress, personalisationMap);
+            SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
+                personalisationMap, reference);
+            log.debug("response = {}", response);
+            return response.getNotificationId();
+        }
+    }
+
+    @Override
+    public Notification findNotificationById(UUID notificationId) throws NotificationClientException {
+        return notificationClient.getNotificationById(notificationId.toString());
+    }
 
     /**
      * Transform the string built originally by orika into a Map

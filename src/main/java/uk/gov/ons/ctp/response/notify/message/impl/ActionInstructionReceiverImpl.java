@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
-//import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForEmailDTO.EMAIL_ADDRESS_REGEX;
-//import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForSMSDTO.TELEPHONE_REGEX;
+import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForEmailDTO.EMAIL_ADDRESS_REGEX;
+import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForSMSDTO.TELEPHONE_REGEX;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_NOT_SENT;
 
 import java.util.regex.Pattern;
@@ -21,65 +21,64 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
-//import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.NotificationClientException;
 
 /**
  * The service that reads ActionInstructions from the inbound channel
  */
 @Slf4j
-//@MessageEndpoint
-public class ActionInstructionReceiverImpl {
-//    implements ActionInstructionReceiver {
+@MessageEndpoint
+public class ActionInstructionReceiverImpl implements ActionInstructionReceiver {
 
   private static final String NOTIFY_GW = "NotifyGateway";
 
   public static final int SITUATION_MAX_LENGTH = 100;
 
-//  @Autowired
-//  private NotifyService notifyService;
-//
-//  @Autowired
-//  private ActionFeedbackPublisher actionFeedbackPublisher;
+  @Autowired
+  private NotifyService notifyService;
 
-//  /**
-//   * To process ActionInstructions from the input channel actionInstructionTransformed
-//   *
-//   * @param instruction the ActionInstruction to be processed
-//   */
-//  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-//  @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
-//  public void processInstruction(final ActionInstruction instruction) {
-//    log.debug("entering process with instruction {}", instruction);
-//
-//    ActionRequest actionRequest = instruction.getActionRequest();
-//    if (actionRequest != null) {
-//      ActionFeedback actionFeedback = null;
-//      String actionId = actionRequest.getActionId();
-//
-//      boolean responseRequired = actionRequest.isResponseRequired();
-//      if (responseRequired) {
-//        actionFeedback = new ActionFeedback(actionId,
-//                NOTIFY_GW.length() <= SITUATION_MAX_LENGTH ? NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
-//                Outcome.REQUEST_ACCEPTED);
-//        actionFeedbackPublisher.sendFeedback(actionFeedback);
-//      }
-//
-//      actionRequest = tidyUp(actionRequest);
-//
-//      if (validate(actionRequest)) {
-//        actionFeedback = notifyService.process(actionRequest);
-//      } else {
-//        log.error("Data validation failed for actionRequest with action id {}", actionRequest.getActionId());
-//        actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH ?
-//                  NOTIFY_SMS_NOT_SENT : NOTIFY_SMS_NOT_SENT.substring(0, SITUATION_MAX_LENGTH),
-//                  Outcome.REQUEST_DECLINED);
-//      }
-//
-//      if (actionFeedback != null && responseRequired) {
-//        actionFeedbackPublisher.sendFeedback(actionFeedback);
-//      }
-//    }
-//  }
+  @Autowired
+  private ActionFeedbackPublisher actionFeedbackPublisher;
+
+  /**
+   * To process ActionInstructions from the input channel actionInstructionTransformed
+   *
+   * @param instruction the ActionInstruction to be processed
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
+  public void processInstruction(final ActionInstruction instruction) throws NotificationClientException {
+    log.debug("entering process with instruction {}", instruction);
+
+    ActionRequest actionRequest = instruction.getActionRequest();
+    if (actionRequest != null) {
+      ActionFeedback actionFeedback = null;
+      String actionId = actionRequest.getActionId();
+
+      boolean responseRequired = actionRequest.isResponseRequired();
+      if (responseRequired) {
+        actionFeedback = new ActionFeedback(actionId,
+                NOTIFY_GW.length() <= SITUATION_MAX_LENGTH ? NOTIFY_GW : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
+                Outcome.REQUEST_ACCEPTED);
+        actionFeedbackPublisher.sendFeedback(actionFeedback);
+      }
+
+      actionRequest = tidyUp(actionRequest);
+
+      if (validate(actionRequest)) {
+        actionFeedback = notifyService.process(actionRequest);
+      } else {
+        log.error("Data validation failed for actionRequest with action id {}", actionRequest.getActionId());
+        actionFeedback = new ActionFeedback(actionId, NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH ?
+                  NOTIFY_SMS_NOT_SENT : NOTIFY_SMS_NOT_SENT.substring(0, SITUATION_MAX_LENGTH),
+                  Outcome.REQUEST_DECLINED);
+      }
+
+      if (actionFeedback != null && responseRequired) {
+        actionFeedbackPublisher.sendFeedback(actionFeedback);
+      }
+    }
+  }
 
   /**
    * To tidy up phone number & email address within an ActionRequest as we have got no control on the upstream
@@ -130,11 +129,11 @@ public class ActionInstructionReceiverImpl {
           String emailAddress = actionContact.getEmailAddress();
           log.debug("emailAddress is {}", emailAddress);
           if (emailAddress != null) {
-            Pattern pattern = Pattern.compile("zzz EMAIL_ADDRESS_REGEX");
+            Pattern pattern = Pattern.compile(EMAIL_ADDRESS_REGEX);
             result = pattern.matcher(emailAddress).matches();
           }
         } else {
-          Pattern pattern = Pattern.compile("zzz TELEPHONE_REGEX");
+          Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
           result = pattern.matcher(phoneNumber).matches();
         }
       }
