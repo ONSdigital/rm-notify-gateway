@@ -5,6 +5,6 @@
 	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
     <import resource="broker.xml"/>
-    <import resource="flows.xml"/>
+    <!-- <import resource="flows.xml"/> -->
 
 </beans>

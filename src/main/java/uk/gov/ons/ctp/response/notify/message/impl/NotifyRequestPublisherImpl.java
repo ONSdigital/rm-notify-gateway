@@ -8,24 +8,24 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+//import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
 
 /**
  * The publisher of NotifyRequests to queues
  */
 @Slf4j
-@MessageEndpoint
+//@MessageEndpoint
 public class NotifyRequestPublisherImpl implements NotifyRequestPublisher {
 
-  @Qualifier("notifyRequestRabbitTemplate")
-  @Autowired
-  private RabbitTemplate rabbitTemplate;
+//  @Qualifier("notifyRequestRabbitTemplate")
+//  @Autowired
+//  private RabbitTemplate rabbitTemplate;
 
-  @Transactional(propagation = Propagation.REQUIRED)
-  @Override
-  public void send(NotifyRequest notifyRequest) {
-    log.debug("send to queue notifyRequest {}", notifyRequest);
-    rabbitTemplate.convertAndSend(notifyRequest);
-  }
+//  @Transactional(propagation = Propagation.REQUIRED)
+//  @Override
+//  public void send(NotifyRequest notifyRequest) {
+//    log.debug("send to queue notifyRequest {}", notifyRequest);
+//    rabbitTemplate.convertAndSend(notifyRequest);
+//  }
 }

@@ -5,9 +5,9 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
-import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendSmsResponse;
+//import uk.gov.service.notify.Notification;
+//import uk.gov.service.notify.SendEmailResponse;
+//import uk.gov.service.notify.SendSmsResponse;
 
 import java.math.BigDecimal;
 
@@ -105,69 +105,69 @@ public class ObjectBuilder {
     }
     return actionRequest;
   }
-
-  public static SendSmsResponse buildSendSmsResponse() {
-    return new SendSmsResponse("{\n" +
-            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
-            "\t\"reference\": \"" + REFERENCE + "\",\n" +
-            "\t\"content\": {\n" +
-            "\t\t\"body\": \"thebody\"\n" +
-            "\t},\n" +
-            "\t\"template\": {\n" +
-            "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +
-            "\t\t\"version\": 1,\n" +
-            "\t\t\"uri\": \"theUri\"\n" +
-            "\t}\n" +
-            "}");
-  }
-
-  public static SendEmailResponse buildSendEmailResponse() {
-    return new SendEmailResponse("{\n" +
-            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
-            "\t\"reference\": \"" + REFERENCE + "\",\n" +
-            "\t\"content\": {\n" +
-            "\t\t\"body\": \"thebody\",\n" +
-            "\t\t\"subject\": \"thesubject\"\n" +
-            "\t},\n" +
-            "\t\"template\": {\n" +
-            "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +
-            "\t\t\"version\": 1,\n" +
-            "\t\t\"uri\": \"theUri\"\n" +
-            "\t}\n" +
-            "}");
-  }
-
-  public static Notification buildNotificationForSMS() {
-    return new Notification("{\n" +
-            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
-            "\t\"reference\": \"" + REFERENCE + "\",\n" +
-            "\t\"phone_number\": \"" + PHONENUMBER + "\",\n" +
-            "\t\"type\": \"" + SMS + "\",\n" +
-            "\t\"template\": {\n" +
-            "\t\t\"id\": \"" + TEMPLATE_ID + "\",\n" +
-            "\t\t\"version\": 1,\n" +
-            "\t\t\"uri\": \"theUri\"\n" +
-            "\t},\n" +
-            "\t\"body\": \"theBody\",\n" +
-            "\t\"status\": \"" + SENT + "\",\n" +
-            "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
-            "}");
-  }
-
-  public static Notification buildNotificationForEmail() {
-    return new Notification("{\n" +
-        "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
-        "\t\"reference\": \"" + REFERENCE + "\",\n" +
-        "\t\"email_address\": \"" + EMAIL_ADDRESS + "\",\n" +
-        "\t\"type\": \"" + EMAIL + "\",\n" +
-        "\t\"template\": {\n" +
-        "\t\t\"id\": \"" + TEMPLATE_ID + "\",\n" +
-        "\t\t\"version\": 1,\n" +
-        "\t\t\"uri\": \"theUri\"\n" +
-        "\t},\n" +
-        "\t\"body\": \"theBody\",\n" +
-        "\t\"status\": \"" + SENT + "\",\n" +
-        "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
-        "}");
-  }
+//
+//  public static SendSmsResponse buildSendSmsResponse() {
+//    return new SendSmsResponse("{\n" +
+//            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
+//            "\t\"reference\": \"" + REFERENCE + "\",\n" +
+//            "\t\"content\": {\n" +
+//            "\t\t\"body\": \"thebody\"\n" +
+//            "\t},\n" +
+//            "\t\"template\": {\n" +
+//            "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +
+//            "\t\t\"version\": 1,\n" +
+//            "\t\t\"uri\": \"theUri\"\n" +
+//            "\t}\n" +
+//            "}");
+//  }
+//
+//  public static SendEmailResponse buildSendEmailResponse() {
+//    return new SendEmailResponse("{\n" +
+//            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
+//            "\t\"reference\": \"" + REFERENCE + "\",\n" +
+//            "\t\"content\": {\n" +
+//            "\t\t\"body\": \"thebody\",\n" +
+//            "\t\t\"subject\": \"thesubject\"\n" +
+//            "\t},\n" +
+//            "\t\"template\": {\n" +
+//            "\t\t\"id\": \"966731dc-ef2e-41ad-a828-8cdd95c81ebc\",\n" +
+//            "\t\t\"version\": 1,\n" +
+//            "\t\t\"uri\": \"theUri\"\n" +
+//            "\t}\n" +
+//            "}");
+//  }
+//
+//  public static Notification buildNotificationForSMS() {
+//    return new Notification("{\n" +
+//            "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
+//            "\t\"reference\": \"" + REFERENCE + "\",\n" +
+//            "\t\"phone_number\": \"" + PHONENUMBER + "\",\n" +
+//            "\t\"type\": \"" + SMS + "\",\n" +
+//            "\t\"template\": {\n" +
+//            "\t\t\"id\": \"" + TEMPLATE_ID + "\",\n" +
+//            "\t\t\"version\": 1,\n" +
+//            "\t\t\"uri\": \"theUri\"\n" +
+//            "\t},\n" +
+//            "\t\"body\": \"theBody\",\n" +
+//            "\t\"status\": \"" + SENT + "\",\n" +
+//            "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
+//            "}");
+//  }
+//
+//  public static Notification buildNotificationForEmail() {
+//    return new Notification("{\n" +
+//        "\t\"id\": \"" + NOTIFICATION_ID + "\",\n" +
+//        "\t\"reference\": \"" + REFERENCE + "\",\n" +
+//        "\t\"email_address\": \"" + EMAIL_ADDRESS + "\",\n" +
+//        "\t\"type\": \"" + EMAIL + "\",\n" +
+//        "\t\"template\": {\n" +
+//        "\t\t\"id\": \"" + TEMPLATE_ID + "\",\n" +
+//        "\t\t\"version\": 1,\n" +
+//        "\t\t\"uri\": \"theUri\"\n" +
+//        "\t},\n" +
+//        "\t\"body\": \"theBody\",\n" +
+//        "\t\"status\": \"" + SENT + "\",\n" +
+//        "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
+//        "}");
+//  }
 }
