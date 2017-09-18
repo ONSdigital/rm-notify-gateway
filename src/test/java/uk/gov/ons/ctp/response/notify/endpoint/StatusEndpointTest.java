@@ -18,7 +18,7 @@ import uk.gov.ons.ctp.response.notify.NotifySvcBeanMapper;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
-//import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.NotificationClientException;
 
 import java.util.UUID;
 
@@ -26,7 +26,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -74,124 +73,121 @@ public class StatusEndpointTest {
                 .build();
     }
 
+       /**
+     * Scenario where no message is found in the database
+     *
+     * @throws Exception when getJson does
+     */
     @Test
-    public void testDummy() {assertTrue(true);}
+    public void getStatusMessageNotFound() throws Exception {
+        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", NON_EXISTING_MSG_ID)));
 
-//    /**
-//     * Scenario where no message is found in the database
-//     *
-//     * @throws Exception when getJson does
-//     */
-//    @Test
-//    public void getStatusMessageNotFound() throws Exception {
-//        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", NON_EXISTING_MSG_ID)));
-//
-//        actions.andExpect(status().isNotFound())
-//                .andExpect(handler().handlerType(StatusEndpoint.class))
-//                .andExpect(handler().methodName(GET_STATUS))
-//                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
-//                .andExpect(jsonPath("$.error.message",
-//                is(String.format(ERRORMSG_MESSAGE_NOTFOUND, NON_EXISTING_MSG_ID))))
-//                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-//    }
-//
-//    /**
-//     * Scenario where message is found in the database but notificationId has not yet been populated
-//     *
-//     * @throws Exception when getJson does
-//     */
-//    @Test
-//    public void getStatusMessageFoundWithoutNotificationId() throws Exception {
-//        Message message = Message.builder().build();
-//        when(resilienceService.findMessageById(UUID.fromString(EXISTING_MSG_ID))).thenReturn(message);
-//
-//        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", EXISTING_MSG_ID)));
-//
-//        actions.andExpect(status().isNotFound())
-//                .andExpect(handler().handlerType(StatusEndpoint.class))
-//                .andExpect(handler().methodName(GET_STATUS))
-//                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
-//                .andExpect(jsonPath("$.error.message",
-//                        is(String.format(ERRORMSG_NOTIFICATION_NOTDEFINED, EXISTING_MSG_ID))))
-//                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-//    }
-//
-//    /**
-//     * Scenario where message is found in the database but notification retrieved from GOV.UK Notify is null
-//     *
-//     * @throws Exception when getJson does
-//     */
-//    @Test
-//    public void getStatusMessageFoundNotificationNull() throws Exception {
-//        UUID notificationId = UUID.fromString(NOTIFICATION_ID);
-//        Message message = Message.builder().notificationId(notificationId).build();
-//        when(resilienceService.findMessageById(UUID.fromString(EXISTING_MSG_ID))).thenReturn(message);
-//        when(notifyService.findNotificationById(eq(notificationId))).thenReturn(null);
-//
-//        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", EXISTING_MSG_ID)));
-//
-//        actions.andExpect(status().isNotFound())
-//                .andExpect(handler().handlerType(StatusEndpoint.class))
-//                .andExpect(handler().methodName(GET_STATUS))
-//                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
-//                .andExpect(jsonPath("$.error.message",
-//                        is(String.format(ERRORMSG_NOTIFICATION_NOTFOUND, EXISTING_MSG_ID))))
-//                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-//    }
-//
-//    /**
-//     * Scenario where message is found in the database but notification retrieval from GOV.UK Notify throws Exception
-//     *
-//     * @throws Exception when getJson does
-//     */
-//    @Test
-//    public void getStatusMessageFoundNotificationException() throws Exception {
-//        UUID notificationId = UUID.fromString(NOTIFICATION_ID);
-//        Message message = Message.builder().notificationId(notificationId).build();
-//        when(resilienceService.findMessageById(UUID.fromString(EXISTING_MSG_ID))).thenReturn(message);
-//        when(notifyService.findNotificationById(eq(notificationId))).thenThrow(
-//                new NotificationClientException(new Exception()));
-//
-//        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", EXISTING_MSG_ID)));
-//
-//        actions.andExpect(status().is5xxServerError())
-//                .andExpect(handler().handlerType(StatusEndpoint.class))
-//                .andExpect(handler().methodName(GET_STATUS))
-//                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())))
-//                .andExpect(jsonPath("$.error.message",
-//                        is(String.format(ERRORMSG_NOTIFICATION_ISSUE, GENERAL_EXCEPTION, GENERAL_EXCEPTION))))
-//                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-//    }
-//
-//    /**
-//     * Scenario where a message is found in the database and a notification is retrieved from GOV.UK Notify
-//     *
-//     * @throws Exception when getJson does
-//     */
-//    @Test
-//    public void getStatusMessageFoundAndNotificationRetrieved() throws Exception {
-//        UUID notificationId = UUID.fromString(NOTIFICATION_ID);
-//        Message message = Message.builder().notificationId(notificationId).build();
-//        when(resilienceService.findMessageById(UUID.fromString(EXISTING_MSG_ID))).thenReturn(message);
-//        when(notifyService.findNotificationById(eq(notificationId))).thenReturn(buildNotificationForSMS());
-//
-//        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", EXISTING_MSG_ID)));
-//
-//        actions.andExpect(status().isOk())
-//                .andExpect(handler().handlerType(StatusEndpoint.class))
-//                .andExpect(handler().methodName(GET_STATUS))
-//                .andExpect(jsonPath("$.*", hasSize(11)))
-//                .andExpect(jsonPath("$.id", is(NOTIFICATION_ID)))
-//                .andExpect(jsonPath("$.reference", is(REFERENCE)))
-//                .andExpect(jsonPath("$.emailAddress", is(nullValue())))
-//                .andExpect(jsonPath("$.phoneNumber", is(PHONENUMBER)))
-//                .andExpect(jsonPath("$.notificationType", is(SMS)))
-//                .andExpect(jsonPath("$.status", is(SENT)))
-//                .andExpect(jsonPath("$.templateId", is(TEMPLATE_ID)))
-//                .andExpect(jsonPath("$.templateVersion", is(1)))
-//                .andExpect(jsonPath("$.createdAt", is(CREATED_AT)))
-//                .andExpect(jsonPath("$.sentAt", is(nullValue())))
-//                .andExpect(jsonPath("$.completedAt", is(nullValue())));
-//    }
+        actions.andExpect(status().isNotFound())
+                .andExpect(handler().handlerType(StatusEndpoint.class))
+                .andExpect(handler().methodName(GET_STATUS))
+                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+                .andExpect(jsonPath("$.error.message",
+                is(String.format(ERRORMSG_MESSAGE_NOTFOUND, NON_EXISTING_MSG_ID))))
+                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    }
+
+    /**
+     * Scenario where message is found in the database but notificationId has not yet been populated
+     *
+     * @throws Exception when getJson does
+     */
+    @Test
+    public void getStatusMessageFoundWithoutNotificationId() throws Exception {
+        Message message = Message.builder().build();
+        when(resilienceService.findMessageById(UUID.fromString(EXISTING_MSG_ID))).thenReturn(message);
+
+        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", EXISTING_MSG_ID)));
+
+        actions.andExpect(status().isNotFound())
+                .andExpect(handler().handlerType(StatusEndpoint.class))
+                .andExpect(handler().methodName(GET_STATUS))
+                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+                .andExpect(jsonPath("$.error.message",
+                        is(String.format(ERRORMSG_NOTIFICATION_NOTDEFINED, EXISTING_MSG_ID))))
+                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    }
+
+    /**
+     * Scenario where message is found in the database but notification retrieved from GOV.UK Notify is null
+     *
+     * @throws Exception when getJson does
+     */
+    @Test
+    public void getStatusMessageFoundNotificationNull() throws Exception {
+        UUID notificationId = UUID.fromString(NOTIFICATION_ID);
+        Message message = Message.builder().notificationId(notificationId).build();
+        when(resilienceService.findMessageById(UUID.fromString(EXISTING_MSG_ID))).thenReturn(message);
+        when(notifyService.findNotificationById(eq(notificationId))).thenReturn(null);
+
+        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", EXISTING_MSG_ID)));
+
+        actions.andExpect(status().isNotFound())
+                .andExpect(handler().handlerType(StatusEndpoint.class))
+                .andExpect(handler().methodName(GET_STATUS))
+                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+                .andExpect(jsonPath("$.error.message",
+                        is(String.format(ERRORMSG_NOTIFICATION_NOTFOUND, EXISTING_MSG_ID))))
+                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    }
+
+    /**
+     * Scenario where message is found in the database but notification retrieval from GOV.UK Notify throws Exception
+     *
+     * @throws Exception when getJson does
+     */
+    @Test
+    public void getStatusMessageFoundNotificationException() throws Exception {
+        UUID notificationId = UUID.fromString(NOTIFICATION_ID);
+        Message message = Message.builder().notificationId(notificationId).build();
+        when(resilienceService.findMessageById(UUID.fromString(EXISTING_MSG_ID))).thenReturn(message);
+        when(notifyService.findNotificationById(eq(notificationId))).thenThrow(
+                new NotificationClientException(new Exception()));
+
+        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", EXISTING_MSG_ID)));
+
+        actions.andExpect(status().is5xxServerError())
+                .andExpect(handler().handlerType(StatusEndpoint.class))
+                .andExpect(handler().methodName(GET_STATUS))
+                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())))
+                .andExpect(jsonPath("$.error.message",
+                        is(String.format(ERRORMSG_NOTIFICATION_ISSUE, GENERAL_EXCEPTION, GENERAL_EXCEPTION))))
+                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    }
+
+    /**
+     * Scenario where a message is found in the database and a notification is retrieved from GOV.UK Notify
+     *
+     * @throws Exception when getJson does
+     */
+    @Test
+    public void getStatusMessageFoundAndNotificationRetrieved() throws Exception {
+        UUID notificationId = UUID.fromString(NOTIFICATION_ID);
+        Message message = Message.builder().notificationId(notificationId).build();
+        when(resilienceService.findMessageById(UUID.fromString(EXISTING_MSG_ID))).thenReturn(message);
+        when(notifyService.findNotificationById(eq(notificationId))).thenReturn(buildNotificationForSMS());
+
+        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", EXISTING_MSG_ID)));
+
+        actions.andExpect(status().isOk())
+                .andExpect(handler().handlerType(StatusEndpoint.class))
+                .andExpect(handler().methodName(GET_STATUS))
+                .andExpect(jsonPath("$.*", hasSize(11)))
+                .andExpect(jsonPath("$.id", is(NOTIFICATION_ID)))
+                .andExpect(jsonPath("$.reference", is(REFERENCE)))
+                .andExpect(jsonPath("$.emailAddress", is(nullValue())))
+                .andExpect(jsonPath("$.phoneNumber", is(PHONENUMBER)))
+                .andExpect(jsonPath("$.notificationType", is(SMS)))
+                .andExpect(jsonPath("$.status", is(SENT)))
+                .andExpect(jsonPath("$.templateId", is(TEMPLATE_ID)))
+                .andExpect(jsonPath("$.templateVersion", is(1)))
+                .andExpect(jsonPath("$.createdAt", is(CREATED_AT)))
+                .andExpect(jsonPath("$.sentAt", is(nullValue())))
+                .andExpect(jsonPath("$.completedAt", is(nullValue())));
+    }
 
 }
