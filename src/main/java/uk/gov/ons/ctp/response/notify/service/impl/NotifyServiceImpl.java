@@ -51,7 +51,7 @@ public class NotifyServiceImpl implements NotifyService {
     public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
     @Override
-    public ActionFeedback process(ActionRequest actionRequest) {
+    public ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException {
         String actionId = actionRequest.getActionId();
         log.debug("Entering process with actionId {}", actionId);
 
@@ -59,10 +59,10 @@ public class NotifyServiceImpl implements NotifyService {
 
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
-        if (!StringUtils.isEmpty(phoneNumber)) {    // TODO Switch used for BRES
-//  zzz          actionFeedback = processSms(actionRequest);
+        if (!StringUtils.isEmpty(phoneNumber)) { // TODO Switch used for BRES
+          actionFeedback = processSms(actionRequest);
         } else {
-//   zzz         actionFeedback = processEmail(actionRequest);
+          actionFeedback = processEmail(actionRequest);
         }
 
         return actionFeedback;
@@ -127,69 +127,69 @@ public class NotifyServiceImpl implements NotifyService {
 
         return result;
     }
-//
-//    /**
-//     * To process actionRequest for SMS
-//     *
-//     * @param actionRequest to process for SMS
-//     * @return the ActionFeedback
-//     * @throws NotificationClientException
-//     */
-//    private ActionFeedback processSms(ActionRequest actionRequest) throws NotificationClientException {
-//        String actionId = actionRequest.getActionId();
-//        ActionContact actionContact = actionRequest.getContact();
-//        String phoneNumber = actionContact.getPhoneNumber();
-//
-//        Map<String, String> personalisation = new HashMap<>();
-//        personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
-//
-//        String templateId = notifyConfiguration.getCensusUacSmsTemplateId();
-//        log.debug("About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - personalisation {}"
-//            + " for actionId = {}", templateId, phoneNumber, personalisation, actionId);
-//
-//        SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
-//        log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
-//            response.getNotificationId().toString()).getStatus(), actionId);
-//
-//        return new ActionFeedback(actionId,
-//            NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
-//                NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
-//            Outcome.REQUEST_COMPLETED);
-//    }
-//
-//    /**
-//     * To process actionRequest for Email
-//     *
-//     * @param actionRequest to process for Email
-//     * @throws NotificationClientException
-//     */
-//    private ActionFeedback processEmail(ActionRequest actionRequest) throws NotificationClientException {
-//        String actionId = actionRequest.getActionId();
-//        ActionContact actionContact = actionRequest.getContact();
-//
-//        Map<String, String> personalisation = new HashMap<>();
-//        String emailAddress = actionContact.getEmailAddress();
-//        personalisation.put(REPORTING_UNIT_REF_KEY, actionRequest.getAddress().getSampleUnitRef());
-//        personalisation.put(SURVEY_NAME_KEY, actionRequest.getSurveyName());
-//        personalisation.put(SURVEY_ID_KEY, actionRequest.getSurveyRef());
-//        personalisation.put(FIRSTNAME_KEY, actionContact.getForename());
-//        personalisation.put(LASTNAME_KEY, actionContact.getSurname());
-//        personalisation.put(RU_NAME_KEY, actionContact.getRuName());
-//        personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
-//        personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
-//
-//        String templateId = notifyConfiguration.getOnsSurveysRasEmailReminderTemplateId();
-//        log.debug("About to invoke sendEmail with onsSurveysRasEmailReminderTemplateId {} - emailAddress {} - "
-//            + "personalisation {} for actionId = {}", templateId, emailAddress, personalisation, actionId);
-//
-//        SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
-//            personalisation, null);
-//        Notification notif = notificationClient.getNotificationById(response.getNotificationId().toString());
-//        log.debug("status = {} for actionId = {}", notif.getStatus(), actionId);
-//
-//        return new ActionFeedback(actionId,
-//            NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
-//                NOTIFY_EMAIL_SENT : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH),
-//            Outcome.REQUEST_COMPLETED);
-//    }
+
+    /**
+     * To process actionRequest for SMS
+     *
+     * @param actionRequest to process for SMS
+     * @return the ActionFeedback
+     * @throws NotificationClientException
+     */
+    private ActionFeedback processSms(ActionRequest actionRequest) throws NotificationClientException {
+        String actionId = actionRequest.getActionId();
+        ActionContact actionContact = actionRequest.getContact();
+        String phoneNumber = actionContact.getPhoneNumber();
+
+        Map<String, String> personalisation = new HashMap<>();
+        personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
+
+        String templateId = notifyConfiguration.getCensusUacSmsTemplateId();
+        log.debug("About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - personalisation {}"
+            + " for actionId = {}", templateId, phoneNumber, personalisation, actionId);
+
+        SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
+        log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
+            response.getNotificationId().toString()).getStatus(), actionId);
+
+        return new ActionFeedback(actionId,
+            NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
+                NOTIFY_SMS_SENT : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
+            Outcome.REQUEST_COMPLETED);
+    }
+
+    /**
+     * To process actionRequest for Email
+     *
+     * @param actionRequest to process for Email
+     * @throws NotificationClientException
+     */
+    private ActionFeedback processEmail(ActionRequest actionRequest) throws NotificationClientException {
+        String actionId = actionRequest.getActionId();
+        ActionContact actionContact = actionRequest.getContact();
+
+        Map<String, String> personalisation = new HashMap<>();
+        String emailAddress = actionContact.getEmailAddress();
+        personalisation.put(REPORTING_UNIT_REF_KEY, actionRequest.getAddress().getSampleUnitRef());
+        personalisation.put(SURVEY_NAME_KEY, actionRequest.getSurveyName());
+        personalisation.put(SURVEY_ID_KEY, actionRequest.getSurveyRef());
+        personalisation.put(FIRSTNAME_KEY, actionContact.getForename());
+        personalisation.put(LASTNAME_KEY, actionContact.getSurname());
+        personalisation.put(RU_NAME_KEY, actionContact.getRuName());
+        personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
+        personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
+
+        String templateId = notifyConfiguration.getOnsSurveysRasEmailReminderTemplateId();
+        log.debug("About to invoke sendEmail with onsSurveysRasEmailReminderTemplateId {} - emailAddress {} - "
+            + "personalisation {} for actionId = {}", templateId, emailAddress, personalisation, actionId);
+
+        SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
+            personalisation, null);
+        Notification notif = notificationClient.getNotificationById(response.getNotificationId().toString());
+        log.debug("status = {} for actionId = {}", notif.getStatus(), actionId);
+
+        return new ActionFeedback(actionId,
+            NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
+                NOTIFY_EMAIL_SENT : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH),
+            Outcome.REQUEST_COMPLETED);
+    }
 }
