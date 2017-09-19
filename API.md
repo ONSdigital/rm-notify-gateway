@@ -1,5 +1,5 @@
 # Notify Gateway Service API
-This page documents the Notify Gateway service API endpoints. All endpoints return an `HTTP 200 OK` status code except where noted otherwise.
+This page documents the Notify Gateway service API endpoints. Apart from the Service Information endpoint, all these endpoints are secured using HTTP basic authentication. All endpoints return an `HTTP 200 OK` status code except where noted otherwise.
 
 ## Service Information
 * `GET /info` will return information about this service, collated from when it was last built.
