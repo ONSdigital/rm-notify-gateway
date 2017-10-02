@@ -122,6 +122,7 @@ public class NotifyServiceImpl implements NotifyService {
                         personalisation.length() - 1));
             } catch (java.lang.IllegalArgumentException e) {
                 log.error("Unexpected personalisation - message is {} - cause is {}", e.getMessage(), e.getCause());
+                log.error("Stack trace: " + e);
             }
         }
 
