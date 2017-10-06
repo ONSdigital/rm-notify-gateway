@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.gov.ons.ctp.product</groupId>
   <artifactId>notifygatewaysvc</artifactId>
-  <version>10.47.2-SNAPSHOT</version>
+  <version>10.49.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : NotifyGatewayService</name>
@@ -19,7 +19,7 @@
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>rm-common-config</artifactId>
-    <version>10.45.2</version>
+    <version>10.49.0-SNAPSHOT</version>
   </parent>
 
   <scm>
@@ -32,13 +32,13 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>notifygatewaysvc-api</artifactId>
-      <version>10.47.0</version>
+      <version>10.49.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>actionsvc-api</artifactId>
-      <version>10.47.1</version>
+      <version>10.49.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -246,24 +246,4 @@
     </resources>
   </build>
 
-  <profiles>
-    <profile>
-      <id>artifactory</id>
-      <distributionManagement>
-        <repository>
-          <id>central</id>
-          <name>libs-release</name>
-          <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-release-local</url>
-        </repository>
-        <snapshotRepository>
-          <id>snapshots</id>
-          <name>libs-snapshots</name>
-          <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-      </distributionManagement>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-    </profile>
-  </profiles>
 </project>
