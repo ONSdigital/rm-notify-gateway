@@ -74,26 +74,6 @@ public class StatusEndpointTest {
     }
 
     /**
-     * Scenario where null is returned from the database
-     *
-     * @throws Exception when getJson does
-     */
-    @Test
-    public void getStatusMessageNull() throws Exception {
-        when(resilienceService.findMessageById(UUID.fromString(NON_EXISTING_MSG_ID))).thenReturn(null);
-
-        ResultActions actions = mockMvc.perform(getJson(String.format("/messages/%s", NON_EXISTING_MSG_ID)));
-
-        actions.andExpect(status().isNotFound())
-                .andExpect(handler().handlerType(StatusEndpoint.class))
-                .andExpect(handler().methodName(GET_STATUS))
-                .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
-                .andExpect(jsonPath("$.error.message",
-                        is(String.format(ERRORMSG_MESSAGE_NOTFOUND, NON_EXISTING_MSG_ID))))
-                .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-    }
-
-    /**
      * Scenario where no message is found in the database
      *
      * @throws Exception when getJson does
