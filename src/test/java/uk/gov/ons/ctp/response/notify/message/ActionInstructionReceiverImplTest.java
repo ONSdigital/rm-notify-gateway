@@ -116,6 +116,7 @@ public class ActionInstructionReceiverImplTest {
       actionInstructionReceiver.processInstruction(
           ObjectBuilder.buildActionInstruction(
               "9a5f2be5-f944-41f9-982c-3517cfcfef3c", "Joe,Blogg,07742994131,tester@gmail.com", true));
+      // Fail the test if an exception is not thrown
       fail();
     } catch (NotificationClientException e) {
     }

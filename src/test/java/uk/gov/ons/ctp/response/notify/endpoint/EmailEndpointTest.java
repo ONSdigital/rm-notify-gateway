@@ -84,7 +84,7 @@ public class EmailEndpointTest {
      * @throws Exception if the postJson fails
      */
     @Test
-    public void textInvalidJson() throws Exception {
+    public void emailInvalidJson() throws Exception {
         ResultActions actions = mockMvc.perform(postJson(String.format("/emails/%s", TEMPLATE_ID), INVALID_JSON));
 
         actions.andExpect(status().isBadRequest())
@@ -101,7 +101,7 @@ public class EmailEndpointTest {
      * @throws Exception if the postJson fails
      */
     @Test
-    public void textInvalidEmailAddress() throws Exception {
+    public void emailInvalidEmailAddress() throws Exception {
         ResultActions actions = mockMvc.perform(postJson(String.format("/emails/%s", TEMPLATE_ID),
                 VALID_JSON_BAD_EMAIL_ADDRESS));
 
@@ -119,7 +119,7 @@ public class EmailEndpointTest {
      * @throws Exception if the postJson fails
      */
     @Test
-    public void textHappyPath() throws Exception {
+    public void emailHappyPath() throws Exception {
         Response response = Response.builder()
                 .id(MESSAGE_ID)
                 .reference(MESSAGE_REFERENCE)
