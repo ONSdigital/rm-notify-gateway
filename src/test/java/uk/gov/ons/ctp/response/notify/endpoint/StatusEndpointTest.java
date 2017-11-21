@@ -73,7 +73,7 @@ public class StatusEndpointTest {
                 .build();
     }
 
-       /**
+    /**
      * Scenario where no message is found in the database
      *
      * @throws Exception when getJson does
