@@ -26,5 +26,5 @@ cache:
   - $HOME/.m2
 
 branches:
-    only:
-        - master
+  only:
+    - master
