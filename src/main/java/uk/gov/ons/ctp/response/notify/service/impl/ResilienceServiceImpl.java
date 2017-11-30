@@ -38,10 +38,9 @@ public class ResilienceServiceImpl implements ResilienceService {
                 emailAddress);
 
         UUID theId = UUID.randomUUID();
+        messageRepository.save(Message.builder().id(theId).build());
+        log.debug("Message persisted with id {}", theId);
         if (notifyConfiguration.getEnabled()) {
-            messageRepository.save(Message.builder().id(theId).build());
-            log.debug("Message persisted with id {}", theId);
-
             notifyRequest.setId(theId.toString());
             notifyRequestPublisher.send(notifyRequest);
             log.debug("notifyRequest {} now on queue", notifyRequest);
