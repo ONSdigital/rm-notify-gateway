@@ -60,8 +60,30 @@ public class ResilienceServiceImplTest {
         assertEquals(MESSAGE_REFERENCE, response.getReference());
         assertEquals(TEMPLATE_ID, response.getTemplateId().toString());
 
-        verify(messageRepository, times(0)).save(any(Message.class));
         verify(notifyRequestPublisher, times(0)).send(any(NotifyRequest.class));
+    }
+
+    @Test
+    public void testMessageSavedIfNotifyDisabled() {
+        //Given Notify is Disabled
+        when(notifyConfiguration.getEnabled()).thenReturn(false);
+
+        //When the Resilience service is called
+        NotifyRequest notifyRequest = NotifyRequest.builder()
+                .withTemplateId(TEMPLATE_ID)
+                .withPhoneNumber(PHONE_NUMBER)
+                .withReference(MESSAGE_REFERENCE)
+                .build();
+        Response response = resilienceService.process(notifyRequest);
+
+        //Then it should receive a valid response but not send the message
+        assertNotNull(response);
+        assertNotNull(response.getId());
+        assertEquals(PHONE_NUMBER, response.getFromNumber());
+        assertEquals(MESSAGE_REFERENCE, response.getReference());
+        assertEquals(TEMPLATE_ID, response.getTemplateId().toString());
+
+        verify(messageRepository, times(1)).save(any(Message.class));
     }
 
     @Test
