@@ -13,6 +13,7 @@ import uk.gov.service.notify.NotificationClient;
 @ConfigurationProperties("notify")
 @Data
 public class NotifyConfiguration {
+  private Boolean enabled;
   private String apiKey;
 
   private String censusUacSmsTemplateId;

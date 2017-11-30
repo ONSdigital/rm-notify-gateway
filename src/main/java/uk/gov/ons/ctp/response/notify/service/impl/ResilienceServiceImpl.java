@@ -10,6 +10,7 @@ import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 
 import java.util.UUID;
@@ -17,6 +18,9 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ResilienceServiceImpl implements ResilienceService {
+
+    @Autowired
+    private NotifyConfiguration notifyConfiguration;
 
     @Autowired
     private MessageRepository messageRepository;
@@ -36,10 +40,13 @@ public class ResilienceServiceImpl implements ResilienceService {
         UUID theId = UUID.randomUUID();
         messageRepository.save(Message.builder().id(theId).build());
         log.debug("Message persisted with id {}", theId);
-
-        notifyRequest.setId(theId.toString());
-        notifyRequestPublisher.send(notifyRequest);
-        log.debug("notifyRequest {} now on queue", notifyRequest);
+        if (notifyConfiguration.getEnabled()) {
+            notifyRequest.setId(theId.toString());
+            notifyRequestPublisher.send(notifyRequest);
+            log.debug("notifyRequest {} now on queue", notifyRequest);
+        } else {
+            log.info("notifyRequest {}, not put on queue as Gov Notify disabled", notifyRequest);
+        }
 
         return Response.builder()
                 .id(theId)
