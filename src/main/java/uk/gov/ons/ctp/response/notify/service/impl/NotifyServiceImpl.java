@@ -34,7 +34,7 @@ public class NotifyServiceImpl implements NotifyService {
     private NotifyConfiguration notifyConfiguration;
 
     @Autowired
-    private NotificationClient notificationClient;
+    private NotificationClientApi notificationClient;
 
     public static final String FIRSTNAME_KEY = "firstname";
     public static final String IAC_KEY = "iac";
@@ -83,7 +83,7 @@ public class NotifyServiceImpl implements NotifyService {
             SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisationMap,
                     reference);
             log.debug("response = {}", response);
-            return response.getNotificationId();
+            return response == null ? null : response.getNotificationId();
         } else {
             // The xsd enforces to have either a phoneNumber OR an emailAddress
             log.debug("About to invoke sendEmail with templateId {} - emailAddress {} - personalisationMap "
@@ -91,7 +91,7 @@ public class NotifyServiceImpl implements NotifyService {
             SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
                 personalisationMap, reference);
             log.debug("response = {}", response);
-            return response.getNotificationId();
+            return response == null ? null : response.getNotificationId();
         }
     }
 
@@ -149,8 +149,13 @@ public class NotifyServiceImpl implements NotifyService {
             + " for actionId = {}", templateId, phoneNumber, personalisation, actionId);
 
         SendSmsResponse response = notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
-        log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
-            response.getNotificationId().toString()).getStatus(), actionId);
+
+        if (response != null) {
+            log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
+                    response.getNotificationId().toString()).getStatus(), actionId);
+        } else {
+            log.debug("response is null");
+        }
 
         return new ActionFeedback(actionId,
             NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH ?
@@ -185,8 +190,13 @@ public class NotifyServiceImpl implements NotifyService {
 
         SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
             personalisation, null);
-        Notification notif = notificationClient.getNotificationById(response.getNotificationId().toString());
-        log.debug("status = {} for actionId = {}", notif.getStatus(), actionId);
+
+        if (response != null) {
+            Notification notif = notificationClient.getNotificationById(response.getNotificationId().toString());
+            log.debug("status = {} for actionId = {}", notif.getStatus(), actionId);
+        } else {
+            log.debug("actionId = {}, response is null", actionId);
+        }
 
         return new ActionFeedback(actionId,
             NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
