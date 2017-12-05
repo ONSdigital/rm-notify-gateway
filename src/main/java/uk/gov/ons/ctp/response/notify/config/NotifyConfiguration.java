@@ -4,7 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.gov.ons.ctp.response.notify.service.impl.ConfigurationAwareNotificationClient;
+import uk.gov.ons.ctp.response.notify.client.ConfigurationAwareNotificationClient;
+import uk.gov.ons.ctp.response.notify.client.DebugNotificationClient;
 import uk.gov.ons.ctp.response.notify.util.BitCalculator;
 import uk.gov.service.notify.NotificationClientApi;
 
@@ -16,7 +17,9 @@ import uk.gov.service.notify.NotificationClientApi;
 @Data
 public class NotifyConfiguration {
   private Boolean enabled;
+  private Boolean debugEnabled;
   private String apiKey;
+  private String debugHttpCode;
 
   private String censusUacSmsTemplateId;
   private String onsSurveysRasEmailReminderTemplateId;
@@ -28,7 +31,16 @@ public class NotifyConfiguration {
   @Bean
   public NotificationClientApi notificationClient() {
     validate();
-    return new ConfigurationAwareNotificationClient(this);
+    // Should be a factory
+    if (this.debugEnabled){
+      if (getDebugHttpCode() == null){
+        return new DebugNotificationClient();
+      } else {
+        return new DebugNotificationClient(new Integer(getDebugHttpCode()));
+      }
+    } else {
+      return new ConfigurationAwareNotificationClient(this);
+    }
   }
 
   /**

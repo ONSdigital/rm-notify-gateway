@@ -1,10 +1,11 @@
-package uk.gov.ons.ctp.response.notify.service.impl;
+package uk.gov.ons.ctp.response.notify.client;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.response.notify.client.ConfigurationAwareNotificationClient;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientApi;

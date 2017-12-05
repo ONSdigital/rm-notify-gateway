@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.notify.service.impl;
+package uk.gov.ons.ctp.response.notify.client;
 
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.service.notify.*;
