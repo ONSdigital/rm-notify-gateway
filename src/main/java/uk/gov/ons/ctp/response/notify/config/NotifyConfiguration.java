@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.gov.ons.ctp.response.notify.client.ConfigurationAwareNotificationClient;
-import uk.gov.ons.ctp.response.notify.client.DebugNotificationClient;
 import uk.gov.ons.ctp.response.notify.client.NotificationClientFactory;
 import uk.gov.ons.ctp.response.notify.util.BitCalculator;
 import uk.gov.service.notify.NotificationClientApi;

@@ -26,13 +26,13 @@ public class NotificationClientFactory {
             case NotifyClientException:
                 String httpCode = config.getDebugHttpCode();
                 if (StringUtil.isBlank(httpCode) == false){
-                    client = new DebugNotificationClient(Integer.parseInt(httpCode));
+                    client = new ExceptionThrowingNotificationClient(Integer.parseInt(httpCode));
                 } else {
-                    client = new DebugNotificationClient();
+                    client = new ExceptionThrowingNotificationClient();
                 }
                 break;
             case RuntimeException:
-                client = new DebugRuntimeExceptionNotificationClient();
+                client = new RuntimeExceptionThrowingNotificationClient();
                 break;
         }
 

@@ -2,12 +2,12 @@ package uk.gov.ons.ctp.response.notify.client;
 
 import uk.gov.service.notify.NotificationClientException;
 
-public class DebugNotificationClientException extends NotificationClientException {
+public class OverridenNotificationClientException extends NotificationClientException {
 
     private int httpCode;
     private String message;
 
-    public DebugNotificationClientException(int httpCode, String message) {
+    public OverridenNotificationClientException(int httpCode, String message) {
         super(new Exception(message));
 
         this.httpCode = httpCode;

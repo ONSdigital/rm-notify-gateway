@@ -4,50 +4,59 @@ import uk.gov.service.notify.*;
 
 import java.util.Map;
 
-public class DebugRuntimeExceptionNotificationClient implements NotificationClientApi {
+public class ExceptionThrowingNotificationClient implements NotificationClientApi {
 
-    public DebugRuntimeExceptionNotificationClient(){
+    private NotificationClientException exceptionToThrow;
+
+    public ExceptionThrowingNotificationClient(NotificationClientException toThrow){
+        this.exceptionToThrow = toThrow;
     }
 
-    private static final RuntimeException RUNTIME_EXCEPTION = new RuntimeException("This is a RuntimeException");
+    public ExceptionThrowingNotificationClient(int httpCode){
+        this(new OverridenNotificationClientException(httpCode, "A " + httpCode + " error occurred"));
+    }
+
+    public ExceptionThrowingNotificationClient(){
+        this(400);
+    }
 
     @Override
     public SendEmailResponse sendEmail(String s, String s1, Map<String, String> map, String s2) throws NotificationClientException {
-        throw RUNTIME_EXCEPTION;
+        throw this.exceptionToThrow;
     }
 
     @Override
     public SendSmsResponse sendSms(String s, String s1, Map<String, String> map, String s2) throws NotificationClientException {
-        throw RUNTIME_EXCEPTION;
+        throw this.exceptionToThrow;
     }
 
     @Override
     public Notification getNotificationById(String s) throws NotificationClientException {
-        throw RUNTIME_EXCEPTION;
+        throw this.exceptionToThrow;
     }
 
     @Override
     public NotificationList getNotifications(String s, String s1, String s2, String s3) throws NotificationClientException {
-        throw RUNTIME_EXCEPTION;
+        throw this.exceptionToThrow;
     }
 
     @Override
     public Template getTemplateById(String s) throws NotificationClientException {
-        throw RUNTIME_EXCEPTION;
+        throw this.exceptionToThrow;
     }
 
     @Override
     public Template getTemplateVersion(String s, int i) throws NotificationClientException {
-        throw RUNTIME_EXCEPTION;
+        throw this.exceptionToThrow;
     }
 
     @Override
     public TemplateList getAllTemplates(String s) throws NotificationClientException {
-        throw RUNTIME_EXCEPTION;
+        throw this.exceptionToThrow;
     }
 
     @Override
     public TemplatePreview generateTemplatePreview(String s, Map<String, String> map) throws NotificationClientException {
-        throw RUNTIME_EXCEPTION;
+        throw this.exceptionToThrow;
     }
 }
