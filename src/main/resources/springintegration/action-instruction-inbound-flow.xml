@@ -59,9 +59,9 @@
                 <constructor-arg value="payload.actionRequest.actionId + '|' + payload.actionRequest.contact.emailAddress"/>
             </bean>
         </property>
-        <property name="retryTemplate" ref="retryTemplate" />
+        <property name="retryTemplate" ref="customRetryTemplate" />
     </bean>
-    <bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
+    <bean id="customRetryTemplate" class="org.springframework.retry.support.RetryTemplate">
         <property name="backOffPolicy">
             <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
                 <property name="initialInterval" value="${messaging.backoffInitial}" />
@@ -69,24 +69,18 @@
                 <property name="maxInterval" value="${messaging.backoffMax}" />
             </bean>
         </property>
-        <property name="retryPolicy">
-            <!--bean class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
-                <constructor-arg type="int">
-                    <value>${messaging.conMaxAttempts}</value>
-                </constructor-arg>
-                <constructor-arg>
-                    <list value-type="java.lang.String">
-                        <value>java.lang.RuntimeException</value>
-                        <value>uk.gov.service.notify.NotificationClientException</value>
-                    </list>
-                </constructor-arg>
-            </bean-->
-            <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
-                <property name="maxAttempts">
-                    <value>${messaging.maxAttempts}</value>
-                </property>
-            </bean>
-        </property>
+        <property name="retryPolicy" ref="ctpRetryPolicy"/>
+    </bean>
+
+    <bean id="ctpRetryPolicy" class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
+        <constructor-arg type="int">
+            <value>${messaging.maxAttempts}</value>
+        </constructor-arg>
+        <constructor-arg>
+            <list value-type="java.lang.String">
+                <value>uk.gov.service.notify.NotificationClientException</value>
+            </list>
+        </constructor-arg>
     </bean>
 
     <int:channel id="actionInstructionDlqInterimChannel" />
