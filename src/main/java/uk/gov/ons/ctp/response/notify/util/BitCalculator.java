@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.notify.util;
 
+import lombok.ToString;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.math.BigInteger;
@@ -9,6 +11,7 @@ import java.math.BigInteger;
  * return the number of bits of data in the key. This is primarily for working out the validity of notify keys.
  * @author innesm
  */
+@ToString
 public class BitCalculator {
 
     private static final Pattern KEY_REGEXP = Pattern.compile("^([^-]+)-(.*)$");
@@ -55,44 +58,6 @@ public class BitCalculator {
             this.radix = aRadix;
             this.valid = aValid;
         }
-
-        @Override
-        public String toString() {
-            // Extremely verbose format mandated by checkstyle
-            return "KeyInfo{"
-                    +
-                    "inputString='"
-                    +
-                    inputString
-                    +
-                    '\''
-                    +
-                    ", value="
-                    +
-                    value
-                    +
-                    ", valueStr='"
-                    +
-                    valueStr
-                    +
-                    '\''
-                    +
-                    ", keyName='"
-                    +
-                    keyName
-                    +
-                    '\''
-                    +
-                    ", bits="
-                    +
-                    bits
-                    +
-                    ", radix="
-                    +
-                    radix
-                    +
-                    '}';
-        }
     }
 
     /**
@@ -111,7 +76,7 @@ public class BitCalculator {
             int numDigits = info.valueStr.length();
             int bitsPerDigit = new Double(getBitsPerDigit(radix)).intValue();
             int bits = ((numDigits * bitsPerDigit) >>> radix);
-            boolean valid = isKey == false || bits >= MINIMUM_KEY_BITS;
+            boolean valid = (isKey == false) || bits >= MINIMUM_KEY_BITS;
 
             return new KeyInfo(info.inputString, info.value, info.valueStr, info.keyName, bits, info.radix, valid);
         } else {

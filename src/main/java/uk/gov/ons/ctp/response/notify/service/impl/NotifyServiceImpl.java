@@ -154,7 +154,7 @@ public class NotifyServiceImpl implements NotifyService {
             log.debug("status = {} for actionId = {}", notificationClient.getNotificationById(
                     response.getNotificationId().toString()).getStatus(), actionId);
         } else {
-            log.debug("response is null");
+            log.debug("response is null for actionId {}", actionId);
         }
 
         return new ActionFeedback(actionId,
