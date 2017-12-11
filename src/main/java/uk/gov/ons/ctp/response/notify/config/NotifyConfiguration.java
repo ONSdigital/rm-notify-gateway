@@ -41,17 +41,17 @@ public class NotifyConfiguration {
 
     BitCalculator.KeyInfo keyInfo = bitCalc.analyseNotifyKey(this.apiKey);
     if (!keyInfo.valid){
-      throw new RuntimeException("Invalid gov.notify API key: " + this.apiKey);
+      throw new NotifyConfgurationException("Invalid gov.notify API key: " + this.apiKey);
     }
 
     keyInfo = bitCalc.analyseUUID(this.onsSurveysRasEmailReminderTemplateId);
     if (!keyInfo.valid) {
-      throw new RuntimeException("Invalid gov.notify template id: " + this.onsSurveysRasEmailReminderTemplateId);
+      throw new NotifyConfgurationException("Invalid email reminder template id: " + this.onsSurveysRasEmailReminderTemplateId);
     }
 
     keyInfo = bitCalc.analyseUUID(this.censusUacSmsTemplateId);
     if (!keyInfo.valid){
-      throw new RuntimeException("Invalid gov.notify template id: " + this.censusUacSmsTemplateId);
+      throw new NotifyConfgurationException("Invalid census UAC SMS template id: " + this.censusUacSmsTemplateId);
     }
   }
 }
