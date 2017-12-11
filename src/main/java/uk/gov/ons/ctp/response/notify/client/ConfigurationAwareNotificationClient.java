@@ -78,7 +78,7 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
 
     @Override
     public Template getTemplateVersion(String templateId, int version) throws NotificationClientException {
-        log.debug("getTemplateVersion: {}", templateId, version);
+        log.debug("getTemplateVersion: {} - {}", templateId, version);
         if (this.configuration.getEnabled()) {
             return realClient.getTemplateVersion(templateId, version);
         } else {
@@ -88,7 +88,7 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
 
     @Override
     public TemplateList getAllTemplates(String templateType) throws NotificationClientException {
-        log.debug("getAllTemplates");
+        log.debug("getAllTemplates: {}", templateType);
         if (this.configuration.getEnabled()) {
             return realClient.getAllTemplates(templateType);
         } else {
