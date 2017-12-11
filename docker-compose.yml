@@ -1,0 +1,44 @@
+version: '3'
+services:
+ ons-postgres:
+  container_name: ng-postgres
+  image: sdcplatform/postgres
+  ports:
+   - "${EX_POSTGRES_PORT}:5432"
+ rabbitmq:
+  container_name: ng-rabbitmq
+  image: rabbitmq:3.6.10-management
+  ports:
+    - "5369:4369"
+    - "45672:25672"
+    - "${EX_RABBIT_PORT}:5671-5672"
+    - "16671-16672:15671-15672"
+ cfdatabasetool:
+  container_name: ng-cfdatabasetool
+  image: sdcplatform/cfdatabasetool
+  environment:
+   - spring.datasource.url=jdbc:postgresql://ng-postgres:5432/postgres
+  ports:
+   - "9000:9000"
+ notifygateway:
+  container_name: ng-notifygateway
+  image: sdcplatform/notifygatewaysvc
+  ports:
+   - "8281:8281"
+   - "5281:5281"
+  external_links:
+   - ng-rabbitmq
+   - ng-postgres
+  environment:
+   - RABBITMQ_HOST=ng-rabbitmq
+   - RABBITMQ_PORT=5672
+   - NOTIFY_ENABLED=true
+   - NOTIFY_APIKEY=rmnotifygatewayfixes1-de3674b1-7b08-4377-a6a7-05b5722d4ea5-722fff01-056b-4962-9934-d7df5e54d88d
+   - NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID=19a0aa89-797f-4a34-ad54-267fd581f2ef
+   - SPRING_DATASOURCE_URL=jdbc:postgresql://ng-postgres:5432/postgres
+   - LIQUIBASE_URL=jdbc:postgresql://ng-postgres:5432/postgres
+   - JAVA_OPTS=-Xmx128m -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5281
+networks:
+  default:
+    external:
+      name: rmnotifygateway_default
