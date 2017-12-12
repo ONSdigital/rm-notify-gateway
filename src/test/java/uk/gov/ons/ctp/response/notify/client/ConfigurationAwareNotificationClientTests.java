@@ -37,45 +37,129 @@ public class ConfigurationAwareNotificationClientTests {
     }
 
     @Test
-    public void testAllApiEnabled() throws NotificationClientException {
+    public void testGenerateTemplatePreviewEnabled() throws NotificationClientException {
         when(notifyConfiguration.getEnabled()).thenReturn(true);
 
         this.testNotificationClient.generateTemplatePreview(null, null);
         verify(this.realNotificationClient, times(1)).generateTemplatePreview(any(), any());
+    }
+
+    @Test
+    public void testGetAllTemplatesEnabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(true);
+
         this.testNotificationClient.getAllTemplates(null);
         verify(this.realNotificationClient, times(1)).getAllTemplates(any());
+    }
+
+    @Test
+    public void testGetNotificationByIdEnabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(true);
+
         this.testNotificationClient.getNotificationById(null);
         verify(this.realNotificationClient, times(1)).getNotificationById(any());
+    }
+
+    @Test
+    public void testGetNotificationsEnabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(true);
+
         this.testNotificationClient.getNotifications(null, null, null, null);
         verify(this.realNotificationClient, times(1)).getNotifications(any(), any(), any(), any());
+    }
+
+    @Test
+    public void testGetTemplateByIdEnabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(true);
+
         this.testNotificationClient.getTemplateById(null);
         verify(this.realNotificationClient, times(1)).getTemplateById(any());
-        this.testNotificationClient.getTemplateVersion(null ,0);
+    }
+
+    @Test
+    public void testGetTemplateVersionEnabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(true);
+
+        this.testNotificationClient.getTemplateVersion(null, 0);
         verify(this.realNotificationClient, times(1)).getTemplateVersion(any(), anyInt());
+    }
+
+    @Test
+    public void testSendEmailEnabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(true);
+
         this.testNotificationClient.sendEmail(null, null, null, null);
         verify(this.realNotificationClient, times(1)).sendEmail(any(), any(), any(), any());
+    }
+
+    @Test
+    public void testSendSmsEnabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(true);
+
         this.testNotificationClient.sendSms(null, null, null, null);
         verify(this.realNotificationClient, times(1)).sendSms(any(), any(), any(), any());
     }
 
     @Test
-    public void testAllApiDisabled() throws NotificationClientException {
+    public void testGenerateTemplatePreviewDisabled() throws NotificationClientException {
         when(notifyConfiguration.getEnabled()).thenReturn(false);
 
         this.testNotificationClient.generateTemplatePreview(null, null);
         verify(this.realNotificationClient, never()).generateTemplatePreview(any(), any());
+    }
+
+    @Test
+    public void testGetAllTemplatesDisabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(false);
+
         this.testNotificationClient.getAllTemplates(null);
         verify(this.realNotificationClient, never()).getAllTemplates(any());
+    }
+
+    @Test
+    public void testGetNotificationByIdDisabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(false);
+
         this.testNotificationClient.getNotificationById(null);
         verify(this.realNotificationClient, never()).getNotificationById(any());
+    }
+
+    @Test
+    public void testGetNotificationsDisabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(false);
+
         this.testNotificationClient.getNotifications(null, null, null, null);
         verify(this.realNotificationClient, never()).getNotifications(any(), any(), any(), any());
+    }
+
+    @Test
+    public void testGetTemplateByIdDisabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(false);
+
         this.testNotificationClient.getTemplateById(null);
         verify(this.realNotificationClient, never()).getTemplateById(any());
-        this.testNotificationClient.getTemplateVersion(null ,0);
+    }
+
+    @Test
+    public void testGetTemplateVersionDisabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(false);
+
+        this.testNotificationClient.getTemplateVersion(null, 0);
         verify(this.realNotificationClient, never()).getTemplateVersion(any(), anyInt());
+    }
+
+    @Test
+    public void testSendEmailDisabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(false);
+
         this.testNotificationClient.sendEmail(null, null, null, null);
         verify(this.realNotificationClient, never()).sendEmail(any(), any(), any(), any());
+    }
+
+    @Test
+    public void testSendSmsDisabled() throws NotificationClientException {
+        when(notifyConfiguration.getEnabled()).thenReturn(false);
+
         this.testNotificationClient.sendSms(null, null, null, null);
         verify(this.realNotificationClient, never()).sendSms(any(), any(), any(), any());
     }
