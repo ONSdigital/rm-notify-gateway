@@ -2,9 +2,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>uk.gov.ons.ctp.product</groupId>
   <artifactId>notifygatewaysvc</artifactId>
-  <version>10.49.2-SNAPSHOT</version>
+  <version>10.49.4-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : NotifyGatewayService</name>
@@ -15,17 +14,16 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
-  <!-- Inherit parent BOM to control versions of dependencies and plugin version & config --> 
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>rm-common-config</artifactId>
-    <version>10.49.2</version>
+    <version>10.49.8</version>
   </parent>
 
   <scm>
-    <connection>scm:git:git@github.com:ONSdigital/rm-notify-gateway.git</connection>
-    <developerConnection>scm:git:git@github.com:ONSdigital/rm-notify-gateway.git</developerConnection>
-    <url>git@github.com:ONSdigital/rm-notify-gateway.git</url>
+    <connection>scm:git:https://github.com/ONSdigital/rm-notify-gateway</connection>
+    <developerConnection>scm:git:https://github.com/ONSdigital/rm-notify-gateway</developerConnection>
+    <url>https://github.com/ONSdigital/rm-notify-gateway</url>
   </scm>
 
   <dependencies>
@@ -234,8 +232,10 @@
             </goals>
             <phase>package</phase>
             <configuration>
-              <finalName>docker-info-${project.artifactId}</finalName>
               <repository>sdcplatform/${project.artifactId}</repository>
+              <buildArgs>
+                <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+              </buildArgs>
             </configuration>
           </execution>
         </executions>
