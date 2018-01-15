@@ -33,6 +33,7 @@ public class NotificationClientFactory {
 
         switch(type){
             case None:
+            default:
                 client = new ConfigurationAwareNotificationClient(config);
                 break;
             case NotifyClientException:

@@ -28,7 +28,7 @@ public class ConfigurationAwareNotificationClientTests {
     private NotificationClientApi testNotificationClient;
 
     @Before
-    public void setup(){
+    public void setUp(){
         when(notifyConfiguration.getApiKey()).thenReturn(DUMMY_API_KEY);
         when(notifyConfiguration.getCensusUacSmsTemplateId()).thenReturn(DUMMY_TEMPLATE_ID);
         when(notifyConfiguration.getOnsSurveysRasEmailReminderTemplateId()).thenReturn(DUMMY_TEMPLATE_ID);

@@ -13,11 +13,11 @@ import java.util.Map;
 @Slf4j
 public class RuntimeExceptionThrowingNotificationClient implements NotificationClientApi {
 
+    private static final RuntimeException RUNTIME_EXCEPTION = new RuntimeException("This is a RuntimeException");
+
     public RuntimeExceptionThrowingNotificationClient(){
         log.debug("Constructing RuntimeExceptionThrowingNotificationClient");
     }
-
-    private static final RuntimeException RUNTIME_EXCEPTION = new RuntimeException("This is a RuntimeException");
 
     @Override
     public SendEmailResponse sendEmail(String s, String s1, Map<String, String> map, String s2) throws NotificationClientException {
