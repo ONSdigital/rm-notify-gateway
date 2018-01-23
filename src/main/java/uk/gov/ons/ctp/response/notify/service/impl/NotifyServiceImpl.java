@@ -4,20 +4,23 @@ import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionRecei
 
 import com.google.common.base.Splitter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.util.*;
 
 import liquibase.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.action.message.instruction.CommsTypeClassifiers;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
+import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
@@ -35,6 +38,9 @@ public class NotifyServiceImpl implements NotifyService {
 
     @Autowired
     private NotificationClientApi notificationClient;
+
+    @Autowired
+    private CommsTemplateClientImpl commsTemplateClient;
 
     public static final String FIRSTNAME_KEY = "firstname";
     public static final String IAC_KEY = "iac";
@@ -72,7 +78,10 @@ public class NotifyServiceImpl implements NotifyService {
     public UUID process(NotifyRequest notifyRequest) throws NotificationClientException {
         String phoneNumber = notifyRequest.getPhoneNumber();
         String emailAddress = notifyRequest.getEmailAddress();
+
+        // TODo: do i get the template id from the comms template service???
         String templateId = notifyRequest.getTemplateId();
+
         String reference = notifyRequest.getReference();
         String personalisation = notifyRequest.getPersonalisation();
         Map<String, String> personalisationMap = buildMapFromString(personalisation);
@@ -144,7 +153,7 @@ public class NotifyServiceImpl implements NotifyService {
         Map<String, String> personalisation = new HashMap<>();
         personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
 
-        String templateId = notifyConfiguration.getCensusUacSmsTemplateId();
+        String templateId = getTemplateIdByClassifiers(actionRequest.getCommsTypeClassifiers());
         log.debug("About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - personalisation {}"
             + " for actionId = {}", templateId, phoneNumber, personalisation, actionId);
 
@@ -184,7 +193,7 @@ public class NotifyServiceImpl implements NotifyService {
         personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
         personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
 
-        String templateId = notifyConfiguration.getOnsSurveysRasEmailReminderTemplateId();
+        String templateId = getTemplateIdByClassifiers(actionRequest.getCommsTypeClassifiers());
         log.debug("About to invoke sendEmail with onsSurveysRasEmailReminderTemplateId {} - emailAddress {} - "
             + "personalisation {} for actionId = {}", templateId, emailAddress, personalisation, actionId);
 
@@ -202,5 +211,24 @@ public class NotifyServiceImpl implements NotifyService {
             NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
                 NOTIFY_EMAIL_SENT : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH),
             Outcome.REQUEST_COMPLETED);
+    }
+
+    private String getTemplateIdByClassifiers(final CommsTypeClassifiers classifiers) {
+        //Odd data structure for RestUtility
+        MultiValueMap<String,String> classifierMap = new LinkedMultiValueMap<>();
+
+        List<String> legalBasis = new ArrayList<>();
+        legalBasis.add(classifiers.getLegalBasis());
+
+        List<String> region = new ArrayList<>();
+        region.add(classifiers.getRegion());
+
+        //TODO: Reflection to get these fields??
+        classifierMap.put("LEGALBASIS", legalBasis);
+        classifierMap.put("REGION", region);
+
+        CommsTemplateDTO commsTemplateDTO = commsTemplateClient.getCommsTemplateByClassifiers(classifierMap);
+
+        return commsTemplateDTO.getId();
     }
 }

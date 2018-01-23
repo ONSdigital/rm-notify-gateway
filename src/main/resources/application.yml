@@ -106,3 +106,6 @@ swagger-settings:
   title: Notify Gateway API
   description: API for ${project.artifactId}
   version: ${project.version}
+
+comms-template-config:
+  template-by-classifiers-path: /templates
