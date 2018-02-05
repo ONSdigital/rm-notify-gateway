@@ -79,6 +79,7 @@
         <constructor-arg>
             <list value-type="java.lang.String">
                 <value>uk.gov.service.notify.NotificationClientException</value>
+                <value>uk.gov.service.notify.CommsTemplateClientException</value>
             </list>
         </constructor-arg>
     </bean>

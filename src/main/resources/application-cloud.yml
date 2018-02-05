@@ -67,8 +67,6 @@ redelivery-policy:
 notify:
   enabled: true
   apiKey: api-key-placeholder
-  censusUacSmsTemplateId: template-id-placeholder
-  onsSurveysRasEmailReminderTemplateId: template-id-placeholder
 
 rabbitmq:
   username: ${cloud.services.rabbitmq.connection.username}

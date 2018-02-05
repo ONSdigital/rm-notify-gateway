@@ -4,7 +4,6 @@ import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionRecei
 
 import com.google.common.base.Splitter;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 import liquibase.util.StringUtils;
@@ -18,10 +17,11 @@ import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
-import uk.gov.ons.ctp.response.action.message.instruction.CommsTypeClassifiers;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.service.CommsTemplateClient;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.*;
@@ -40,7 +40,7 @@ public class NotifyServiceImpl implements NotifyService {
     private NotificationClientApi notificationClient;
 
     @Autowired
-    private CommsTemplateClientImpl commsTemplateClient;
+    private CommsTemplateClient commsTemplateClient;
 
     public static final String FIRSTNAME_KEY = "firstname";
     public static final String IAC_KEY = "iac";
@@ -57,7 +57,7 @@ public class NotifyServiceImpl implements NotifyService {
     public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
     @Override
-    public ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException {
+    public ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException, CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         log.debug("Entering process with actionId {}", actionId);
 
@@ -79,7 +79,7 @@ public class NotifyServiceImpl implements NotifyService {
         String phoneNumber = notifyRequest.getPhoneNumber();
         String emailAddress = notifyRequest.getEmailAddress();
 
-        // TODo: do i get the template id from the comms template service???
+        // TODO: do i get the template id from the comms template service???
         String templateId = notifyRequest.getTemplateId();
 
         String reference = notifyRequest.getReference();
@@ -145,7 +145,7 @@ public class NotifyServiceImpl implements NotifyService {
      * @return the ActionFeedback
      * @throws NotificationClientException
      */
-    private ActionFeedback processSms(ActionRequest actionRequest) throws NotificationClientException {
+    private ActionFeedback processSms(ActionRequest actionRequest) throws NotificationClientException, CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
@@ -153,7 +153,7 @@ public class NotifyServiceImpl implements NotifyService {
         Map<String, String> personalisation = new HashMap<>();
         personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
 
-        String templateId = getTemplateIdByClassifiers(actionRequest.getCommsTypeClassifiers());
+        String templateId = getTemplateIdByClassifiers(actionRequest);
         log.debug("About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - personalisation {}"
             + " for actionId = {}", templateId, phoneNumber, personalisation, actionId);
 
@@ -178,7 +178,7 @@ public class NotifyServiceImpl implements NotifyService {
      * @param actionRequest to process for Email
      * @throws NotificationClientException
      */
-    private ActionFeedback processEmail(ActionRequest actionRequest) throws NotificationClientException {
+    private ActionFeedback processEmail(ActionRequest actionRequest) throws NotificationClientException, CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         ActionContact actionContact = actionRequest.getContact();
 
@@ -193,8 +193,8 @@ public class NotifyServiceImpl implements NotifyService {
         personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
         personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
 
-        String templateId = getTemplateIdByClassifiers(actionRequest.getCommsTypeClassifiers());
-        log.debug("About to invoke sendEmail with onsSurveysRasEmailReminderTemplateId {} - emailAddress {} - "
+        String templateId = getTemplateIdByClassifiers(actionRequest);
+        log.debug("About to invoke sendEmail with templateId {} - emailAddress {} - "
             + "personalisation {} for actionId = {}", templateId, emailAddress, personalisation, actionId);
 
         SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
@@ -213,22 +213,36 @@ public class NotifyServiceImpl implements NotifyService {
             Outcome.REQUEST_COMPLETED);
     }
 
-    private String getTemplateIdByClassifiers(final CommsTypeClassifiers classifiers) {
+    private String getTemplateIdByClassifiers(final ActionRequest actionRequest) throws CommsTemplateClientException{
+        MultiValueMap<String,String> classifiers = getClassifiers(actionRequest);
+        //TODO: currently comms template service returns a list of matching templates, put a pull request in to fix it
+        CommsTemplateDTO commsTemplateDTO = commsTemplateClient.getCommsTemplateByClassifiers(classifiers);
+        return commsTemplateDTO.getId();
+    }
+
+    private MultiValueMap<String,String> getClassifiers(final ActionRequest actionRequest) {
         //Odd data structure for RestUtility
         MultiValueMap<String,String> classifierMap = new LinkedMultiValueMap<>();
 
-        List<String> legalBasis = new ArrayList<>();
-        legalBasis.add(classifiers.getLegalBasis());
+        if(actionRequest.getLegalBasis() != null) {
+            List<String> legalBasis = new ArrayList<>();
+            legalBasis.add(actionRequest.getLegalBasis());
+            //TODO: NEED TO KNOW WHAT THESE FIELDS WILL BE CALLED ON POPULATION
+            classifierMap.put("LEGALBASIS", legalBasis);
+        }
 
-        List<String> region = new ArrayList<>();
-        region.add(classifiers.getRegion());
+        if(actionRequest.getRegion() != null) {
+            List<String> region = new ArrayList<>();
+            region.add(actionRequest.getRegion());
+            //TODO: NEED TO KNOW WHAT THESE FIELDS WILL BE CALLED ON POPULATION
+            classifierMap.put("REGION", region);
+        }
 
-        //TODO: Reflection to get these fields??
-        classifierMap.put("LEGALBASIS", legalBasis);
-        classifierMap.put("REGION", region);
+        //TODO: Does it matter if it is a reminder or notification email?
+        //actionRequest.getActionType(), this gives us the name of the action type
 
-        CommsTemplateDTO commsTemplateDTO = commsTemplateClient.getCommsTemplateByClassifiers(classifierMap);
+        //TODO: All other classifiers, if we had it in a classifiers object could strip out by reflection
 
-        return commsTemplateDTO.getId();
+        return classifierMap;
     }
 }

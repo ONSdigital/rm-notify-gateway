@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import uk.gov.ons.ctp.common.rest.RestUtility;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
 import uk.gov.ons.ctp.response.notify.service.CommsTemplateClient;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
@@ -30,14 +32,15 @@ public class CommsTemplateClientImpl implements CommsTemplateClient {
     private RestTemplate restTemplate;
 
     @Autowired
-    @Qualifier("commsTemplateSvcClient")
+    @Qualifier("commsTemplateClient")
     private RestUtility restUtility;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Cacheable("commsTemplate")
     @Override
-    public CommsTemplateDTO getCommsTemplateByClassifiers(MultiValueMap<String, String> classifiers) {
+    public CommsTemplateDTO getCommsTemplateByClassifiers(MultiValueMap<String, String> classifiers) throws CommsTemplateClientException {
         UriComponents uriComponents = restUtility.createUriComponents(
                 appConfig.getCommsTemplateService().getTemplateByClassifiersPath(),classifiers);
 
@@ -56,6 +59,11 @@ public class CommsTemplateClientImpl implements CommsTemplateClient {
             }
 
             log.info("Got template from Comms Template Service: {}", result);
+        } else {
+            log.error("Unable to retrieve Comms Template, received {} response.", responseEntity.getStatusCode());
+            //TODO: may want to throw different exceptions depending on status code,
+            // TODO: if it is not found then don't want to retry it as would end up in a loop
+            throw new CommsTemplateClientException(responseEntity.getStatusCodeValue(), "Unable to retrieve comms template");
         }
         return result;
     }

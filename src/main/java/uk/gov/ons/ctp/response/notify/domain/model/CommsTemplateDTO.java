@@ -1,14 +1,13 @@
 package uk.gov.ons.ctp.response.notify.domain.model;
 
-import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
+@Builder
 @Data
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CommsTemplateDTO {
     private String id;
     private String label;

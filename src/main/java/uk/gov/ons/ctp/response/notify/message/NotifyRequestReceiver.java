@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message;
 
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.service.notify.NotificationClientException;
 

@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -45,7 +46,7 @@ public class NotifyServiceImplITManualCase {
    * @throws NotificationClientException if GOV.UK Notify issue
    */
   @Test
-  public void testProcessHappyPathSMS() throws NotificationClientException {
+  public void testProcessHappyPathSMS() throws NotificationClientException, CommsTemplateClientException {
     ActionFeedback actionFeedback = notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, PHONENUMBER,
         EMAIL_ADDRESS, true));
     assertNotNull(actionFeedback);
@@ -58,7 +59,7 @@ public class NotifyServiceImplITManualCase {
    * To test the sending of an SMS with an invalid phone number.
    */
   @Test
-  public void testProcessSMSInvalidPhoneNumber() {
+  public void testProcessSMSInvalidPhoneNumber() throws CommsTemplateClientException {
     try {
       notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, INVALID_PHONENUMBER,
           INVALID_EMAIL_ADDRESS,true));
@@ -81,7 +82,7 @@ public class NotifyServiceImplITManualCase {
    * @throws NotificationClientException if GOV.UK Notify issue
    */
   @Test
-  public void testProcessHappyPathEmail() throws NotificationClientException {
+  public void testProcessHappyPathEmail() throws NotificationClientException, CommsTemplateClientException {
     ActionFeedback actionFeedback = notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, null,
         EMAIL_ADDRESS, true));
     assertNotNull(actionFeedback);
@@ -94,7 +95,7 @@ public class NotifyServiceImplITManualCase {
    * To test the sending of an SMS with an invalid email address.
    */
   @Test
-  public void testProcessEmailInvalidEmailAddress() {
+  public void testProcessEmailInvalidEmailAddress() throws CommsTemplateClientException {
     try {
       notifyService.process(buildActionRequest(ACTION_ID, FORENAME, SURNAME, null, INVALID_EMAIL_ADDRESS,
           true));

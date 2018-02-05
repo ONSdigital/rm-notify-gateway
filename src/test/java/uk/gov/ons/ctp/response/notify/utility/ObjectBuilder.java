@@ -1,15 +1,18 @@
 package uk.gov.ons.ctp.response.notify.utility;
 
-import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import uk.gov.ons.ctp.response.action.message.instruction.*;
+import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ObjectBuilder {
 
@@ -103,6 +106,11 @@ public class ObjectBuilder {
       ActionEvent actionEvent = new ActionEvent();
       actionRequest.setEvents(actionEvent);
     }
+    actionRequest.setLegalBasis("BEIS");
+    actionRequest.setRegion("YY");
+    actionRequest.setCaseGroupStatus("INPROGRESS");
+    actionRequest.setEnrolmentStatus("ENABLED");
+    actionRequest.setRespondentStatus("ACTIVE");
     return actionRequest;
   }
 
@@ -169,5 +177,25 @@ public class ObjectBuilder {
         "\t\"status\": \"" + SENT + "\",\n" +
         "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
         "}");
+  }
+
+  public static CommsTemplateDTO buildCommsTemplateDTO() {
+    return CommsTemplateDTO.builder().id("id").build();
+  }
+
+  public static MultiValueMap<String,String> buildClassifiersMap() {
+    MultiValueMap<String,String> classifierMap = new LinkedMultiValueMap<>();
+
+    List<String> legalBasis = new ArrayList<>();
+    legalBasis.add("BEIS");
+
+    List<String> region = new ArrayList<>();
+    region.add("YY");
+
+    //TODO: Reflection to get these fields??
+    classifierMap.put("LEGALBASIS", legalBasis);
+    classifierMap.put("REGION", region);
+
+    return classifierMap;
   }
 }

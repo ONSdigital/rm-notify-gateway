@@ -6,10 +6,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
+import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
@@ -18,12 +23,14 @@ import uk.gov.service.notify.NotificationClientException;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -42,6 +49,9 @@ public class NotifyServiceImplTest {
 
   @Mock
   private NotificationClient notificationClient;
+
+  @Mock
+  private CommsTemplateClient commsTemplateClient;
 
   @Mock
   private NotifyConfiguration notifyConfiguration;
@@ -67,10 +77,12 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestHappyPathSMS() throws CTPException, NotificationClientException {
+  public void testProcessActionRequestHappyPathSMS() throws NotificationClientException, CommsTemplateClientException {
     Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
             any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
+
+    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject())).thenReturn(buildCommsTemplateDTO());
 
     ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
             PHONENUMBER, null, true));
@@ -92,9 +104,10 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestErrorPathSMS() throws CTPException, NotificationClientException {
+  public void testProcessActionRequestErrorPathSMS() throws NotificationClientException, CommsTemplateClientException {
     Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
         any(HashMap.class),any(String.class))).thenThrow(new NotificationClientException(new Exception()));
+    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject())).thenReturn(buildCommsTemplateDTO());
 
     try {
       notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
@@ -119,10 +132,11 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestHappyPathEmail() throws CTPException, NotificationClientException {
+  public void testProcessActionRequestHappyPathEmail() throws NotificationClientException, CommsTemplateClientException {
     Mockito.when(notificationClient.sendEmail(any(String.class), any(String.class),
         any(HashMap.class),any(String.class))).thenReturn(buildSendEmailResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForEmail());
+    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject())).thenReturn(buildCommsTemplateDTO());
 
     ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
         null, EMAIL_ADDRESS, true));
@@ -151,9 +165,10 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestErrorPathEmail() throws CTPException, NotificationClientException {
+  public void testProcessActionRequestErrorPathEmail() throws NotificationClientException, CommsTemplateClientException {
     Mockito.when(notificationClient.sendEmail(any(String.class), any(String.class),
         any(HashMap.class),any(String.class))).thenThrow(new NotificationClientException(new Exception()));
+    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(any())).thenReturn(buildCommsTemplateDTO());
 
     try {
       notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,

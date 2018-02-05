@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.notify.message;
 
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.service.notify.NotificationClientException;
 
 /**
@@ -12,5 +13,5 @@ public interface ActionInstructionReceiver {
    * @param instruction the ActionInstruction to be processed
    * @throws NotificationClientException when an error is received from GOV.UK Notify
    */
-  void processInstruction(ActionInstruction instruction) throws NotificationClientException;
+  void processInstruction(ActionInstruction instruction) throws NotificationClientException, CommsTemplateClientException;
 }
