@@ -122,7 +122,7 @@ pipeline {
                 sh "sed -i -- 's/REPLACE_BA_USERNAME/${env.CI_SECURITY_USR}/g' *template.yml"
                 sh "sed -i -- 's/REPLACE_BA_PASSWORD/${env.CI_SECURITY_PSW}/g' *template.yml"
 
-                sh 'echo "    notify_apiKey: ${env.NOTIFY_TESTAPIKEY}"' >> manifest-template.yml
+                sh 'echo \"    notify_apiKey: "${env.NOTIFY_TESTAPIKEY}"\"' >> manifest-template.yml
                 sh 'echo "    notify_censusUacSmsTemplateId: ${env.NOTIFY_CENSUSUACSMSTEMPLATEID}"' >> manifest-template.yml
                 sh 'echo "    notify_onsSurveysRasEmailReminderTemplateId: ${env.NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID}"' >> manifest-template.yml
                 sh 'echo "    notify_enabled: \"true\"\"' >> manifest-template.yml
