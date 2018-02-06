@@ -183,19 +183,4 @@ public class ObjectBuilder {
     return CommsTemplateDTO.builder().id("id").build();
   }
 
-  public static MultiValueMap<String,String> buildClassifiersMap() {
-    MultiValueMap<String,String> classifierMap = new LinkedMultiValueMap<>();
-
-    List<String> legalBasis = new ArrayList<>();
-    legalBasis.add("BEIS");
-
-    List<String> region = new ArrayList<>();
-    region.add("YY");
-
-    //TODO: Reflection to get these fields??
-    classifierMap.put("LEGALBASIS", legalBasis);
-    classifierMap.put("REGION", region);
-
-    return classifierMap;
-  }
 }

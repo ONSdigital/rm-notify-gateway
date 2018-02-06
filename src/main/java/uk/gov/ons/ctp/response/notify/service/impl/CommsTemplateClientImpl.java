@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
@@ -58,12 +59,14 @@ public class CommsTemplateClientImpl implements CommsTemplateClient {
                 log.error(String.format("Couldn't unmarshal response from comms template service: {}", e.getMessage()));
             }
 
-            log.info("Got template from Comms Template Service: {}", result);
+            log.info("Got template from Comms Template Service: {}", result.toString());
         } else {
             log.error("Unable to retrieve Comms Template, received {} response.", responseEntity.getStatusCode());
             //TODO: may want to throw different exceptions depending on status code,
             // TODO: if it is not found then don't want to retry it as would end up in a loop
-            throw new CommsTemplateClientException(responseEntity.getStatusCodeValue(), "Unable to retrieve comms template");
+            throw new CommsTemplateClientException(CTPException.Fault.BAD_REQUEST,
+                    "Unable to retrieve comms template, received a {} response"
+                            + responseEntity.getStatusCode().toString());
         }
         return result;
     }

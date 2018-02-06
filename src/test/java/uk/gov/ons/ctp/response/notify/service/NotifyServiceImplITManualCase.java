@@ -26,6 +26,9 @@ import uk.gov.service.notify.NotificationClientException;
 public class NotifyServiceImplITManualCase {
 
   @Autowired
+  private CommsTemplateClient commsTemplateClient;
+
+  @Autowired
   private NotifyConfiguration notifyConfiguration;
 
   @Autowired

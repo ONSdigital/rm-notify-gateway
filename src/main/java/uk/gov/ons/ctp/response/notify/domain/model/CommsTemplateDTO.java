@@ -13,6 +13,6 @@ public class CommsTemplateDTO {
     private String label;
     private String type;
     private String uri;
-    private Map<String, String> classification;
+    private Map<String, String> classifiers;
     private List params;
 }

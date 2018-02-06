@@ -92,5 +92,9 @@ swagger-settings:
   description: API for ${project.artifactId}
   version: ${project.version}
 
-comms-template-config:
-  template-by-classifiers-path: /templates
+comms-template-service:
+  template-by-classifiers-path: /templates/
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 8081
