@@ -61,12 +61,14 @@ public class CommsTemplateClientImpl implements CommsTemplateClient {
 
             log.info("Got template from Comms Template Service: {}", result.toString());
         } else {
-            log.error("Unable to retrieve Comms Template, received {} response.", responseEntity.getStatusCode());
+            log.error("Unable to retrieve Comms Template, received {} response.", responseEntity.getStatusCode().toString());
             //TODO: may want to throw different exceptions depending on status code,
             // TODO: if it is not found then don't want to retry it as would end up in a loop
-            throw new CommsTemplateClientException(CTPException.Fault.BAD_REQUEST,
+            //This exception will cause the message to be retried
+            throw new CommsTemplateClientException(CTPException.Fault.SYSTEM_ERROR,
                     "Unable to retrieve comms template, received a {} response"
                             + responseEntity.getStatusCode().toString());
+
         }
         return result;
     }

@@ -57,11 +57,12 @@ public class NotifyServiceImpl implements NotifyService {
     public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
     @Override
-    public ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException, CommsTemplateClientException {
+    public ActionFeedback process(final ActionRequest actionRequest) throws NotificationClientException,
+            CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         log.debug("Entering process with actionId {}", actionId);
 
-        ActionFeedback actionFeedback = null;
+        ActionFeedback actionFeedback;
 
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
@@ -75,7 +76,7 @@ public class NotifyServiceImpl implements NotifyService {
     }
 
     @Override
-    public UUID process(NotifyRequest notifyRequest) throws NotificationClientException {
+    public UUID process(final NotifyRequest notifyRequest) throws NotificationClientException {
         String phoneNumber = notifyRequest.getPhoneNumber();
         String emailAddress = notifyRequest.getEmailAddress();
 
@@ -105,7 +106,7 @@ public class NotifyServiceImpl implements NotifyService {
     }
 
     @Override
-    public Notification findNotificationById(UUID notificationId) throws NotificationClientException {
+    public Notification findNotificationById(final UUID notificationId) throws NotificationClientException {
         return notificationClient.getNotificationById(notificationId.toString());
     }
 
@@ -122,7 +123,7 @@ public class NotifyServiceImpl implements NotifyService {
      * @param personalisation the string built originally by orika
      * @return the Map
      */
-    private Map<String, String> buildMapFromString(String personalisation) {
+    private Map<String, String> buildMapFromString(final String personalisation) {
         Map<String, String> result = null;
 
         if (!StringUtils.isEmpty(personalisation)) {
@@ -143,9 +144,10 @@ public class NotifyServiceImpl implements NotifyService {
      *
      * @param actionRequest to process for SMS
      * @return the ActionFeedback
-     * @throws NotificationClientException
+     * @throws NotificationClientException, CommsTemplateClientException
      */
-    private ActionFeedback processSms(ActionRequest actionRequest) throws NotificationClientException, CommsTemplateClientException {
+    private ActionFeedback processSms(final ActionRequest actionRequest) throws NotificationClientException,
+            CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
@@ -176,9 +178,10 @@ public class NotifyServiceImpl implements NotifyService {
      * To process actionRequest for Email
      *
      * @param actionRequest to process for Email
-     * @throws NotificationClientException
+     * @throws NotificationClientException, CommsTemplateClientException
      */
-    private ActionFeedback processEmail(ActionRequest actionRequest) throws NotificationClientException, CommsTemplateClientException {
+    private ActionFeedback processEmail(final ActionRequest actionRequest) throws NotificationClientException,
+            CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         ActionContact actionContact = actionRequest.getContact();
 
@@ -213,25 +216,25 @@ public class NotifyServiceImpl implements NotifyService {
             Outcome.REQUEST_COMPLETED);
     }
 
-    private String getTemplateIdByClassifiers(final ActionRequest actionRequest) throws CommsTemplateClientException{
+    private String getTemplateIdByClassifiers(final ActionRequest actionRequest) throws CommsTemplateClientException {
         MultiValueMap<String,String> classifiers = getClassifiers(actionRequest);
         //TODO: currently comms template service returns a list of matching templates, put a pull request in to fix it
         CommsTemplateDTO commsTemplateDTO = commsTemplateClient.getCommsTemplateByClassifiers(classifiers);
         return commsTemplateDTO.getId();
     }
 
-    private MultiValueMap<String,String> getClassifiers(final ActionRequest actionRequest) {
+    private MultiValueMap<String, String> getClassifiers(final ActionRequest actionRequest) {
         //Odd data structure for RestUtility
         MultiValueMap<String,String> classifierMap = new LinkedMultiValueMap<>();
 
-        if(actionRequest.getLegalBasis() != null) {
+        if (actionRequest.getLegalBasis() != null) {
             List<String> legalBasis = new ArrayList<>();
             legalBasis.add(actionRequest.getLegalBasis());
             //TODO: NEED TO KNOW WHAT THESE FIELDS WILL BE CALLED ON POPULATION
             classifierMap.put("LEGALBASIS", legalBasis);
         }
 
-        if(actionRequest.getRegion() != null) {
+        if (actionRequest.getRegion() != null) {
             List<String> region = new ArrayList<>();
             region.add(actionRequest.getRegion());
             //TODO: NEED TO KNOW WHAT THESE FIELDS WILL BE CALLED ON POPULATION

@@ -14,5 +14,5 @@ public class CommsTemplateDTO {
     private String type;
     private String uri;
     private Map<String, String> classifiers;
-    private List params;
+    private Map<String, String> params;
 }

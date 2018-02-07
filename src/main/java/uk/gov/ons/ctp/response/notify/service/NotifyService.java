@@ -18,7 +18,8 @@ public interface NotifyService {
    *
    * @param actionRequest to be processed
    * @return the associated ActionFeedback
-//   * @throws NotificationClientException if GOV.UK Notify gives an issue
+   * @throws NotificationClientException if GOV.UK Notify gives an issue
+   * @throws CommsTemplateClientException if the comms template is not 2xx successful
    */
   ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException, CommsTemplateClientException;
 
@@ -28,6 +29,7 @@ public interface NotifyService {
    * @param notifyRequest to be processed
    * @return the associated notificationId
    * @throws NotificationClientException if GOV.UK Notify gives an issue
+   * @throws CommsTemplateClientException if the comms template is not 2xx successful
    */
   UUID process(NotifyRequest notifyRequest) throws NotificationClientException;
 
