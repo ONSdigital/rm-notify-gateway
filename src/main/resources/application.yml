@@ -81,6 +81,8 @@ notify:
   enabled: false
   debug: false
   apiKey: dummykey-ffffffff-ffff-ffff-ffff-ffffffffffff-ffffffff-ffff-ffff-ffff-ffffffffffff
+  censusUacSmsTemplateId: ffffffff-ffff-ffff-ffff-ffffffffffff
+  onsSurveysRasEmailReminderTemplateId: ffffffff-ffff-ffff-ffff-ffffffffffff
 
 rabbitmq:
   username: guest

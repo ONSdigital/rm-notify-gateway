@@ -29,7 +29,6 @@ public interface NotifyService {
    * @param notifyRequest to be processed
    * @return the associated notificationId
    * @throws NotificationClientException if GOV.UK Notify gives an issue
-   * @throws CommsTemplateClientException if the comms template is not 2xx successful
    */
   UUID process(NotifyRequest notifyRequest) throws NotificationClientException;
 

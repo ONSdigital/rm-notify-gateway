@@ -33,7 +33,6 @@ public class CommsTemplateClientImpl implements CommsTemplateClient {
     private RestTemplate restTemplate;
 
     @Autowired
-    @Qualifier("commsTemplateClient")
     private RestUtility restUtility;
 
     @Autowired
