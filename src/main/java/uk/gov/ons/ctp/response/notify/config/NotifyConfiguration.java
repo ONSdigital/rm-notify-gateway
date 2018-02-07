@@ -29,8 +29,6 @@ public class NotifyConfiguration {
    */
   @Bean
   public NotificationClientApi notificationClient() {
-    //TODO: Remove all of the associated notification validation for keys etc,
-    // TODO: superceded by use of comms template service
     validate();
 
     return NotificationClientFactory.getNotificationClient(this);

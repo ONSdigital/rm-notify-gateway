@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.notify.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -26,23 +25,28 @@ import java.io.IOException;
 @Service
 public class CommsTemplateClientImpl implements CommsTemplateClient {
 
-    @Autowired
     private AppConfig appConfig;
 
-    @Autowired
     private RestTemplate restTemplate;
 
-    @Autowired
     private RestUtility restUtility;
 
-    @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    public CommsTemplateClientImpl(AppConfig appConfig, RestTemplate restTemplate, RestUtility restUtility, ObjectMapper objectMapper) {
+        this.appConfig = appConfig;
+        this.restTemplate = restTemplate;
+        this.restUtility = restUtility;
+        this.objectMapper = objectMapper;
+    }
 
     @Cacheable("commsTemplate")
     @Override
-    public CommsTemplateDTO getCommsTemplateByClassifiers(MultiValueMap<String, String> classifiers) throws CommsTemplateClientException {
+    public CommsTemplateDTO getCommsTemplateByClassifiers(MultiValueMap<String, String> classifiers)
+            throws CommsTemplateClientException {
         UriComponents uriComponents = restUtility.createUriComponents(
-                appConfig.getCommsTemplateService().getTemplateByClassifiersPath(),classifiers);
+                appConfig.getCommsTemplateService().getTemplateByClassifiersPath(), classifiers);
 
         HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
 
@@ -54,19 +58,16 @@ public class CommsTemplateClientImpl implements CommsTemplateClient {
             String responseBody = responseEntity.getBody();
             try {
                 result = objectMapper.readValue(responseBody, CommsTemplateDTO.class);
+                log.info("Got template from Comms Template Service: {}", result.toString());
             } catch (IOException e) {
-                log.error(String.format("Couldn't unmarshal response from comms template service: {}", e.getMessage()));
+                log.error("Couldn't unmarshal response from comms template service: {}", e.getMessage());
             }
-
-            log.info("Got template from Comms Template Service: {}", result.toString());
         } else {
-            log.error("Unable to retrieve Comms Template, received {} response.", responseEntity.getStatusCode().toString());
-            //TODO: may want to throw different exceptions depending on status code,
-            // TODO: if it is not found then don't want to retry it as would end up in a loop
-            //This exception will cause the message to be retried
+            log.error("Unable to retrieve Comms Template, received {} response.",
+                    responseEntity.getStatusCode().toString());
             throw new CommsTemplateClientException(CTPException.Fault.SYSTEM_ERROR,
-                    "Unable to retrieve comms template, received a {} response"
-                            + responseEntity.getStatusCode().toString());
+                    String.format("Unable to retrieve comms template, received a {} response",
+                            responseEntity.getStatusCode().toString()));
 
         }
         return result;

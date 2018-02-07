@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.notify.domain.model;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
 import java.util.Map;
 
 @Builder

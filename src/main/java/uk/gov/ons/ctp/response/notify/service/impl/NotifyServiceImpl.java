@@ -80,7 +80,6 @@ public class NotifyServiceImpl implements NotifyService {
         String phoneNumber = notifyRequest.getPhoneNumber();
         String emailAddress = notifyRequest.getEmailAddress();
 
-        // TODO: do i get the template id from the comms template service???
         String templateId = notifyRequest.getTemplateId();
 
         String reference = notifyRequest.getReference();
@@ -217,15 +216,14 @@ public class NotifyServiceImpl implements NotifyService {
     }
 
     private String getTemplateIdByClassifiers(final ActionRequest actionRequest) throws CommsTemplateClientException {
-        MultiValueMap<String,String> classifiers = getClassifiers(actionRequest);
-        //TODO: currently comms template service returns a list of matching templates, put a pull request in to fix it
+        MultiValueMap<String, String> classifiers = getClassifiers(actionRequest);
         CommsTemplateDTO commsTemplateDTO = commsTemplateClient.getCommsTemplateByClassifiers(classifiers);
         return commsTemplateDTO.getId();
     }
 
     private MultiValueMap<String, String> getClassifiers(final ActionRequest actionRequest) {
         //Odd data structure for RestUtility
-        MultiValueMap<String,String> classifierMap = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
 
         if (actionRequest.getLegalBasis() != null) {
             List<String> legalBasis = new ArrayList<>();
@@ -241,8 +239,10 @@ public class NotifyServiceImpl implements NotifyService {
             classifierMap.put("REGION", region);
         }
 
-        //TODO: Does it matter if it is a reminder or notification email?
-        //actionRequest.getActionType(), this gives us the name of the action type
+        //TODO: WILL NEED TO SELECT BASED ON REMINDER/NOTIFICATION
+        //actionRequest.getActionType()
+        //GIVES NAME OF ACTION TYPE,
+        // EXAMPLE FOR BRES (BRESEL, BRESERL) BRES Enrolment Letter and BRES Enrolment Reminder Letter
 
         //TODO: All other classifiers, if we had it in a classifiers object could strip out by reflection
 

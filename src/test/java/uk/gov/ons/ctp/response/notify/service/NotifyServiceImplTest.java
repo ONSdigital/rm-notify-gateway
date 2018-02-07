@@ -76,7 +76,6 @@ public class NotifyServiceImplTest {
     Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
             any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
-
     Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject())).thenReturn(buildCommsTemplateDTO());
 
     ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
@@ -90,6 +89,7 @@ public class NotifyServiceImplTest {
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
             eq(personalisation), any(String.class));
     verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
+    verify(commsTemplateClient, times(1)).getCommsTemplateByClassifiers(anyObject());
   }
 
   /**
@@ -118,6 +118,7 @@ public class NotifyServiceImplTest {
     verify(notificationClient, times(1)).sendSms(any(String.class), eq(INVALID_PHONENUMBER),
         eq(personalisation), any(String.class));
     verify(notificationClient, never()).getNotificationById(any(String.class));
+    verify(commsTemplateClient, times(1)).getCommsTemplateByClassifiers(anyObject());
   }
 
   /**
@@ -127,7 +128,8 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestHappyPathEmail() throws NotificationClientException, CommsTemplateClientException {
+  public void testProcessActionRequestHappyPathEmail() throws NotificationClientException,
+          CommsTemplateClientException {
     Mockito.when(notificationClient.sendEmail(any(String.class), any(String.class),
         any(HashMap.class),any(String.class))).thenReturn(buildSendEmailResponse());
     Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForEmail());
@@ -151,6 +153,7 @@ public class NotifyServiceImplTest {
     verify(notificationClient, times(1)).sendEmail(any(String.class), eq(EMAIL_ADDRESS),
         eq(personalisation), any(String.class));
     verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
+    verify(commsTemplateClient, times(1)).getCommsTemplateByClassifiers(anyObject());
   }
 
   /**
@@ -160,7 +163,8 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestErrorPathEmail() throws NotificationClientException, CommsTemplateClientException {
+  public void testProcessActionRequestErrorPathEmail() throws NotificationClientException,
+          CommsTemplateClientException {
     Mockito.when(notificationClient.sendEmail(any(String.class), any(String.class),
         any(HashMap.class),any(String.class))).thenThrow(new NotificationClientException(new Exception()));
     Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(any())).thenReturn(buildCommsTemplateDTO());

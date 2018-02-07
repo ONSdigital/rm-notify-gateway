@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.notify.utility;
 
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import uk.gov.ons.ctp.response.action.message.instruction.*;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.service.notify.Notification;
@@ -9,10 +7,6 @@ import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ObjectBuilder {
 

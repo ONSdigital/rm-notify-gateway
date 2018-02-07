@@ -77,7 +77,8 @@ public class ActionInstructionReceiverImplTest {
 
 
   @Test
-  public void testProcessBRESInstructionEmailAddressWithSpacesAtFrontAndBack() throws NotificationClientException, CommsTemplateClientException {
+  public void testProcessBRESInstructionEmailAddressWithSpacesAtFrontAndBack() throws NotificationClientException,
+          CommsTemplateClientException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
         NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
             NOTIFY_EMAIL_SENT : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH), Outcome.REQUEST_COMPLETED);

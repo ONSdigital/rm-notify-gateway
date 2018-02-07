@@ -48,7 +48,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
-  public void processInstruction(final ActionInstruction instruction) throws NotificationClientException, CommsTemplateClientException {
+  public void processInstruction(final ActionInstruction instruction) throws NotificationClientException,
+          CommsTemplateClientException {
     log.debug("entering process with instruction {}", instruction);
 
     ActionRequest actionRequest = instruction.getActionRequest();
