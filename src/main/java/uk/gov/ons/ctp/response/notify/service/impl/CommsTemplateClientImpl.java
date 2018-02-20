@@ -54,7 +54,7 @@ public class CommsTemplateClientImpl implements CommsTemplateClient {
                 httpEntity, String.class);
 
         CommsTemplateDTO result = null;
-        if (responseEntity != null && responseEntity.getStatusCode().is2xxSuccessful()) {
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
             String responseBody = responseEntity.getBody();
             try {
                 result = objectMapper.readValue(responseBody, CommsTemplateDTO.class);

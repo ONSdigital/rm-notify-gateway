@@ -56,6 +56,9 @@ public class NotifyServiceImpl implements NotifyService {
     public static final String NOTIFY_SMS_NOT_SENT = "Notify Sms Not Sent";
     public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
+    public static final String REGION_CODE = "REGION";
+    public static final String LEGAL_BASIS = "LEGALBASIS";
+
     @Override
     public ActionFeedback process(final ActionRequest actionRequest) throws NotificationClientException,
             CommsTemplateClientException {
@@ -222,29 +225,25 @@ public class NotifyServiceImpl implements NotifyService {
     }
 
     private MultiValueMap<String, String> getClassifiers(final ActionRequest actionRequest) {
-        //Odd data structure for RestUtility
         MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
 
         if (actionRequest.getLegalBasis() != null) {
             List<String> legalBasis = new ArrayList<>();
             legalBasis.add(actionRequest.getLegalBasis());
-            //TODO: NEED TO KNOW WHAT THESE FIELDS WILL BE CALLED ON POPULATION
-            classifierMap.put("LEGALBASIS", legalBasis);
+            classifierMap.put(LEGAL_BASIS, legalBasis);
         }
 
         if (actionRequest.getRegion() != null) {
             List<String> region = new ArrayList<>();
             region.add(actionRequest.getRegion());
-            //TODO: NEED TO KNOW WHAT THESE FIELDS WILL BE CALLED ON POPULATION
-            classifierMap.put("REGION", region);
+            classifierMap.put(REGION_CODE, region);
         }
 
         //TODO: WILL NEED TO SELECT BASED ON REMINDER/NOTIFICATION
-        //actionRequest.getActionType()
-        //GIVES NAME OF ACTION TYPE,
+        // actionRequest.getActionType() gives name of action type
         // EXAMPLE FOR BRES (BRESEL, BRESERL) BRES Enrolment Letter and BRES Enrolment Reminder Letter
 
-        //TODO: All other classifiers, if we had it in a classifiers object could strip out by reflection
+        //TODO: Other classifiers need to be added here as they are updated in the comms template service
 
         return classifierMap;
     }
