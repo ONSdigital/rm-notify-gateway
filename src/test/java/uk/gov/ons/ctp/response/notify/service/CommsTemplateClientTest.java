@@ -36,12 +36,11 @@ public class CommsTemplateClientTest {
     @InjectMocks
     private CommsTemplateClientImpl commsTemplateClient;
 
-    @Spy
-    private AppConfig appConfig = AppConfig.builder()
-            .commsTemplateService(CommsTemplateService.builder()
-                    .templateByClassifiersPath("template")
-                    .build())
-            .build();
+    @Mock
+    private CommsTemplateService commsTemplateService;
+
+    @Mock
+    private AppConfig appConfig;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -52,6 +51,12 @@ public class CommsTemplateClientTest {
     @Spy
     private RestUtility restUtility = new RestUtility(new RestUtilityConfig());
 
+
+    @Before
+    public void setUp() {
+        Mockito.when(appConfig.getCommsTemplateService()).thenReturn(commsTemplateService);
+        Mockito.when(commsTemplateService.getTemplateByClassifiersPath()).thenReturn("/templates");
+    }
 
     @Test
     public void testMakesCorrectGetRequest() throws CommsTemplateClientException, IOException {
@@ -72,7 +77,7 @@ public class CommsTemplateClientTest {
         //Then
         Mockito.verify(restTemplate).exchange(uriArgumentCaptor.capture(), eq(HttpMethod.GET),
                 anyObject(), eq(String.class));
-        String expectedURL = "http://localhost:8080/template?LEGALBASIS=YY&REGION=NI";
+        String expectedURL = "http://localhost:8080/templates?LEGALBASIS=YY&REGION=NI";
         assertEquals(expectedURL, uriArgumentCaptor.getValue().toString());
     }
 
