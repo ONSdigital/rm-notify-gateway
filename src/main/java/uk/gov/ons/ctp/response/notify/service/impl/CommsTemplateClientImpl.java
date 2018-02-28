@@ -48,10 +48,11 @@ public class CommsTemplateClientImpl implements CommsTemplateClient {
         UriComponents uriComponents = restUtility.createUriComponents(
                 appConfig.getCommsTemplateService().getTemplateByClassifiersPath(), classifiers);
 
-        HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
+        log.debug("Attempting to get Comms Template for classifiers: {}, with uri {}",
+                classifiers.toString(), uriComponents.toString());
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET,
-                httpEntity, String.class);
+                null, String.class);
 
         CommsTemplateDTO result = null;
         if (responseEntity.getStatusCode().is2xxSuccessful()) {

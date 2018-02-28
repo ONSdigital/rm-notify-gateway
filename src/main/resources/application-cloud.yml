@@ -95,8 +95,8 @@ swagger-settings:
   version: ${project.version}
 
 comms-template-service:
-  template-by-classifiers-path: /templates/
+  template-by-classifiers-path: /templates
   connection-config:
     scheme: http
-    host: localhost
-    port: 8081
+    host: comms-template
+    port: 8182
