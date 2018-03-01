@@ -22,6 +22,7 @@ import uk.gov.ons.ctp.response.notify.config.CommsTemplateService;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.ons.ctp.response.notify.service.impl.CommsTemplateClientImpl;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -90,11 +91,13 @@ public class CommsTemplateClientTest {
         try {
             //When
             commsTemplateClient.getCommsTemplateByClassifiers(generateClassifiers());
+            fail();
         } catch (CommsTemplateClientException exception) {
             //Then
             assertEquals(CommsTemplateClientException.class, exception.getClass());
             assertEquals(CTPException.Fault.SYSTEM_ERROR, exception.getFault());
         }
+
     }
 
     private MultiValueMap<String, String > generateClassifiers() {
