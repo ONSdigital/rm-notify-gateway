@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.notify.service;
 
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
@@ -17,9 +18,10 @@ public interface NotifyService {
    *
    * @param actionRequest to be processed
    * @return the associated ActionFeedback
-//   * @throws NotificationClientException if GOV.UK Notify gives an issue
+   * @throws NotificationClientException if GOV.UK Notify gives an issue
+   * @throws CommsTemplateClientException if the comms template is not 2xx successful
    */
-  ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException;
+  ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException, CommsTemplateClientException;
 
   /**
    * To process a NotifyRequest. It sends an SMS or an email using GOV.UK Notify.

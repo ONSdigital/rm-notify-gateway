@@ -9,6 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
@@ -44,7 +45,7 @@ public class ActionInstructionReceiverImplTest {
   private NotifyService notifyService;
 
   @Test
-  public void testProcessBRESInstructionHappyPath() throws NotificationClientException {
+  public void testProcessBRESInstructionHappyPath() throws NotificationClientException, CommsTemplateClientException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
         NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
             NOTIFY_EMAIL_SENT : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH), Outcome.REQUEST_COMPLETED);
@@ -76,7 +77,8 @@ public class ActionInstructionReceiverImplTest {
 
 
   @Test
-  public void testProcessBRESInstructionEmailAddressWithSpacesAtFrontAndBack() throws NotificationClientException {
+  public void testProcessBRESInstructionEmailAddressWithSpacesAtFrontAndBack() throws NotificationClientException,
+          CommsTemplateClientException {
     ActionFeedback mockedActionFeedback = new ActionFeedback(MOCKED_ACTIONID,
         NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
             NOTIFY_EMAIL_SENT : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH), Outcome.REQUEST_COMPLETED);
@@ -108,7 +110,7 @@ public class ActionInstructionReceiverImplTest {
   }
 
   @Test
-  public void testProcessBRESInstructionNotifyThrowsException() throws NotificationClientException {
+  public void testProcessBRESInstructionNotifyThrowsException() throws NotificationClientException, CommsTemplateClientException {
     NotificationClientException exception = new NotificationClientException(new Exception());
     when(notifyService.process(any(ActionRequest.class))).thenThrow(exception);
 

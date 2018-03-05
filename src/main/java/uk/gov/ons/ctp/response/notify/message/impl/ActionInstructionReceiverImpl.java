@@ -18,6 +18,7 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
@@ -47,7 +48,8 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
-  public void processInstruction(final ActionInstruction instruction) throws NotificationClientException {
+  public void processInstruction(final ActionInstruction instruction) throws NotificationClientException,
+          CommsTemplateClientException {
     log.debug("entering process with instruction {}", instruction);
 
     ActionRequest actionRequest = instruction.getActionRequest();

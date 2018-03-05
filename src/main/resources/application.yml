@@ -79,7 +79,7 @@ redelivery-policy:
 
 notify:
   enabled: false
-  debug: false
+  #debugType:
   apiKey: dummykey-ffffffff-ffff-ffff-ffff-ffffffffffff-ffffffff-ffff-ffff-ffff-ffffffffffff
   censusUacSmsTemplateId: ffffffff-ffff-ffff-ffff-ffffffffffff
   onsSurveysRasEmailReminderTemplateId: ffffffff-ffff-ffff-ffff-ffffffffffff
@@ -106,3 +106,10 @@ swagger-settings:
   title: Notify Gateway API
   description: API for ${project.artifactId}
   version: ${project.version}
+
+comms-template-service:
+  template-by-classifiers-path: /templates
+  connection-config:
+    scheme: http
+    host: comms-template
+    port: 8182

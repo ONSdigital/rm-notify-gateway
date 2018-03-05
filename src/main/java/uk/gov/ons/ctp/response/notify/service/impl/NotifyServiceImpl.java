@@ -4,21 +4,24 @@ import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionRecei
 
 import com.google.common.base.Splitter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import liquibase.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
+import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.service.CommsTemplateClient;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.*;
@@ -36,6 +39,9 @@ public class NotifyServiceImpl implements NotifyService {
     @Autowired
     private NotificationClientApi notificationClient;
 
+    @Autowired
+    private CommsTemplateClient commsTemplateClient;
+
     public static final String FIRSTNAME_KEY = "firstname";
     public static final String IAC_KEY = "iac";
     public static final String LASTNAME_KEY = "lastname";
@@ -50,12 +56,16 @@ public class NotifyServiceImpl implements NotifyService {
     public static final String NOTIFY_SMS_NOT_SENT = "Notify Sms Not Sent";
     public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
+    public static final String REGION_CODE = "REGION";
+    public static final String LEGAL_BASIS = "LEGALBASIS";
+
     @Override
-    public ActionFeedback process(ActionRequest actionRequest) throws NotificationClientException {
+    public ActionFeedback process(final ActionRequest actionRequest) throws NotificationClientException,
+            CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         log.debug("Entering process with actionId {}", actionId);
 
-        ActionFeedback actionFeedback = null;
+        ActionFeedback actionFeedback;
 
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
@@ -69,10 +79,12 @@ public class NotifyServiceImpl implements NotifyService {
     }
 
     @Override
-    public UUID process(NotifyRequest notifyRequest) throws NotificationClientException {
+    public UUID process(final NotifyRequest notifyRequest) throws NotificationClientException {
         String phoneNumber = notifyRequest.getPhoneNumber();
         String emailAddress = notifyRequest.getEmailAddress();
+
         String templateId = notifyRequest.getTemplateId();
+
         String reference = notifyRequest.getReference();
         String personalisation = notifyRequest.getPersonalisation();
         Map<String, String> personalisationMap = buildMapFromString(personalisation);
@@ -96,7 +108,7 @@ public class NotifyServiceImpl implements NotifyService {
     }
 
     @Override
-    public Notification findNotificationById(UUID notificationId) throws NotificationClientException {
+    public Notification findNotificationById(final UUID notificationId) throws NotificationClientException {
         return notificationClient.getNotificationById(notificationId.toString());
     }
 
@@ -113,7 +125,7 @@ public class NotifyServiceImpl implements NotifyService {
      * @param personalisation the string built originally by orika
      * @return the Map
      */
-    private Map<String, String> buildMapFromString(String personalisation) {
+    private Map<String, String> buildMapFromString(final String personalisation) {
         Map<String, String> result = null;
 
         if (!StringUtils.isEmpty(personalisation)) {
@@ -134,9 +146,10 @@ public class NotifyServiceImpl implements NotifyService {
      *
      * @param actionRequest to process for SMS
      * @return the ActionFeedback
-     * @throws NotificationClientException
+     * @throws NotificationClientException, CommsTemplateClientException
      */
-    private ActionFeedback processSms(ActionRequest actionRequest) throws NotificationClientException {
+    private ActionFeedback processSms(final ActionRequest actionRequest) throws NotificationClientException,
+            CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         ActionContact actionContact = actionRequest.getContact();
         String phoneNumber = actionContact.getPhoneNumber();
@@ -144,7 +157,7 @@ public class NotifyServiceImpl implements NotifyService {
         Map<String, String> personalisation = new HashMap<>();
         personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
 
-        String templateId = notifyConfiguration.getCensusUacSmsTemplateId();
+        String templateId = getTemplateIdByClassifiers(actionRequest);
         log.debug("About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - personalisation {}"
             + " for actionId = {}", templateId, phoneNumber, personalisation, actionId);
 
@@ -167,9 +180,10 @@ public class NotifyServiceImpl implements NotifyService {
      * To process actionRequest for Email
      *
      * @param actionRequest to process for Email
-     * @throws NotificationClientException
+     * @throws NotificationClientException, CommsTemplateClientException
      */
-    private ActionFeedback processEmail(ActionRequest actionRequest) throws NotificationClientException {
+    private ActionFeedback processEmail(final ActionRequest actionRequest) throws NotificationClientException,
+            CommsTemplateClientException {
         String actionId = actionRequest.getActionId();
         ActionContact actionContact = actionRequest.getContact();
 
@@ -184,8 +198,8 @@ public class NotifyServiceImpl implements NotifyService {
         personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
         personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
 
-        String templateId = notifyConfiguration.getOnsSurveysRasEmailReminderTemplateId();
-        log.debug("About to invoke sendEmail with onsSurveysRasEmailReminderTemplateId {} - emailAddress {} - "
+        String templateId = getTemplateIdByClassifiers(actionRequest);
+        log.debug("About to invoke sendEmail with templateId {} - emailAddress {} - "
             + "personalisation {} for actionId = {}", templateId, emailAddress, personalisation, actionId);
 
         SendEmailResponse response = notificationClient.sendEmail(templateId, emailAddress,
@@ -202,5 +216,35 @@ public class NotifyServiceImpl implements NotifyService {
             NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH ?
                 NOTIFY_EMAIL_SENT : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH),
             Outcome.REQUEST_COMPLETED);
+    }
+
+    private String getTemplateIdByClassifiers(final ActionRequest actionRequest) throws CommsTemplateClientException {
+        MultiValueMap<String, String> classifiers = getClassifiers(actionRequest);
+        CommsTemplateDTO commsTemplateDTO = commsTemplateClient.getCommsTemplateByClassifiers(classifiers);
+        return commsTemplateDTO.getId();
+    }
+
+    private MultiValueMap<String, String> getClassifiers(final ActionRequest actionRequest) {
+        MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
+
+        if (actionRequest.getLegalBasis() != null) {
+            List<String> legalBasis = new ArrayList<>();
+            legalBasis.add(actionRequest.getLegalBasis());
+            classifierMap.put(LEGAL_BASIS, legalBasis);
+        }
+
+        if (actionRequest.getRegion() != null) {
+            List<String> region = new ArrayList<>();
+            region.add(actionRequest.getRegion());
+            classifierMap.put(REGION_CODE, region);
+        }
+
+        //TODO: WILL NEED TO SELECT BASED ON REMINDER/NOTIFICATION
+        // actionRequest.getActionType() gives name of action type
+        // EXAMPLE FOR BRES (BRESEL, BRESERL) BRES Enrolment Letter and BRES Enrolment Reminder Letter
+
+        //TODO: Other classifiers need to be added here as they are updated in the comms template service
+
+        return classifierMap;
     }
 }
