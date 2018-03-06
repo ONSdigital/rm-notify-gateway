@@ -1,10 +1,7 @@
 package uk.gov.ons.ctp.response.notify.utility;
 
-import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.action.message.instruction.*;
+import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
@@ -103,6 +100,11 @@ public class ObjectBuilder {
       ActionEvent actionEvent = new ActionEvent();
       actionRequest.setEvents(actionEvent);
     }
+    actionRequest.setLegalBasis("BEIS");
+    actionRequest.setRegion("YY");
+    actionRequest.setCaseGroupStatus("INPROGRESS");
+    actionRequest.setEnrolmentStatus("ENABLED");
+    actionRequest.setRespondentStatus("ACTIVE");
     return actionRequest;
   }
 
@@ -170,4 +172,9 @@ public class ObjectBuilder {
         "\t\"created_at\": \"" + CREATED_AT + "\"\n" +
         "}");
   }
+
+  public static CommsTemplateDTO buildCommsTemplateDTO() {
+    return CommsTemplateDTO.builder().id("id").build();
+  }
+
 }
