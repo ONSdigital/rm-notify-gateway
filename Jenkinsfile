@@ -59,7 +59,6 @@ pipeline {
                 sh "sed -i -- 's/ENDPOINT_ENABLED/'false'/g' *template.yml"
                 sh "sed -i -- 's/true/'true'/g' *template.yml"
                 sh "sed -i -- 's/REPLACE_BA_USERNAME/${env.DEV_SECURITY_USR}/g' *template.yml"
-                sh "sed -i -- 's/REPLACE_BA_PASSWORD/${env.DEV_SECURITY_PSW}/g' *template.yml"
 
                 sh 'echo "    notify_apiKey: ${env.NOTIFY_TESTAPIKEY}"' >> manifest-template.yml
                 sh 'echo "    notify_censusUacSmsTemplateId: ${env.NOTIFY_CENSUSUACSMSTEMPLATEID}"' >> manifest-template.yml
