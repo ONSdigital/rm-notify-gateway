@@ -61,10 +61,10 @@ pipeline {
                 sh "sed -i -- 's/REPLACE_BA_USERNAME/${env.DEV_SECURITY_USR}/g' *template.yml"
                 sh "sed -i -- 's/REPLACE_BA_PASSWORD/${env.DEV_SECURITY_PSW}/g' *template.yml"
 
-                sh 'echo "    notify_apiKey: ${env.NOTIFY_TESTAPIKEY}"' >> manifest-template.yml
-                sh 'echo "    notify_censusUacSmsTemplateId: ${env.NOTIFY_CENSUSUACSMSTEMPLATEID}"' >> manifest-template.yml
-                sh 'echo "    notify_onsSurveysRasEmailReminderTemplateId: ${env.NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID}"' >> manifest-template.yml
-                sh 'echo "    notify_enabled: \"true\"\"' >> manifest-template.yml
+                sh "echo '    notify_apiKey: ${env.NOTIFY_TESTAPIKEY}' >> manifest-template.yml"
+                sh "echo '    notify_censusUacSmsTemplateId: ${env.NOTIFY_CENSUSUACSMSTEMPLATEID}' >> manifest-template.yml"
+                sh "echo '    notify_onsSurveysRasEmailReminderTemplateId: ${env.NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID}' >> manifest-template.yml"
+                sh "echo '    notify_enabled: \"true\"' >> manifest-template.yml"
 
                 sh "cf login -a https://${env.CLOUDFOUNDRY_API} --skip-ssl-validation -u ${CF_USER_USR} -p ${CF_USER_PSW} -o rmras -s dev"
                 sh 'cf push -f manifest-template.yml'
@@ -122,10 +122,10 @@ pipeline {
                 sh "sed -i -- 's/REPLACE_BA_USERNAME/${env.CI_SECURITY_USR}/g' *template.yml"
                 sh "sed -i -- 's/REPLACE_BA_PASSWORD/${env.CI_SECURITY_PSW}/g' *template.yml"
 
-                sh 'echo "    notify_apiKey: ${env.NOTIFY_TESTAPIKEY}"' >> manifest-template.yml
-                sh 'echo "    notify_censusUacSmsTemplateId: ${env.NOTIFY_CENSUSUACSMSTEMPLATEID}"' >> manifest-template.yml
-                sh 'echo "    notify_onsSurveysRasEmailReminderTemplateId: ${env.NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID}"' >> manifest-template.yml
-                sh 'echo "    notify_enabled: \"true\"\"' >> manifest-template.yml
+                sh "echo '    notify_apiKey: ${env.NOTIFY_TESTAPIKEY}' >> manifest-template.yml"
+                sh "echo '    notify_censusUacSmsTemplateId: ${env.NOTIFY_CENSUSUACSMSTEMPLATEID}' >> manifest-template.yml"
+                sh "echo '    notify_onsSurveysRasEmailReminderTemplateId: ${env.NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID}' >> manifest-template.yml"
+                sh "echo '    notify_enabled: \"true\"' >> manifest-template.yml"
 
                 sh "cf login -a https://${env.CLOUDFOUNDRY_API} --skip-ssl-validation -u ${CF_USER_USR} -p ${CF_USER_PSW} -o rmras -s ci"
                 sh 'cf push -f manifest-template.yml'
@@ -208,10 +208,10 @@ pipeline {
                 sh "sed -i -- 's/true/'true'/g' *template.yml"
                 sh "sed -i -- 's/REPLACE_BA_USERNAME/${env.TEST_SECURITY_USR}/g' *template.yml"
                 sh "sed -i -- 's/REPLACE_BA_PASSWORD/${env.TEST_SECURITY_PSW}/g' *template.yml"
-                sh 'echo "    notify_apiKey: ${env.NOTIFY_TESTAPIKEY}"' >> manifest-template.yml // SIT will use NOTIFY_TESTAPIKEY
-                sh 'echo "    notify_censusUacSmsTemplateId: ${env.NOTIFY_CENSUSUACSMSTEMPLATEID}"' >> manifest-template.yml
-                sh 'echo "    notify_onsSurveysRasEmailReminderTemplateId: ${env.NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID}"' >> manifest-template.yml
-                sh 'echo "    notify_enabled: \"true\"\"' >> manifest-template.yml
+                sh "echo '    notify_apiKey: ${env.NOTIFY_TESTAPIKEY}' >> manifest-template.yml" // SIT will use NOTIFY_TESTAPIKEY
+                sh "echo '    notify_censusUacSmsTemplateId: ${env.NOTIFY_CENSUSUACSMSTEMPLATEID}' >> manifest-template.yml"
+                sh "echo '    notify_onsSurveysRasEmailReminderTemplateId: ${env.NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID}' >> manifest-template.yml"
+                sh "echo '    notify_enabled: \"true\"' >> manifest-template.yml"
 
                 sh "cf login -a https://${env.CLOUDFOUNDRY_API} --skip-ssl-validation -u ${CF_USER_USR} -p ${CF_USER_PSW} -o rmras -s test"
                 sh 'cf push -f manifest-template.yml'
