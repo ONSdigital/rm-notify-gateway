@@ -57,7 +57,7 @@ public class NotifyServiceImpl implements NotifyService {
     public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
 
     public static final String REGION_CODE = "REGION";
-    public static final String LEGAL_BASIS = "LEGALBASIS";
+    public static final String LEGAL_BASIS = "LEGAL_BASIS";
 
     @Override
     public ActionFeedback process(final ActionRequest actionRequest) throws NotificationClientException,
