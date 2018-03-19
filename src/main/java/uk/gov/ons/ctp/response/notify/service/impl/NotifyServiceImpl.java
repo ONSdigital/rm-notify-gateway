@@ -58,6 +58,11 @@ public class NotifyServiceImpl implements NotifyService {
 
     public static final String REGION_CODE = "REGION";
     public static final String LEGAL_BASIS = "LEGAL_BASIS";
+    public static final String REMINDER_EMAIL = "BSRE";
+    public static final String NOTIFICATION_EMAIL = "BSNE";
+    public static final String REMINDER = "REMINDER";
+    public static final String NOTIFICATION = "NOTIFICATION";
+    public static final String COMMUNICATION_TYPE = "COMMUNICATION_TYPE";
 
     @Override
     public ActionFeedback process(final ActionRequest actionRequest) throws NotificationClientException,
@@ -221,10 +226,10 @@ public class NotifyServiceImpl implements NotifyService {
     private String getTemplateIdByClassifiers(final ActionRequest actionRequest) throws CommsTemplateClientException {
         MultiValueMap<String, String> classifiers = getClassifiers(actionRequest);
         CommsTemplateDTO commsTemplateDTO = commsTemplateClient.getCommsTemplateByClassifiers(classifiers);
-        return commsTemplateDTO.getId();
+        return commsTemplateDTO.getUri();
     }
 
-    private MultiValueMap<String, String> getClassifiers(final ActionRequest actionRequest) {
+    public MultiValueMap<String, String> getClassifiers(final ActionRequest actionRequest) {
         MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
 
         if (actionRequest.getLegalBasis() != null) {
@@ -239,11 +244,16 @@ public class NotifyServiceImpl implements NotifyService {
             classifierMap.put(REGION_CODE, region);
         }
 
-        //TODO: WILL NEED TO SELECT BASED ON REMINDER/NOTIFICATION
-        // actionRequest.getActionType() gives name of action type
-        // EXAMPLE FOR BRES (BRESEL, BRESERL) BRES Enrolment Letter and BRES Enrolment Reminder Letter
-
-        //TODO: Other classifiers need to be added here as they are updated in the comms template service
+        if (REMINDER_EMAIL.equalsIgnoreCase(actionRequest.getActionType())) {
+            List<String> isReminder = new ArrayList<>();
+            isReminder.add(REMINDER);
+            classifierMap.put(COMMUNICATION_TYPE, isReminder);
+        }
+        if (NOTIFICATION_EMAIL.equalsIgnoreCase(actionRequest.getActionType())) {
+            List<String> isNotification = new ArrayList<>();
+            isNotification.add(NOTIFICATION);
+            classifierMap.put(COMMUNICATION_TYPE, isNotification);
+        }
 
         return classifierMap;
     }

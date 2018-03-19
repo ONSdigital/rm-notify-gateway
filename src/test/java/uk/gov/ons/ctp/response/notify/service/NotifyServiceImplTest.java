@@ -1,14 +1,18 @@
 package uk.gov.ons.ctp.response.notify.service;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
@@ -17,13 +21,17 @@ import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
+import javax.validation.constraints.AssertTrue;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
@@ -305,5 +313,48 @@ public class NotifyServiceImplTest {
     String parameter = "something";
     Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
     assertNull(result);
+  }
+
+  @Test
+  public void testGetClassifiersMapNotification() {
+    ActionRequest actionRequest = createActionRequest("BSNE", "YY", "Statistics of Trade Act 1947");
+    MultiValueMap<String, String> expectedClassifierMap = getExpectedClassifiersMap("NOTIFICATION", "YY", "Statistics of Trade Act 1947");
+    MultiValueMap<String, String> actualClassifiersMap = notifyService.getClassifiers(actionRequest);
+    assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
+  }
+
+  @Test
+  public void testGetClassifiersMapReminder() {
+    ActionRequest actionRequest = createActionRequest("BSRE", "WW", "Statistics of Trade Act 1947");
+    MultiValueMap<String, String> expectedClassifierMap = getExpectedClassifiersMap("REMINDER", "WW", "Statistics of Trade Act 1947");
+    MultiValueMap<String, String> actualClassifiersMap = notifyService.getClassifiers(actionRequest);
+    assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
+  }
+
+  private ActionRequest createActionRequest(String actionType, String region, String legalBasis) {
+    ActionRequest actionRequest = new ActionRequest();
+    actionRequest.setActionType(actionType);
+    actionRequest.setRegion(region);
+    actionRequest.setLegalBasis(legalBasis);
+    return actionRequest;
+  }
+
+  private MultiValueMap<String, String> getExpectedClassifiersMap(final String notificationType, final String region, final String legalBasis) {
+    MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
+
+    List<String> communicationType = new ArrayList<>();
+    communicationType.add(notificationType);
+    classifierMap.put("COMMUNICATION_TYPE", communicationType);
+
+    List<String> regionClassifier = new ArrayList<>();
+    regionClassifier.add(region);
+    classifierMap.put("REGION", regionClassifier);
+
+    List<String> legalBasisClassifier = new ArrayList<>();
+    legalBasisClassifier.add(legalBasis);
+    classifierMap.put("LEGAL_BASIS", legalBasisClassifier);
+
+    return classifierMap;
+
   }
 }
