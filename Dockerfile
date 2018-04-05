@@ -1,4 +1,4 @@
-FROM openjdk:8u121-jre
+FROM openjdk:8-jre-slim
 
 ARG JAR_FILE=notifygatewaysvc*.jar
 COPY target/$JAR_FILE /opt/notifygatewaysvc.jar
