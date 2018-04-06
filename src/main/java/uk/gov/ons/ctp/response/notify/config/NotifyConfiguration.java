@@ -20,6 +20,11 @@ public class NotifyConfiguration {
   private String apiKey;
   private String debugHttpCode;
 
+  // If addressOverride is true, what address should the mails be sent to?
+  private String overrideAddress;
+  // Should all the emails be sent to a single email address?
+  private Boolean addressOverride;
+
   private String censusUacSmsTemplateId;
   private String onsSurveysRasEmailReminderTemplateId;
 

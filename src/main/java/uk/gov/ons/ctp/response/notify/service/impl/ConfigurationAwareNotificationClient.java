@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.notify.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.service.notify.*;
 
@@ -26,11 +27,16 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
     }
 
     @Override
-    public SendEmailResponse sendEmail(String templateId, String emailAddress, Map<String, String> personalisation, String reference) throws NotificationClientException {
+    public SendEmailResponse sendEmail(final String templateId, final String emailAddress, final Map<String, String> personalisation, final String reference) throws NotificationClientException {
         log.debug("sendEmail: {} - {} - {} - {}", templateId, emailAddress, personalisation, reference);
 
         if (this.configuration.getEnabled()) {
-            return realClient.sendEmail(templateId, emailAddress, personalisation, reference);
+            String overrideAddress = this.configuration.getOverrideAddress();
+            boolean addressOverride = this.configuration.getAddressOverride();
+
+            String actualEmail = addressOverride && !StringUtils.isBlank(overrideAddress) ? overrideAddress : emailAddress;
+
+            return realClient.sendEmail(templateId, actualEmail, personalisation, reference);
         } else {
             return null;
         }
