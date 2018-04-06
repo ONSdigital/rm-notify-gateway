@@ -31,6 +31,7 @@ public class ObjectBuilder {
   public static final String SURVEY_REF = "221";
   public static final String TEMPLATE_ID = "966731dc-ef2e-41ad-a828-8cdd95c81ebc";
   public static final String TRADING_STYLE = "Ltd";
+  public static final String RESPONDENT_PERIOD = "9 March 2018";
 
   private static final BigDecimal LATITYUDE = new BigDecimal("1000.00");
   private static final BigDecimal LONGITUDE = new BigDecimal("1000.00");
@@ -73,6 +74,7 @@ public class ObjectBuilder {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setResponseRequired(true);
     actionRequest.setActionId(actionId);
+    actionRequest.setUserDescription(RESPONDENT_PERIOD);
     ActionContact actionContact = new ActionContact();
     actionContact.setForename(forename);
     actionContact.setSurname(surname);

@@ -51,6 +51,7 @@ public class NotifyServiceImpl implements NotifyService {
     public static final String SURVEY_ID_KEY = "survey id";
     public static final String SURVEY_NAME_KEY = "survey name";
     public static final String TRADING_STYLE_KEY = "trading style";
+    public static final String RESPONDENT_PERIOD_KEY = "respondent period";
 
     public static final String NOTIFY_EMAIL_SENT = "Notify Email Sent";
     public static final String NOTIFY_SMS_NOT_SENT = "Notify Sms Not Sent";
@@ -200,6 +201,7 @@ public class NotifyServiceImpl implements NotifyService {
         personalisation.put(FIRSTNAME_KEY, actionContact.getForename());
         personalisation.put(LASTNAME_KEY, actionContact.getSurname());
         personalisation.put(RU_NAME_KEY, actionContact.getRuName());
+        personalisation.put(RESPONDENT_PERIOD_KEY, actionRequest.getUserDescription());
         personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
         personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
 
