@@ -27,6 +27,22 @@ public class NotifyServiceImplTest {
         NotifyServiceImpl.NotificationType notificationType =
                 NotifyServiceImpl.NotificationType.getNotificationTypeFromActionType("BSSNE");
 
-        assertEquals(NotifyServiceImpl.NotificationType.None, notificationType);
+        assertEquals(NotifyServiceImpl.NotificationType.Notification, notificationType);
+    }
+
+    @Test
+    public void testNotificationTypeQBSNotification(){
+        NotifyServiceImpl.NotificationType notificationType =
+                NotifyServiceImpl.NotificationType.getNotificationTypeFromActionType("BSNE");
+
+        assertEquals(NotifyServiceImpl.NotificationType.Notification, notificationType);
+    }
+
+    @Test
+    public void testNotificationTypeQBSReminder(){
+        NotifyServiceImpl.NotificationType notificationType =
+                NotifyServiceImpl.NotificationType.getNotificationTypeFromActionType("BSRE");
+
+        assertEquals(NotifyServiceImpl.NotificationType.Reminder, notificationType);
     }
 }
