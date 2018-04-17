@@ -4,10 +4,13 @@ import org.junit.Test;
 
 import static org.testng.AssertJUnit.assertEquals;
 
+/**
+ * Class to hold unit tests for NotifyServiceImpl
+ */
 public class NotifyServiceImplTest {
 
     @Test
-    public void testNotificationTypeNull(){
+    public void testNotificationTypeNull() {
         NotifyServiceImpl.NotificationType notificationType =
                 NotifyServiceImpl.NotificationType.getNotificationTypeFromActionType(null);
 
@@ -15,7 +18,7 @@ public class NotifyServiceImplTest {
     }
 
     @Test
-    public void testNotificationTypeNone(){
+    public void testNotificationTypeNone() {
         NotifyServiceImpl.NotificationType notificationType =
                 NotifyServiceImpl.NotificationType.getNotificationTypeFromActionType("BOGUS");
 
@@ -23,7 +26,7 @@ public class NotifyServiceImplTest {
     }
 
     @Test
-    public void testNotificationTypeBRESNotification(){
+    public void testNotificationTypeBRESNotification() {
         NotifyServiceImpl.NotificationType notificationType =
                 NotifyServiceImpl.NotificationType.getNotificationTypeFromActionType("BSSNE");
 
@@ -31,7 +34,7 @@ public class NotifyServiceImplTest {
     }
 
     @Test
-    public void testNotificationTypeQBSNotification(){
+    public void testNotificationTypeQBSNotification() {
         NotifyServiceImpl.NotificationType notificationType =
                 NotifyServiceImpl.NotificationType.getNotificationTypeFromActionType("BSNE");
 
@@ -39,7 +42,7 @@ public class NotifyServiceImplTest {
     }
 
     @Test
-    public void testNotificationTypeQBSReminder(){
+    public void testNotificationTypeQBSReminder() {
         NotifyServiceImpl.NotificationType notificationType =
                 NotifyServiceImpl.NotificationType.getNotificationTypeFromActionType("BSRE");
 
