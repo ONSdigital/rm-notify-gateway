@@ -78,4 +78,29 @@ public class ConfigurationAwareNotificationClientTests {
         this.testNotificationClient.sendSms(null, null, null, null);
         verify(this.realNotificationClient, never()).sendSms(any(), any(), any(), any());
     }
+
+    @Test
+    public void testOverrideEnabled() throws NotificationClientException {
+        final String email = "test@test.com";
+        when(notifyConfiguration.getEnabled()).thenReturn(true);
+        when(notifyConfiguration.getAddressOverride()).thenReturn(Boolean.TRUE);
+        when(notifyConfiguration.getOverrideAddress()).thenReturn(email);
+
+        this.testNotificationClient.generateTemplatePreview(null, null);
+        verify(this.realNotificationClient, times(1)).generateTemplatePreview(any(), any());
+        this.testNotificationClient.getAllTemplates(null);
+        verify(this.realNotificationClient, times(1)).getAllTemplates(any());
+        this.testNotificationClient.getNotificationById(null);
+        verify(this.realNotificationClient, times(1)).getNotificationById(any());
+        this.testNotificationClient.getNotifications(null, null, null, null);
+        verify(this.realNotificationClient, times(1)).getNotifications(any(), any(), any(), any());
+        this.testNotificationClient.getTemplateById(null);
+        verify(this.realNotificationClient, times(1)).getTemplateById(any());
+        this.testNotificationClient.getTemplateVersion(null ,0);
+        verify(this.realNotificationClient, times(1)).getTemplateVersion(any(), anyInt());
+        this.testNotificationClient.sendEmail(null, null, null, null);
+        verify(this.realNotificationClient, times(1)).sendEmail(any(), eq(email), any(), any());
+        this.testNotificationClient.sendSms(null, null, null, null);
+        verify(this.realNotificationClient, times(1)).sendSms(any(), any(), any(), any());
+    }
 }

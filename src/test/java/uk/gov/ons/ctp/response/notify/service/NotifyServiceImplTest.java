@@ -158,6 +158,7 @@ public class NotifyServiceImplTest {
     personalisation.put(RU_NAME_KEY, RU_NAME);
     personalisation.put(TRADING_STYLE_KEY, TRADING_STYLE);
     personalisation.put(RETURN_BY_DATE_KEY, RETURN_BY_DATE);
+    personalisation.put(RESPONDENT_PERIOD_KEY, RESPONDENT_PERIOD);
     verify(notificationClient, times(1)).sendEmail(any(String.class), eq(EMAIL_ADDRESS),
         eq(personalisation), any(String.class));
     verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
@@ -195,6 +196,7 @@ public class NotifyServiceImplTest {
     personalisation.put(RU_NAME_KEY, RU_NAME);
     personalisation.put(TRADING_STYLE_KEY, TRADING_STYLE);
     personalisation.put(RETURN_BY_DATE_KEY, RETURN_BY_DATE);
+    personalisation.put(RESPONDENT_PERIOD_KEY, RESPONDENT_PERIOD);
     verify(notificationClient, times(1)).sendEmail(any(String.class), eq(INVALID_EMAIL_ADDRESS),
         eq(personalisation), any(String.class));
     verify(notificationClient, never()).getNotificationById(any(String.class));

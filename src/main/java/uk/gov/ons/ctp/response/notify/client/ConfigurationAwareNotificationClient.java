@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.notify.client;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.service.notify.*;
 
@@ -26,18 +27,26 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
     }
 
     @Override
-    public SendEmailResponse sendEmail(String templateId, String emailAddress, Map<String, String> personalisation, String reference) throws NotificationClientException {
+    public SendEmailResponse sendEmail(String templateId, String emailAddress, Map<String, String> personalisation,
+                                       String reference) throws NotificationClientException {
         log.debug("sendEmail: {} - {} - {} - {}", templateId, emailAddress, personalisation, reference);
 
         if (this.configuration.getEnabled()) {
-            return realClient.sendEmail(templateId, emailAddress, personalisation, reference);
+            boolean addressOverride = this.configuration.getAddressOverride();
+            String overrideAddress = this.configuration.getOverrideAddress();
+
+            String actualEmail =
+                    addressOverride && !StringUtils.isBlank(overrideAddress) ? overrideAddress : emailAddress;
+
+            return realClient.sendEmail(templateId, actualEmail, personalisation, reference);
         } else {
             return null;
         }
     }
 
     @Override
-    public SendSmsResponse sendSms(String templateId, String phoneNumber, Map<String, String> personalisation, String reference) throws NotificationClientException {
+    public SendSmsResponse sendSms(String templateId, String phoneNumber, Map<String, String> personalisation,
+                                   String reference) throws NotificationClientException {
         log.debug("sendSms: {} - {} - {} - {}", templateId, phoneNumber, personalisation, reference);
         if (this.configuration.getEnabled()) {
             return realClient.sendSms(templateId, phoneNumber, personalisation, reference);
@@ -57,7 +66,8 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
     }
 
     @Override
-    public NotificationList getNotifications(String status, String notification_type, String reference, String olderThanId) throws NotificationClientException {
+    public NotificationList getNotifications(String status, String notification_type, String reference,
+                                             String olderThanId) throws NotificationClientException {
         log.debug("getNotifications: {}", status, notification_type, reference, olderThanId);
         if (this.configuration.getEnabled()) {
             return realClient.getNotifications(status, notification_type, reference, olderThanId);
@@ -97,7 +107,8 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
     }
 
     @Override
-    public TemplatePreview generateTemplatePreview(String templateId, Map<String, String> personalisation) throws NotificationClientException {
+    public TemplatePreview generateTemplatePreview(String templateId, Map<String, String> personalisation)
+            throws NotificationClientException {
         log.debug("generateTemplatePreview: {} - {}", templateId, personalisation);
         if (this.configuration.getEnabled()) {
             return realClient.generateTemplatePreview(templateId, personalisation);
