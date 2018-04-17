@@ -248,79 +248,16 @@ public class NotifyServiceImpl implements NotifyService {
             classifierMap.put(REGION_CODE, region);
         }
 
-        NotificationType notificationType =
-                NotificationType.getNotificationTypeFromActionType(actionRequest.getActionType());
-
-        switch (notificationType) {
-            case Notification:
-                List<String> isNotification = new ArrayList<>();
-                isNotification.add(NOTIFICATION);
-                classifierMap.put(COMMUNICATION_TYPE, isNotification);
-                break;
-            case Reminder:
-                List<String> isReminder = new ArrayList<>();
-                isReminder.add(REMINDER);
-                classifierMap.put(COMMUNICATION_TYPE, isReminder);
-                break;
-            default:
-                // This shouldn't happen but if it does, add no classifiers
-                break;
+        if (NOTIFICATION_EMAIL.equalsIgnoreCase(actionRequest.getActionType())) {
+            List<String> isNotification = new ArrayList<>();
+            isNotification.add(NOTIFICATION);
+            classifierMap.put(COMMUNICATION_TYPE, isNotification);
+        } else if (REMINDER_EMAIL.equalsIgnoreCase(actionRequest.getActionType())) {
+            List<String> isReminder = new ArrayList<>();
+            isReminder.add(REMINDER);
+            classifierMap.put(COMMUNICATION_TYPE, isReminder);
         }
 
         return classifierMap;
-    }
-
-    /**
-     * This enum represents the two possible notification types: notifications and reminders.  It was decided in
-     * a conversation between DM and MI 9/4/18 that the penultimate (2nd last) character of the actiontype
-     * code would represent the notification type e.g. BSSNE is a (BRES) notifcation while BSRE is a (QBS) reminder
-     */
-    enum NotificationType {
-        Notification('N'),
-        Reminder('R'),
-        None;
-
-        private Character typeSignifier;
-
-        /**
-         * A notification type with a specified type signifier
-         *
-         * @param c type signifier
-         */
-        NotificationType(final char c) {
-            typeSignifier = c;
-        }
-
-        /**
-         * A notification type with no type signifier
-         */
-        NotificationType() {
-            this.typeSignifier = null;
-        }
-
-        /**
-         * Get's the notification type for a given action type
-         *
-         * @param actionType an action type string
-         * @return Notification or Reminder or None
-         */
-        public static NotificationType getNotificationTypeFromActionType(final String actionType) {
-            NotificationType type = None;
-
-            if (actionType != null) {
-                int numChars = actionType.length();
-
-                if (numChars >= 2) {
-                    final char penultimate = Character.toUpperCase(actionType.charAt(numChars - 2));
-                    type = Arrays
-                            .stream(NotificationType.values())
-                            .filter(nt -> nt.typeSignifier != null && nt.typeSignifier == penultimate)
-                            .findFirst()
-                            .orElse(None);
-                }
-            }
-
-            return type;
-        }
     }
 }
