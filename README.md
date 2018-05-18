@@ -7,9 +7,16 @@ This repository contains the Notify Gateway service. This microservice is a web 
 The Notify Gateway provides an interface for Response Management to send communications to users using the [GOV.UK Notify](https://www.gov.uk/government/publications/govuk-notify/govuk-notify) service. It is implemented using [Spring Boot](http://projects.spring.io/spring-boot/).
 
 ## Running
+
+There are two ways of running this service
+
+* The easiest way is via docker (https://github.com/ONSdigital/ras-rm-docker-dev)
+* Alternatively running the service up in isolation
+    ```bash
+    cp .maven.settings.xml ~/.m2/settings.xml  # This only needs to be done once to set up mavens settings file
     mvn clean install
-    cd notifygatewaysvc
-    ./mvnw spring-boot:run
+    mvn spring-boot:run
+    ```
 
 ## API
 See [API.md](https://github.com/ONSdigital/rm-notify-gateway/blob/master/API.md) for API documentation.
