@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.notify;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,6 +31,9 @@ public class Application {
 
   @Autowired
   private AppConfig appConfig;
+  
+  @Autowired
+  private DataSource dataSource;
 
   /**
    * The restTemplate bean injected in REST client classes
