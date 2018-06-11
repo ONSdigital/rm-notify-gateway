@@ -31,9 +31,6 @@ public class Application {
 
   @Autowired
   private AppConfig appConfig;
-  
-  @Autowired
-  private DataSource dataSource;
 
   /**
    * The restTemplate bean injected in REST client classes
