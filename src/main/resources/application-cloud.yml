@@ -25,7 +25,7 @@ spring:
     schema: classpath:/schema-cloud.sql
     user: ${cloud.services.postgresql.connection.username}
     password: ${cloud.services.postgresql.connection.password}
-    default-schema: notify-gateway
+    default-schema: notifygatewaysvc
     url: ${cloud.services.postgresql.connection.jdbcurl}
 
 # logging config here as a reminder as to how to override logback from cmd line
