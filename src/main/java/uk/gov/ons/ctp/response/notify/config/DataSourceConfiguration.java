@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.notify;
+package uk.gov.ons.ctp.response.notify.config;
 
 import javax.sql.DataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
