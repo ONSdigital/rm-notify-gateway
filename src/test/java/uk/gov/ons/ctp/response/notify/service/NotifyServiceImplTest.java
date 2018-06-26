@@ -1,5 +1,53 @@
 package uk.gov.ons.ctp.response.notify.service;
 
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.FIRSTNAME_KEY;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.LASTNAME_KEY;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_EMAIL_SENT;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.REPORTING_UNIT_REF_KEY;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.RESPONDENT_PERIOD_KEY;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.RETURN_BY_DATE_KEY;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.RU_NAME_KEY;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.SURVEY_ID_KEY;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.SURVEY_NAME_KEY;
+import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.TRADING_STYLE_KEY;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.ACTION_ID;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.EMAIL_ADDRESS;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.FORENAME;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.IAC_AS_DISPLAYED_IN_SMS;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.INVALID_EMAIL_ADDRESS;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.INVALID_PHONENUMBER;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.NOTIFICATION_ID;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.PHONENUMBER;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.RESPONDENT_PERIOD;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.RETURN_BY_DATE;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.RU_NAME;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.SAMPLE_UNIT_REF;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.SURNAME;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.SURVEY_NAME;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.SURVEY_REF;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.TRADING_STYLE;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildCommsTemplateDTO;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildNotificationForEmail;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildNotificationForSMS;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildSendEmailResponse;
+import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.buildSendSmsResponse;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,43 +69,17 @@ import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
-import javax.validation.constraints.AssertTrue;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.*;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.*;
-
-/**
- * To unit test NotifyServiceImpl
- */
+/** To unit test NotifyServiceImpl */
 @RunWith(MockitoJUnitRunner.class)
 public class NotifyServiceImplTest {
 
-  @InjectMocks
-  private NotifyServiceImpl notifyService;
+  @InjectMocks private NotifyServiceImpl notifyService;
 
-  @Mock
-  private NotificationClient notificationClient;
+  @Mock private NotificationClient notificationClient;
 
-  @Mock
-  private CommsTemplateClient commsTemplateClient;
+  @Mock private CommsTemplateClient commsTemplateClient;
 
-  @Mock
-  private NotifyConfiguration notifyConfiguration;
+  @Mock private NotifyConfiguration notifyConfiguration;
 
   private static final String EXCEPTION_MSG = "java.lang.Exception";
   private static final String IAC_KEY = "iac";
@@ -80,22 +102,29 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestHappyPathSMS() throws NotificationClientException, CommsTemplateClientException {
-    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
-            any(HashMap.class),any(String.class))).thenReturn(buildSendSmsResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
-    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject())).thenReturn(buildCommsTemplateDTO());
+  public void testProcessActionRequestHappyPathSMS()
+      throws NotificationClientException, CommsTemplateClientException {
+    Mockito.when(
+            notificationClient.sendSms(
+                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
+        .thenReturn(buildSendSmsResponse());
+    Mockito.when(notificationClient.getNotificationById(any(String.class)))
+        .thenReturn(buildNotificationForSMS());
+    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject()))
+        .thenReturn(buildCommsTemplateDTO());
 
-    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
-            PHONENUMBER, null, true));
+    ActionFeedback result =
+        notifyService.process(
+            ObjectBuilder.buildActionRequest(
+                ACTION_ID, FORENAME, SURNAME, PHONENUMBER, null, true));
     assertEquals(ACTION_ID, result.getActionId());
     assertEquals(NOTIFY_SMS_SENT, result.getSituation());
     assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
 
     HashMap<String, String> personalisation = new HashMap<>();
     personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    verify(notificationClient, times(1)).sendSms(any(String.class), eq(PHONENUMBER),
-            eq(personalisation), any(String.class));
+    verify(notificationClient, times(1))
+        .sendSms(any(String.class), eq(PHONENUMBER), eq(personalisation), any(String.class));
     verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
     verify(commsTemplateClient, times(1)).getCommsTemplateByClassifiers(anyObject());
   }
@@ -107,24 +136,29 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestErrorPathSMS() throws NotificationClientException, CommsTemplateClientException {
-    Mockito.when(notificationClient.sendSms(any(String.class), any(String.class),
-        any(HashMap.class),any(String.class))).thenThrow(new NotificationClientException(new Exception()));
-    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject())).thenReturn(buildCommsTemplateDTO());
+  public void testProcessActionRequestErrorPathSMS()
+      throws NotificationClientException, CommsTemplateClientException {
+    Mockito.when(
+            notificationClient.sendSms(
+                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
+        .thenThrow(new NotificationClientException(new Exception()));
+    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject()))
+        .thenReturn(buildCommsTemplateDTO());
 
     try {
-      notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
-          INVALID_PHONENUMBER, null, true));
+      notifyService.process(
+          ObjectBuilder.buildActionRequest(
+              ACTION_ID, FORENAME, SURNAME, INVALID_PHONENUMBER, null, true));
       fail();
     } catch (NotificationClientException e) {
       assertEquals(EXCEPTION_MSG, e.getMessage());
-
     }
 
     HashMap<String, String> personalisation = new HashMap<>();
     personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    verify(notificationClient, times(1)).sendSms(any(String.class), eq(INVALID_PHONENUMBER),
-        eq(personalisation), any(String.class));
+    verify(notificationClient, times(1))
+        .sendSms(
+            any(String.class), eq(INVALID_PHONENUMBER), eq(personalisation), any(String.class));
     verify(notificationClient, never()).getNotificationById(any(String.class));
     verify(commsTemplateClient, times(1)).getCommsTemplateByClassifiers(anyObject());
   }
@@ -136,15 +170,21 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestHappyPathEmail() throws NotificationClientException,
-          CommsTemplateClientException {
-    Mockito.when(notificationClient.sendEmail(any(String.class), any(String.class),
-        any(HashMap.class),any(String.class))).thenReturn(buildSendEmailResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForEmail());
-    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject())).thenReturn(buildCommsTemplateDTO());
+  public void testProcessActionRequestHappyPathEmail()
+      throws NotificationClientException, CommsTemplateClientException {
+    Mockito.when(
+            notificationClient.sendEmail(
+                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
+        .thenReturn(buildSendEmailResponse());
+    Mockito.when(notificationClient.getNotificationById(any(String.class)))
+        .thenReturn(buildNotificationForEmail());
+    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject()))
+        .thenReturn(buildCommsTemplateDTO());
 
-    ActionFeedback result = notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
-        null, EMAIL_ADDRESS, true));
+    ActionFeedback result =
+        notifyService.process(
+            ObjectBuilder.buildActionRequest(
+                ACTION_ID, FORENAME, SURNAME, null, EMAIL_ADDRESS, true));
     assertEquals(ACTION_ID, result.getActionId());
     assertEquals(NOTIFY_EMAIL_SENT, result.getSituation());
     assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
@@ -159,8 +199,8 @@ public class NotifyServiceImplTest {
     personalisation.put(TRADING_STYLE_KEY, TRADING_STYLE);
     personalisation.put(RETURN_BY_DATE_KEY, RETURN_BY_DATE);
     personalisation.put(RESPONDENT_PERIOD_KEY, RESPONDENT_PERIOD);
-    verify(notificationClient, times(1)).sendEmail(any(String.class), eq(EMAIL_ADDRESS),
-        eq(personalisation), any(String.class));
+    verify(notificationClient, times(1))
+        .sendEmail(any(String.class), eq(EMAIL_ADDRESS), eq(personalisation), any(String.class));
     verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
     verify(commsTemplateClient, times(1)).getCommsTemplateByClassifiers(anyObject());
   }
@@ -172,19 +212,22 @@ public class NotifyServiceImplTest {
    * @throws NotificationClientException when censusNotificationClient does
    */
   @Test
-  public void testProcessActionRequestErrorPathEmail() throws NotificationClientException,
-          CommsTemplateClientException {
-    Mockito.when(notificationClient.sendEmail(any(String.class), any(String.class),
-        any(HashMap.class),any(String.class))).thenThrow(new NotificationClientException(new Exception()));
-    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(any())).thenReturn(buildCommsTemplateDTO());
+  public void testProcessActionRequestErrorPathEmail()
+      throws NotificationClientException, CommsTemplateClientException {
+    Mockito.when(
+            notificationClient.sendEmail(
+                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
+        .thenThrow(new NotificationClientException(new Exception()));
+    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(any()))
+        .thenReturn(buildCommsTemplateDTO());
 
     try {
-      notifyService.process(ObjectBuilder.buildActionRequest(ACTION_ID, FORENAME, SURNAME,
-          null, INVALID_EMAIL_ADDRESS, true));
+      notifyService.process(
+          ObjectBuilder.buildActionRequest(
+              ACTION_ID, FORENAME, SURNAME, null, INVALID_EMAIL_ADDRESS, true));
       fail();
     } catch (NotificationClientException e) {
       assertEquals(EXCEPTION_MSG, e.getMessage());
-
     }
 
     HashMap<String, String> personalisation = new HashMap<>();
@@ -197,8 +240,9 @@ public class NotifyServiceImplTest {
     personalisation.put(TRADING_STYLE_KEY, TRADING_STYLE);
     personalisation.put(RETURN_BY_DATE_KEY, RETURN_BY_DATE);
     personalisation.put(RESPONDENT_PERIOD_KEY, RESPONDENT_PERIOD);
-    verify(notificationClient, times(1)).sendEmail(any(String.class), eq(INVALID_EMAIL_ADDRESS),
-        eq(personalisation), any(String.class));
+    verify(notificationClient, times(1))
+        .sendEmail(
+            any(String.class), eq(INVALID_EMAIL_ADDRESS), eq(personalisation), any(String.class));
     verify(notificationClient, never()).getNotificationById(any(String.class));
   }
 
@@ -209,25 +253,34 @@ public class NotifyServiceImplTest {
    */
   @Test
   public void testProcessNotifyRequestHappyPathSMS() throws NotificationClientException {
-    Mockito.when(notificationClient.sendSms(
-            any(String.class), any(String.class), any(HashMap.class),any(String.class)))
-            .thenReturn(buildSendSmsResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
+    Mockito.when(
+            notificationClient.sendSms(
+                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
+        .thenReturn(buildSendSmsResponse());
+    Mockito.when(notificationClient.getNotificationById(any(String.class)))
+        .thenReturn(buildNotificationForSMS());
 
-    notifyService.process(NotifyRequest.builder()
+    notifyService.process(
+        NotifyRequest.builder()
             .withId(NOTIFY_REQUEST_ID)
             .withTemplateId(TEMPLATE_ID)
             .withReference(MESSAGE_REFERENCE)
             .withPhoneNumber(VALID_PHONE_NUMBER)
-            .withPersonalisation(String.format(PERSONALISATION_FORMAT_FROM_ORIKA, IAC_KEY, IAC_VALUE, OTHER_FIELD_KEY,
+            .withPersonalisation(
+                String.format(
+                    PERSONALISATION_FORMAT_FROM_ORIKA,
+                    IAC_KEY,
+                    IAC_VALUE,
+                    OTHER_FIELD_KEY,
                     OTHER_FIELD_VALUE))
             .build());
 
     HashMap<String, String> personalisation = new HashMap<>();
     personalisation.put(IAC_KEY, IAC_VALUE);
     personalisation.put(OTHER_FIELD_KEY, OTHER_FIELD_VALUE);
-    verify(notificationClient, times(1)).sendSms(any(String.class), eq(VALID_PHONE_NUMBER),
-            eq(personalisation), eq(MESSAGE_REFERENCE));
+    verify(notificationClient, times(1))
+        .sendSms(
+            any(String.class), eq(VALID_PHONE_NUMBER), eq(personalisation), eq(MESSAGE_REFERENCE));
   }
 
   /**
@@ -237,39 +290,57 @@ public class NotifyServiceImplTest {
    */
   @Test
   public void testProcessNotifyRequestHappyPathEmail() throws NotificationClientException {
-    Mockito.when(notificationClient.sendEmail(
-            any(String.class), any(String.class), any(HashMap.class),any(String.class)))
-            .thenReturn(buildSendEmailResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class))).thenReturn(buildNotificationForSMS());
+    Mockito.when(
+            notificationClient.sendEmail(
+                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
+        .thenReturn(buildSendEmailResponse());
+    Mockito.when(notificationClient.getNotificationById(any(String.class)))
+        .thenReturn(buildNotificationForSMS());
 
-    notifyService.process(NotifyRequest.builder()
+    notifyService.process(
+        NotifyRequest.builder()
             .withId(NOTIFY_REQUEST_ID)
             .withTemplateId(TEMPLATE_ID)
             .withReference(MESSAGE_REFERENCE)
             .withEmailAddress(VALID_EMAIL_ADDRESS)
-            .withPersonalisation(String.format(PERSONALISATION_FORMAT_FROM_ORIKA, IAC_KEY, IAC_VALUE, OTHER_FIELD_KEY,
+            .withPersonalisation(
+                String.format(
+                    PERSONALISATION_FORMAT_FROM_ORIKA,
+                    IAC_KEY,
+                    IAC_VALUE,
+                    OTHER_FIELD_KEY,
                     OTHER_FIELD_VALUE))
             .build());
 
     HashMap<String, String> personalisation = new HashMap<>();
     personalisation.put(IAC_KEY, IAC_VALUE);
     personalisation.put(OTHER_FIELD_KEY, OTHER_FIELD_VALUE);
-    verify(notificationClient, times(1)).sendEmail(any(String.class), eq(VALID_EMAIL_ADDRESS),
-            eq(personalisation), eq(MESSAGE_REFERENCE));
+    verify(notificationClient, times(1))
+        .sendEmail(
+            any(String.class), eq(VALID_EMAIL_ADDRESS), eq(personalisation), eq(MESSAGE_REFERENCE));
   }
 
   /**
-   * Happy path with string provided by orika as expected
-   * {iac=ABCD-EFGH-IJKL-MNOP, otherfield=other,value}
+   * Happy path with string provided by orika as expected {iac=ABCD-EFGH-IJKL-MNOP,
+   * otherfield=other,value}
    *
    * @throws Exception thrown if Java Reflexion issues
    */
   @Test
   public void testBuildMapFromStringHappyPath() throws Exception {
-    Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+    Method methodUndertest =
+        NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
-    Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService,
-            String.format(PERSONALISATION_FORMAT_FROM_ORIKA, IAC_KEY, IAC_VALUE, OTHER_FIELD_KEY, OTHER_FIELD_VALUE));
+    Map<String, String> result =
+        (Map<String, String>)
+            methodUndertest.invoke(
+                notifyService,
+                String.format(
+                    PERSONALISATION_FORMAT_FROM_ORIKA,
+                    IAC_KEY,
+                    IAC_VALUE,
+                    OTHER_FIELD_KEY,
+                    OTHER_FIELD_VALUE));
     assertEquals(2, result.size());
     assertEquals(IAC_VALUE, result.get(IAC_KEY));
     assertEquals(OTHER_FIELD_VALUE, result.get(OTHER_FIELD_KEY));
@@ -282,10 +353,12 @@ public class NotifyServiceImplTest {
    */
   @Test
   public void testBuildMapFromStringNullString() throws Exception {
-    Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+    Method methodUndertest =
+        NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = null;
-    Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
+    Map<String, String> result =
+        (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
     assertNull(result);
   }
 
@@ -296,10 +369,12 @@ public class NotifyServiceImplTest {
    */
   @Test
   public void testBuildMapFromStringEmptyString() throws Exception {
-    Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+    Method methodUndertest =
+        NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = "";
-    Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
+    Map<String, String> result =
+        (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
     assertNull(result);
   }
 
@@ -310,26 +385,32 @@ public class NotifyServiceImplTest {
    */
   @Test
   public void testBuildMapFromStringUnexpectedFormat() throws Exception {
-    Method methodUndertest = NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+    Method methodUndertest =
+        NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = "something";
-    Map<String, String> result = (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
+    Map<String, String> result =
+        (Map<String, String>) methodUndertest.invoke(notifyService, parameter);
     assertNull(result);
   }
 
   @Test
   public void testGetClassifiersMapNotification() {
     ActionRequest actionRequest = createActionRequest("BSNE", "YY", "Statistics of Trade Act 1947");
-    MultiValueMap<String, String> expectedClassifierMap = getExpectedClassifiersMap("NOTIFICATION", "YY", "Statistics of Trade Act 1947");
-    MultiValueMap<String, String> actualClassifiersMap = notifyService.getClassifiers(actionRequest);
+    MultiValueMap<String, String> expectedClassifierMap =
+        getExpectedClassifiersMap("NOTIFICATION", "YY", "Statistics of Trade Act 1947");
+    MultiValueMap<String, String> actualClassifiersMap =
+        notifyService.getClassifiers(actionRequest);
     assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
   }
 
   @Test
   public void testGetClassifiersMapReminder() {
     ActionRequest actionRequest = createActionRequest("BSRE", "WW", "Statistics of Trade Act 1947");
-    MultiValueMap<String, String> expectedClassifierMap = getExpectedClassifiersMap("REMINDER", "WW", "Statistics of Trade Act 1947");
-    MultiValueMap<String, String> actualClassifiersMap = notifyService.getClassifiers(actionRequest);
+    MultiValueMap<String, String> expectedClassifierMap =
+        getExpectedClassifiersMap("REMINDER", "WW", "Statistics of Trade Act 1947");
+    MultiValueMap<String, String> actualClassifiersMap =
+        notifyService.getClassifiers(actionRequest);
     assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
   }
 
@@ -341,7 +422,8 @@ public class NotifyServiceImplTest {
     return actionRequest;
   }
 
-  private MultiValueMap<String, String> getExpectedClassifiersMap(final String notificationType, final String region, final String legalBasis) {
+  private MultiValueMap<String, String> getExpectedClassifiersMap(
+      final String notificationType, final String region, final String legalBasis) {
     MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
 
     List<String> communicationType = new ArrayList<>();
@@ -357,6 +439,5 @@ public class NotifyServiceImplTest {
     classifierMap.put("LEGAL_BASIS", legalBasisClassifier);
 
     return classifierMap;
-
   }
 }

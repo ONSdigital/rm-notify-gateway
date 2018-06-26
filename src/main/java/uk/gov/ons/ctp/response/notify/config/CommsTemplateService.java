@@ -7,6 +7,6 @@ import uk.gov.ons.ctp.common.rest.RestUtilityConfig;
 @Data
 @NoArgsConstructor
 public class CommsTemplateService {
-    private RestUtilityConfig connectionConfig;
-    private String templateByClassifiersPath;
+  private RestUtilityConfig connectionConfig;
+  private String templateByClassifiersPath;
 }

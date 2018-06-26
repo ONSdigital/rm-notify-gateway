@@ -8,6 +8,9 @@ jdk: openjdk8
 
 before_install: "cp .maven.settings.xml $HOME/.m2/settings.xml"
 
+script:
+  - "mvn fmt:check verify"
+
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u "$DOCKER_SDCPLATFORM_USERNAME" -p "$DOCKER_SDCPLATFORM_PASSWORD";

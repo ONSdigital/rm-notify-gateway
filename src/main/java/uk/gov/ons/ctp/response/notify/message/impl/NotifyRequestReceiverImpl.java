@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message.impl;
 
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
@@ -13,36 +14,33 @@ import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 import uk.gov.service.notify.NotificationClientException;
 
-import java.util.UUID;
-
-/**
- * The service that reads NotifyRequests from the inbound channel
- */
+/** The service that reads NotifyRequests from the inbound channel */
 @Slf4j
 @MessageEndpoint
 public class NotifyRequestReceiverImpl implements NotifyRequestReceiver {
 
-    @Autowired
-    private NotifyService notifyService;
+  @Autowired private NotifyService notifyService;
 
-    @Autowired
-    private ResilienceService resilienceService;
+  @Autowired private ResilienceService resilienceService;
 
-    /**
-     * To process NotifyRequests from the input channel notifyRequestTransformed
-     *
-     * @param notifyRequest the NotifyRequest to be processed
-     * @throws NotificationClientException when GOV.UK Notify does
-     */
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    @ServiceActivator(inputChannel = "notifyRequestTransformed", adviceChain = "notifyRequestRetryAdvice")
-    public void process(final NotifyRequest notifyRequest) throws NotificationClientException {
-        log.debug("entering process with notifyRequest {}", notifyRequest);
-        UUID notificationId = notifyService.process(notifyRequest);
+  /**
+   * To process NotifyRequests from the input channel notifyRequestTransformed
+   *
+   * @param notifyRequest the NotifyRequest to be processed
+   * @throws NotificationClientException when GOV.UK Notify does
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @ServiceActivator(
+      inputChannel = "notifyRequestTransformed",
+      adviceChain = "notifyRequestRetryAdvice")
+  public void process(final NotifyRequest notifyRequest) throws NotificationClientException {
+    log.debug("entering process with notifyRequest {}", notifyRequest);
+    UUID notificationId = notifyService.process(notifyRequest);
 
-        resilienceService.update(Message.builder()
-                .id(UUID.fromString(notifyRequest.getId()))
-                .notificationId(notificationId)
-                .build());
-    }
+    resilienceService.update(
+        Message.builder()
+            .id(UUID.fromString(notifyRequest.getId()))
+            .notificationId(notificationId)
+            .build());
+  }
 }

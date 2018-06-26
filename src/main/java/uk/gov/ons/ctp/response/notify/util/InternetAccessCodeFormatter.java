@@ -2,9 +2,7 @@ package uk.gov.ons.ctp.response.notify.util;
 
 import uk.gov.ons.ctp.common.util.StringUtils;
 
-/**
- * Class to centralise the formatting of IAC codes
- */
+/** Class to centralise the formatting of IAC codes */
 public class InternetAccessCodeFormatter {
 
   private static final int SEGMENT_SIZE = 4;
@@ -18,6 +16,7 @@ public class InternetAccessCodeFormatter {
    */
   public static final String externalize(String iac) {
     String[] segments = StringUtils.splitEqually(iac, SEGMENT_SIZE);
-    return org.springframework.util.StringUtils.arrayToDelimitedString(segments, SEGMENT_SEPARATOR).toUpperCase();
+    return org.springframework.util.StringUtils.arrayToDelimitedString(segments, SEGMENT_SEPARATOR)
+        .toUpperCase();
   }
 }

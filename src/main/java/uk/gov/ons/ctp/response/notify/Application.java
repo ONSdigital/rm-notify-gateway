@@ -15,9 +15,7 @@ import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
 
-/**
- * The main application class
- */
+/** The main application class */
 @Slf4j
 @IntegrationComponentScan
 @EnableAsync
@@ -27,8 +25,7 @@ import uk.gov.ons.ctp.response.notify.config.AppConfig;
 @SpringBootApplication
 public class Application {
 
-  @Autowired
-  private AppConfig appConfig;
+  @Autowired private AppConfig appConfig;
 
   /**
    * The restTemplate bean injected in REST client classes
@@ -42,6 +39,7 @@ public class Application {
 
   /**
    * The RestExceptionHandler to handle exceptions thrown in our endpoints
+   *
    * @return the RestExceptionHandler
    */
   @Bean
@@ -56,14 +54,14 @@ public class Application {
    */
   @Bean
   public RestUtility commsTemplateClient() {
-    RestUtility restUtility = new RestUtility(appConfig.getCommsTemplateService().getConnectionConfig());
+    RestUtility restUtility =
+        new RestUtility(appConfig.getCommsTemplateService().getConnectionConfig());
     return restUtility;
   }
 
-
   /**
    * This method is the entry point to the Spring Boot application.
-   * 
+   *
    * @param args These are the optional command line arguments
    */
   public static void main(String[] args) {
