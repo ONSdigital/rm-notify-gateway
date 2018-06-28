@@ -1,10 +1,9 @@
 package uk.gov.ons.ctp.response.notify.util;
 
-import lombok.ToString;
-
+import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.math.BigInteger;
+import lombok.ToString;
 
 /**
  * This is a simple class to take a gov.notify key or other arbitrary string representing a number
