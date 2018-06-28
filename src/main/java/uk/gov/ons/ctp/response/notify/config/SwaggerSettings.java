@@ -3,9 +3,7 @@ package uk.gov.ons.ctp.response.notify.config;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Config POJO for Swagger UI Generation
- */
+/** Config POJO for Swagger UI Generation */
 @Data
 @NoArgsConstructor
 public class SwaggerSettings {
@@ -15,5 +13,4 @@ public class SwaggerSettings {
   private String title;
   private String description;
   private String version;
-
 }
