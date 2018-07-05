@@ -62,13 +62,6 @@ public class StatusEndpoint {
     return ResponseEntity.ok(map(notification));
   }
 
-  /**
-   * Find the message in the database.
-   *
-   * @param messageId The message ID
-   * @return The message
-   * @throws CTPException If a message with the matching ID is not found
-   */
   private Message findMessageById(final UUID messageId) throws CTPException {
     Message message = resilienceService.findMessageById(messageId);
 
@@ -81,14 +74,6 @@ public class StatusEndpoint {
     return message;
   }
 
-  /**
-   * Get the notification ID from the provided message.
-   *
-   * @param message The message to call getNotificationId()
-   * @param messageId Used only for the exception message
-   * @return The notification ID
-   * @throws CTPException If the notificationId is null
-   */
   private UUID getNotificationId(final Message message, final UUID messageId) throws CTPException {
     UUID notificationId = message.getNotificationId();
 
@@ -101,14 +86,6 @@ public class StatusEndpoint {
     return notificationId;
   }
 
-  /**
-   * Fetch the notication from the notify service
-   *
-   * @param notificationId The ID of the notification to fetch
-   * @param messageId Used only for the exception message
-   * @return The notification
-   * @throws CTPException If the notification is not found
-   */
   private Notification findNotificationById(final UUID notificationId, final UUID messageId)
       throws CTPException {
     Notification notification = fetchNotificationFromNotifyService(notificationId);
@@ -122,14 +99,6 @@ public class StatusEndpoint {
     return notification;
   }
 
-  /**
-   * Makes the request to the notify service to fetch a notification and converts any
-   * NotificationClientExceptions to a CTPExceptions.
-   *
-   * @param notificationId The notification to look for
-   * @return The notification
-   * @throws CTPException When the notify service client thows an exception
-   */
   private Notification fetchNotificationFromNotifyService(final UUID notificationId)
       throws CTPException {
     try {
