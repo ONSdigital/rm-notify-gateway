@@ -182,7 +182,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
       this.responseRequired = responseRequired;
     }
 
-    void sendFeedback(final ActionFeedback actionFeedback) {
+    private void sendFeedback(final ActionFeedback actionFeedback) {
       if (responseRequired) {
         actionFeedbackPublisher.sendFeedback(actionFeedback);
       }
