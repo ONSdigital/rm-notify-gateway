@@ -77,24 +77,52 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     }
   }
 
+  /**
+   * Create ActionFeedback object with NOTIFY_GW situation and REQUEST_ACCEPTED outcome.
+   *
+   * @param actionRequest The action request
+   * @return The instance
+   */
   private ActionFeedback notifyGatewayRequestAccepted(final ActionRequest actionRequest) {
     return new ActionFeedback(
         actionRequest.getActionId(), getNotifyGateway(), Outcome.REQUEST_ACCEPTED);
   }
 
+  /**
+   * Create ActionFeedback object with NOTIFY_SMS_NOT_SENT situation and REQUEST_DECLINED outcome.
+   *
+   * @param actionRequest The action request
+   * @return The instance
+   */
   private ActionFeedback smsNotSent(final ActionRequest actionRequest) {
     return new ActionFeedback(
         actionRequest.getActionId(), getNotifySMSNotSent(), Outcome.REQUEST_DECLINED);
   }
 
+  /**
+   * Get Notify SMS Not Sent Situation Text
+   *
+   * @return The string
+   */
   private String getNotifySMSNotSent() {
     return truncateToSituationMaxLength(NOTIFY_SMS_NOT_SENT);
   }
 
+  /**
+   * Get the Notify Gateway situation text
+   *
+   * @return The string
+   */
   private String getNotifyGateway() {
     return truncateToSituationMaxLength(NOTIFY_GW);
   }
 
+  /**
+   * Truncate a string to the max length for a situation
+   *
+   * @param string String to truncate
+   * @return truncated string
+   */
   private String truncateToSituationMaxLength(final String string) {
     return string.length() <= SITUATION_MAX_LENGTH
         ? string
@@ -174,16 +202,32 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     return false;
   }
 
+  /**
+   * Checks email strings against a regex pattern
+   *
+   * @param emailAddress The email to be checked
+   * @return Whether the email is valid
+   */
   private boolean isEmailValid(final String emailAddress) {
     Pattern pattern = Pattern.compile(EMAIL_ADDRESS_REGEX);
     return pattern.matcher(emailAddress).matches();
   }
 
+  /**
+   * Checks phone number strings against a regex pattern
+   *
+   * @param phoneNumber The phone number to be checked
+   * @return Whether the phone number is valid
+   */
   private boolean isPhoneNumberValid(final String phoneNumber) {
     Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
     return pattern.matcher(phoneNumber).matches();
   }
 
+  /**
+   * A wrapper for ActionFeedbackPublish which only sends an ActionFeedback instance if a response
+   * is required.
+   */
   private class ResponsePublisher {
     private final boolean responseRequired;
 
@@ -191,6 +235,11 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
       this.responseRequired = responseRequired;
     }
 
+    /**
+     * Only sends an ActionFeedback instance if a response is required.
+     *
+     * @param actionFeedback The feedback instance to send
+     */
     void sendFeedback(final ActionFeedback actionFeedback) {
       if (responseRequired) {
         actionFeedbackPublisher.sendFeedback(actionFeedback);
