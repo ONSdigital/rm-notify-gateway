@@ -11,6 +11,7 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.ons.ctp.response.action.factory.ActionFeedbackFactory;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
@@ -81,22 +82,14 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
 
   private ActionFeedback notifyGatewayRequestAccepted(final ActionRequest actionRequest)
       throws InvalidSituationException {
-    return new ActionFeedback(
-        actionRequest.getActionId(), getNotifyGateway(), Outcome.REQUEST_ACCEPTED);
+    return ActionFeedbackFactory.create(
+        actionRequest.getActionId(), new Situation(NOTIFY_GW), Outcome.REQUEST_ACCEPTED);
   }
 
   private ActionFeedback smsNotSent(final ActionRequest actionRequest)
       throws InvalidSituationException {
-    return new ActionFeedback(
-        actionRequest.getActionId(), getNotifySMSNotSent(), Outcome.REQUEST_DECLINED);
-  }
-
-  private String getNotifySMSNotSent() throws InvalidSituationException {
-    return new Situation(NOTIFY_SMS_NOT_SENT).toString();
-  }
-
-  private String getNotifyGateway() throws InvalidSituationException {
-    return new Situation(NOTIFY_GW).toString();
+    return ActionFeedbackFactory.create(
+        actionRequest.getActionId(), new Situation(NOTIFY_SMS_NOT_SENT), Outcome.REQUEST_DECLINED);
   }
 
   private ActionRequest tidyUp(final ActionRequest actionRequest) {
