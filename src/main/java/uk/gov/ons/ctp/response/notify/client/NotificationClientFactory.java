@@ -23,26 +23,21 @@ public class NotificationClientFactory {
   }
 
   public static NotificationClientApi getNotificationClient(NotifyConfiguration config) {
-    NotificationClientApi client = null;
+    NotificationClientApi client;
     DebugType type = DebugType.None;
     String debugTypeString = config.getDebugType();
 
-    if (StringUtil.isBlank(debugTypeString) == false) {
+    if (!StringUtil.isBlank(debugTypeString)) {
       type = DebugType.valueOf(debugTypeString);
     }
 
     switch (type) {
       case None:
       default:
-        client = new ConfigurationAwareNotificationClient(config);
+        client = createConfigurationAwareClient(config);
         break;
       case NotifyClientException:
-        String httpCode = config.getDebugHttpCode();
-        if (StringUtil.isBlank(httpCode) == false) {
-          client = new ExceptionThrowingNotificationClient(Integer.parseInt(httpCode));
-        } else {
-          client = new ExceptionThrowingNotificationClient();
-        }
+        client = createExceptionThrowingClient(config);
         break;
       case RuntimeException:
         client = new RuntimeExceptionThrowingNotificationClient();
@@ -55,5 +50,19 @@ public class NotificationClientFactory {
         client.getClass().getCanonicalName());
 
     return client;
+  }
+
+  private static NotificationClientApi createConfigurationAwareClient(NotifyConfiguration config) {
+    return new ConfigurationAwareNotificationClient(config);
+  }
+
+  private static NotificationClientApi createExceptionThrowingClient(NotifyConfiguration config) {
+    String httpCode = config.getDebugHttpCode();
+
+    if (!StringUtil.isBlank(httpCode)) {
+      return new ExceptionThrowingNotificationClient(Integer.parseInt(httpCode));
+    }
+
+    return new ExceptionThrowingNotificationClient();
   }
 }
