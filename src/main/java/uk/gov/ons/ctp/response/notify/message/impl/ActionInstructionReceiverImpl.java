@@ -46,112 +46,146 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
       adviceChain = "actionInstructionRetryAdvice")
   public void processInstruction(final ActionInstruction instruction)
       throws NotificationClientException, CommsTemplateClientException {
+
     log.debug("entering process with instruction {}", instruction);
 
     ActionRequest actionRequest = instruction.getActionRequest();
-    if (actionRequest != null) {
-      ActionFeedback actionFeedback = null;
-      String actionId = actionRequest.getActionId();
 
-      boolean responseRequired = actionRequest.isResponseRequired();
-      if (responseRequired) {
-        actionFeedback =
-            new ActionFeedback(
-                actionId,
-                NOTIFY_GW.length() <= SITUATION_MAX_LENGTH
-                    ? NOTIFY_GW
-                    : NOTIFY_GW.substring(0, SITUATION_MAX_LENGTH),
-                Outcome.REQUEST_ACCEPTED);
-        actionFeedbackPublisher.sendFeedback(actionFeedback);
-      }
+    if (actionRequest == null) {
+      return;
+    }
 
-      actionRequest = tidyUp(actionRequest);
+    final ResponsePublisher publisher = new ResponsePublisher(actionRequest.isResponseRequired());
 
-      if (validate(actionRequest)) {
-        actionFeedback = notifyService.process(actionRequest);
-      } else {
-        log.error(
-            "Data validation failed for actionRequest with action id {}",
-            actionRequest.getActionId());
-        actionFeedback =
-            new ActionFeedback(
-                actionId,
-                NOTIFY_SMS_NOT_SENT.length() <= SITUATION_MAX_LENGTH
-                    ? NOTIFY_SMS_NOT_SENT
-                    : NOTIFY_SMS_NOT_SENT.substring(0, SITUATION_MAX_LENGTH),
-                Outcome.REQUEST_DECLINED);
-      }
+    publisher.sendFeedback(notifyGatewayRequestAccepted(actionRequest));
 
-      if (actionFeedback != null && responseRequired) {
-        actionFeedbackPublisher.sendFeedback(actionFeedback);
-      }
+    actionRequest = tidyUp(actionRequest);
+
+    if (!validate(actionRequest)) {
+      log.error(
+          "Data validation failed for actionRequest with action id {}",
+          actionRequest.getActionId());
+
+      publisher.sendFeedback(smsNotSent(actionRequest));
+
+      return;
+    }
+
+    ActionFeedback actionFeedback = notifyService.process(actionRequest);
+    if (actionFeedback != null) {
+      publisher.sendFeedback(actionFeedback);
     }
   }
 
-  /**
-   * To tidy up phone number & email address within an ActionRequest as we have got no control on
-   * the upstream
-   *
-   * @param actionRequest the ActionRequest to tidy up
-   * @return the tidied ActionRequest
-   */
-  private ActionRequest tidyUp(ActionRequest actionRequest) {
+  private ActionFeedback notifyGatewayRequestAccepted(final ActionRequest actionRequest) {
+    return new ActionFeedback(
+        actionRequest.getActionId(), getNotifyGateway(), Outcome.REQUEST_ACCEPTED);
+  }
+
+  private ActionFeedback smsNotSent(final ActionRequest actionRequest) {
+    return new ActionFeedback(
+        actionRequest.getActionId(), getNotifySMSNotSent(), Outcome.REQUEST_DECLINED);
+  }
+
+  private String getNotifySMSNotSent() {
+    return truncateToSituationMaxLength(NOTIFY_SMS_NOT_SENT);
+  }
+
+  private String getNotifyGateway() {
+    return truncateToSituationMaxLength(NOTIFY_GW);
+  }
+
+  private String truncateToSituationMaxLength(final String string) {
+    return string.length() <= SITUATION_MAX_LENGTH
+        ? string
+        : string.substring(0, SITUATION_MAX_LENGTH);
+  }
+
+  private ActionRequest tidyUp(final ActionRequest actionRequest) {
     ActionContact actionContact = actionRequest.getContact();
-    if (actionContact != null) {
-      String phoneNumber = actionContact.getPhoneNumber();
-      if (phoneNumber != null) {
-        // TODO For BRES, currently removing the number to stop any SMS being sent by error. This
-        // null phone number is
-        // TODO also used as the switch in NotifyServiceImpl to determine whether to processSms or
-        // processEmail.
-        // TODO Plan for when we produce a solution serving both BRES & Census.
-        //        phoneNumber = phoneNumber.replaceAll("\\s+","");  // removes all whitespaces and
-        // non-visible characters (e.g., tab, \n).
-        //        phoneNumber = phoneNumber.replaceAll("\\(", "");
-        //        phoneNumber = phoneNumber.replaceAll("\\)", "");
-        //        actionContact.setPhoneNumber(phoneNumber);
-        actionContact.setPhoneNumber(null);
-      }
 
-      String emailAddress = actionContact.getEmailAddress();
-      if (emailAddress != null) {
-        actionContact.setEmailAddress(emailAddress.trim());
-      }
-
-      actionRequest.setContact(actionContact);
+    if (actionContact == null) {
+      return actionRequest;
     }
+
+    String phoneNumber = actionContact.getPhoneNumber();
+    if (phoneNumber != null) {
+      // TODO For BRES, currently removing the number to stop any SMS being sent by error. This
+      // null phone number is
+      // TODO also used as the switch in NotifyServiceImpl to determine whether to processSms or
+      // processEmail.
+      // TODO Plan for when we produce a solution serving both BRES & Census.
+      //        phoneNumber = phoneNumber.replaceAll("\\s+","");  // removes all whitespaces and
+      // non-visible characters (e.g., tab, \n).
+      //        phoneNumber = phoneNumber.replaceAll("\\(", "");
+      //        phoneNumber = phoneNumber.replaceAll("\\)", "");
+      //        actionContact.setPhoneNumber(phoneNumber);
+      actionContact.setPhoneNumber(null);
+    }
+
+    String emailAddress = actionContact.getEmailAddress();
+    if (emailAddress != null) {
+      actionContact.setEmailAddress(emailAddress.trim());
+    }
+
+    actionRequest.setContact(actionContact);
 
     return actionRequest;
   }
 
-  /**
-   * This validates the phone number (Census) or the email address (BRES) in the given ActionRequest
-   *
-   * @param actionRequest the ActionRequest
-   * @return true if the phone number or the email address is valid
-   */
-  private boolean validate(ActionRequest actionRequest) {
-    boolean result = false;
-
-    if (actionRequest != null) {
-      ActionContact actionContact = actionRequest.getContact();
-      if (actionContact != null) {
-        String phoneNumber = actionContact.getPhoneNumber();
-        log.debug("phoneNumber is {}", phoneNumber);
-        if (phoneNumber == null) {
-          String emailAddress = actionContact.getEmailAddress();
-          log.debug("emailAddress is {}", emailAddress);
-          if (emailAddress != null) {
-            Pattern pattern = Pattern.compile(EMAIL_ADDRESS_REGEX);
-            result = pattern.matcher(emailAddress).matches();
-          }
-        } else {
-          Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
-          result = pattern.matcher(phoneNumber).matches();
-        }
-      }
+  private boolean validate(final ActionRequest actionRequest) {
+    if (actionRequest == null) {
+      return false;
     }
 
-    return result;
+    ActionContact actionContact = actionRequest.getContact();
+
+    if (actionContact == null) {
+      return false;
+    }
+
+    String phoneNumber = actionContact.getPhoneNumber();
+    log.debug("phoneNumber is {}", phoneNumber);
+
+    if (phoneNumber != null) {
+      return isPhoneNumberValid(phoneNumber);
+    }
+
+    String emailAddress = actionContact.getEmailAddress();
+    log.debug("emailAddress is {}", emailAddress);
+
+    if (emailAddress != null) {
+      return isEmailValid(emailAddress);
+    }
+
+    return false;
+  }
+
+  private boolean isEmailValid(final String emailAddress) {
+    Pattern pattern = Pattern.compile(EMAIL_ADDRESS_REGEX);
+    return pattern.matcher(emailAddress).matches();
+  }
+
+  private boolean isPhoneNumberValid(final String phoneNumber) {
+    Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
+    return pattern.matcher(phoneNumber).matches();
+  }
+
+  /**
+   * A wrapper for ActionFeedbackPublish which only sends an ActionFeedback instance if a response
+   * is required.
+   */
+  private class ResponsePublisher {
+    private final boolean responseRequired;
+
+    ResponsePublisher(final boolean responseRequired) {
+      this.responseRequired = responseRequired;
+    }
+
+    private void sendFeedback(final ActionFeedback actionFeedback) {
+      if (responseRequired) {
+        actionFeedbackPublisher.sendFeedback(actionFeedback);
+      }
+    }
   }
 }
