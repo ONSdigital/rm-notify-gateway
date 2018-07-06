@@ -55,34 +55,59 @@ public class StatusEndpoint {
       throws CTPException {
     log.debug("Entering getStatus with messageId {}", messageId);
 
+    Message message = findMessageById(messageId);
+    UUID notificationId = getNotificationId(message, messageId);
+    Notification notification = findNotificationById(notificationId, messageId);
+
+    return ResponseEntity.ok(map(notification));
+  }
+
+  private Message findMessageById(final UUID messageId) throws CTPException {
     Message message = resilienceService.findMessageById(messageId);
+
     if (message == null) {
       throw new CTPException(
           CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format(ERRORMSG_MESSAGE_NOTFOUND, messageId));
-    } else {
-      UUID notificationId = message.getNotificationId();
-      if (notificationId != null) {
-        try {
-          Notification notification = notifyService.findNotificationById(notificationId);
-          if (notification == null) {
-            throw new CTPException(
-                CTPException.Fault.RESOURCE_NOT_FOUND,
-                String.format(ERRORMSG_NOTIFICATION_NOTFOUND, messageId));
-          }
-          return ResponseEntity.ok(map(notification));
-        } catch (NotificationClientException e) {
-          String errorMsg =
-              String.format(ERRORMSG_NOTIFICATION_ISSUE, e.getMessage(), e.getCause());
-          log.error(errorMsg);
-          log.error("Stack trace: " + e);
-          throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
-        }
-      } else {
-        throw new CTPException(
-            CTPException.Fault.RESOURCE_NOT_FOUND,
-            String.format(ERRORMSG_NOTIFICATION_NOTDEFINED, messageId));
-      }
+    }
+
+    return message;
+  }
+
+  private UUID getNotificationId(final Message message, final UUID messageId) throws CTPException {
+    UUID notificationId = message.getNotificationId();
+
+    if (notificationId == null) {
+      throw new CTPException(
+          CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format(ERRORMSG_NOTIFICATION_NOTDEFINED, messageId));
+    }
+
+    return notificationId;
+  }
+
+  private Notification findNotificationById(final UUID notificationId, final UUID messageId)
+      throws CTPException {
+    Notification notification = fetchNotificationFromNotifyService(notificationId);
+
+    if (notification == null) {
+      throw new CTPException(
+          CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format(ERRORMSG_NOTIFICATION_NOTFOUND, messageId));
+    }
+
+    return notification;
+  }
+
+  private Notification fetchNotificationFromNotifyService(final UUID notificationId)
+      throws CTPException {
+    try {
+      return notifyService.findNotificationById(notificationId);
+    } catch (NotificationClientException e) {
+      String errorMsg = String.format(ERRORMSG_NOTIFICATION_ISSUE, e.getMessage(), e.getCause());
+      log.error(errorMsg);
+      log.error("Stack trace: " + e);
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }
   }
 
