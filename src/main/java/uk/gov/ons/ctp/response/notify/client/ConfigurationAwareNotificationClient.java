@@ -45,13 +45,11 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
       return null;
     }
 
-    boolean addressOverride = this.configuration.getAddressOverride();
-    String overrideAddress = this.configuration.getOverrideAddress();
-
-    String actualEmail =
-        addressOverride && !StringUtils.isBlank(overrideAddress) ? overrideAddress : emailAddress;
-
-    return realClient.sendEmail(templateId, actualEmail, personalisation, reference);
+    return realClient.sendEmail(
+        templateId,
+        getEmailOrOverrideAddress(emailAddress),
+        personalisation,
+        reference);
   }
 
   @Override
@@ -129,5 +127,16 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
     }
 
     return realClient.generateTemplatePreview(templateId, personalisation);
+  }
+
+  private String getEmailOrOverrideAddress(String emailAddress) {
+    Boolean addressOverrideEnabled = this.configuration.getAddressOverride();
+    String overrideAddress = this.configuration.getOverrideAddress();
+
+    if (addressOverrideEnabled && !StringUtils.isBlank(overrideAddress)) {
+      return overrideAddress;
+    }
+
+    return emailAddress;
   }
 }
