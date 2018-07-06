@@ -20,6 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.action.representation.exception.InvalidSituationException;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
@@ -40,7 +41,7 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessBRESInstructionHappyPath()
-      throws NotificationClientException, CommsTemplateClientException {
+      throws NotificationClientException, CommsTemplateClientException, InvalidSituationException {
     ActionFeedback mockedActionFeedback =
         new ActionFeedback(
             MOCKED_ACTIONID,
@@ -77,7 +78,7 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessBRESInstructionEmailAddressWithSpacesAtFrontAndBack()
-      throws NotificationClientException, CommsTemplateClientException {
+      throws NotificationClientException, CommsTemplateClientException, InvalidSituationException {
     ActionFeedback mockedActionFeedback =
         new ActionFeedback(
             MOCKED_ACTIONID,
@@ -116,7 +117,7 @@ public class ActionInstructionReceiverImplTest {
 
   @Test
   public void testProcessBRESInstructionNotifyThrowsException()
-      throws NotificationClientException, CommsTemplateClientException {
+      throws NotificationClientException, CommsTemplateClientException, InvalidSituationException {
     NotificationClientException exception = new NotificationClientException(new Exception());
     when(notifyService.process(any(ActionRequest.class))).thenThrow(exception);
 

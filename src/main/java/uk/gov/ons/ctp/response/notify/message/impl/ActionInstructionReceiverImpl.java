@@ -16,6 +16,8 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.action.representation.Situation;
+import uk.gov.ons.ctp.response.action.representation.exception.InvalidSituationException;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
@@ -45,7 +47,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
       inputChannel = "actionInstructionTransformed",
       adviceChain = "actionInstructionRetryAdvice")
   public void processInstruction(final ActionInstruction instruction)
-      throws NotificationClientException, CommsTemplateClientException {
+      throws NotificationClientException, CommsTemplateClientException, InvalidSituationException {
 
     log.debug("entering process with instruction {}", instruction);
 
@@ -77,28 +79,24 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     }
   }
 
-  private ActionFeedback notifyGatewayRequestAccepted(final ActionRequest actionRequest) {
+  private ActionFeedback notifyGatewayRequestAccepted(final ActionRequest actionRequest)
+      throws InvalidSituationException {
     return new ActionFeedback(
         actionRequest.getActionId(), getNotifyGateway(), Outcome.REQUEST_ACCEPTED);
   }
 
-  private ActionFeedback smsNotSent(final ActionRequest actionRequest) {
+  private ActionFeedback smsNotSent(final ActionRequest actionRequest)
+      throws InvalidSituationException {
     return new ActionFeedback(
         actionRequest.getActionId(), getNotifySMSNotSent(), Outcome.REQUEST_DECLINED);
   }
 
-  private String getNotifySMSNotSent() {
-    return truncateToSituationMaxLength(NOTIFY_SMS_NOT_SENT);
+  private String getNotifySMSNotSent() throws InvalidSituationException {
+    return new Situation(NOTIFY_SMS_NOT_SENT).toString();
   }
 
-  private String getNotifyGateway() {
-    return truncateToSituationMaxLength(NOTIFY_GW);
-  }
-
-  private String truncateToSituationMaxLength(final String string) {
-    return string.length() <= SITUATION_MAX_LENGTH
-        ? string
-        : string.substring(0, SITUATION_MAX_LENGTH);
+  private String getNotifyGateway() throws InvalidSituationException {
+    return new Situation(NOTIFY_GW).toString();
   }
 
   private ActionRequest tidyUp(final ActionRequest actionRequest) {
