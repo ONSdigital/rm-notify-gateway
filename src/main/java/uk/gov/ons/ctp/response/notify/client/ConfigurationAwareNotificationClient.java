@@ -4,7 +4,16 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.service.notify.*;
+import uk.gov.service.notify.Notification;
+import uk.gov.service.notify.NotificationClient;
+import uk.gov.service.notify.NotificationClientApi;
+import uk.gov.service.notify.NotificationClientException;
+import uk.gov.service.notify.NotificationList;
+import uk.gov.service.notify.SendEmailResponse;
+import uk.gov.service.notify.SendSmsResponse;
+import uk.gov.service.notify.Template;
+import uk.gov.service.notify.TemplateList;
+import uk.gov.service.notify.TemplatePreview;
 
 @Slf4j
 public class ConfigurationAwareNotificationClient implements NotificationClientApi {
