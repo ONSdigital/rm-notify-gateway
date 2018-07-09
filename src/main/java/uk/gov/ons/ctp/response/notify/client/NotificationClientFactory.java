@@ -19,15 +19,15 @@ public class NotificationClientFactory {
   public enum DebugType {
     None,
     NotifyClientException,
-    RuntimeException;
+    RuntimeException
   }
 
   public static NotificationClientApi getNotificationClient(NotifyConfiguration config) {
-    NotificationClientApi client = null;
+    NotificationClientApi client;
     DebugType type = DebugType.None;
     String debugTypeString = config.getDebugType();
 
-    if (StringUtil.isBlank(debugTypeString) == false) {
+    if (!StringUtil.isBlank(debugTypeString)) {
       type = DebugType.valueOf(debugTypeString);
     }
 
@@ -38,7 +38,7 @@ public class NotificationClientFactory {
         break;
       case NotifyClientException:
         String httpCode = config.getDebugHttpCode();
-        if (StringUtil.isBlank(httpCode) == false) {
+        if (!StringUtil.isBlank(httpCode)) {
           client = new ExceptionThrowingNotificationClient(Integer.parseInt(httpCode));
         } else {
           client = new ExceptionThrowingNotificationClient();
