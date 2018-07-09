@@ -60,6 +60,10 @@ public class NotificationClientFactory {
   }
 
   private static NotificationClientApi createRealClient(NotifyConfiguration config) {
+    if (!config.getEnabled()) {
+      return new NullNotificationClient();
+    }
+
     return new ConfigurationAwareNotificationClient(config);
   }
 

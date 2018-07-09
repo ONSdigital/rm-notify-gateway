@@ -72,6 +72,13 @@ public class NotificationClientFactoryTest {
     assertTrue(getUnwrappedClient() instanceof ConfigurationAwareNotificationClient);
   }
 
+  @Test
+  public void testItCreatesANullNotificationClientIfDisabled() {
+    config.setEnabled(false);
+
+    assertTrue(getUnwrappedClient() instanceof NullNotificationClient);
+  }
+
   private NotificationClientApi getUnwrappedClient() {
     return ((LoggingNotificationClient) getNotificationClient()).getClient();
   }
