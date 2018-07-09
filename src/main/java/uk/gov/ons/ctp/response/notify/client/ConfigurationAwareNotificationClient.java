@@ -4,16 +4,7 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.NotificationClientApi;
-import uk.gov.service.notify.NotificationClientException;
-import uk.gov.service.notify.NotificationList;
-import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendSmsResponse;
-import uk.gov.service.notify.Template;
-import uk.gov.service.notify.TemplateList;
-import uk.gov.service.notify.TemplatePreview;
+import uk.gov.service.notify.*;
 
 /**
  * This is a delegate class for NotificationClient that suppresses all calls to the actual
@@ -39,7 +30,6 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
   public SendEmailResponse sendEmail(
       String templateId, String emailAddress, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
-    log.debug("sendEmail: {} - {} - {} - {}", templateId, emailAddress, personalisation, reference);
 
     if (this.configuration.getEnabled()) {
       boolean addressOverride = this.configuration.getAddressOverride();
@@ -58,7 +48,6 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
   public SendSmsResponse sendSms(
       String templateId, String phoneNumber, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
-    log.debug("sendSms: {} - {} - {} - {}", templateId, phoneNumber, personalisation, reference);
     if (this.configuration.getEnabled()) {
       return realClient.sendSms(templateId, phoneNumber, personalisation, reference);
     } else {
@@ -69,7 +58,6 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
   @Override
   public Notification getNotificationById(String notificationId)
       throws NotificationClientException {
-    log.debug("getNotificationById: {}", notificationId);
     if (this.configuration.getEnabled()) {
       return realClient.getNotificationById(notificationId);
     } else {
@@ -81,7 +69,6 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
   public NotificationList getNotifications(
       String status, String notificationType, String reference, String olderThanId)
       throws NotificationClientException {
-    log.debug("getNotifications: {}", status, notificationType, reference, olderThanId);
     if (this.configuration.getEnabled()) {
       return realClient.getNotifications(status, notificationType, reference, olderThanId);
     } else {
@@ -91,7 +78,6 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
 
   @Override
   public Template getTemplateById(String templateId) throws NotificationClientException {
-    log.debug("getTemplateById: {}", templateId);
     if (this.configuration.getEnabled()) {
       return realClient.getTemplateById(templateId);
     } else {
@@ -102,7 +88,6 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
   @Override
   public Template getTemplateVersion(String templateId, int version)
       throws NotificationClientException {
-    log.debug("getTemplateVersion: {} - {}", templateId, version);
     if (this.configuration.getEnabled()) {
       return realClient.getTemplateVersion(templateId, version);
     } else {
@@ -112,7 +97,6 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
 
   @Override
   public TemplateList getAllTemplates(String templateType) throws NotificationClientException {
-    log.debug("getAllTemplates: {}", templateType);
     if (this.configuration.getEnabled()) {
       return realClient.getAllTemplates(templateType);
     } else {
@@ -123,7 +107,6 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
   @Override
   public TemplatePreview generateTemplatePreview(
       String templateId, Map<String, String> personalisation) throws NotificationClientException {
-    log.debug("generateTemplatePreview: {} - {}", templateId, personalisation);
     if (this.configuration.getEnabled()) {
       return realClient.generateTemplatePreview(templateId, personalisation);
     } else {

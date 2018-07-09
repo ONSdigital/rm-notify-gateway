@@ -16,16 +16,20 @@ public class NotificationClientFactoryTest {
   @Before
   public void setUp() {
     config = new NotifyConfiguration();
+    config.setEnabled(true);
     config.setApiKey("api-key");
+  }
+
+  @Test
+  public void testItReturnsALoggingClient() {
+    assertTrue(getNotificationClient() instanceof LoggingNotificationClient);
   }
 
   @Test
   public void testItCreatesConfigurationAwareNotificationClientIfDebugTypeIsNone() {
     config.setDebugType("None");
 
-    assertTrue(
-        NotificationClientFactory.getNotificationClient(config)
-            instanceof ConfigurationAwareNotificationClient);
+    assertTrue(getUnwrappedClient() instanceof ConfigurationAwareNotificationClient);
   }
 
   @Test
@@ -33,18 +37,14 @@ public class NotificationClientFactoryTest {
       testItCreatesRuntimeExceptionThrowingNotificationClientIfDebugTypeIsRuntimeException() {
     config.setDebugType("RuntimeException");
 
-    assertTrue(
-        NotificationClientFactory.getNotificationClient(config)
-            instanceof RuntimeExceptionThrowingNotificationClient);
+    assertTrue(getUnwrappedClient() instanceof RuntimeExceptionThrowingNotificationClient);
   }
 
   @Test
   public void testItCreatesExceptionThrowingNotificationClientIfDebugTypeIsNotifyClientException() {
     config.setDebugType("NotifyClientException");
 
-    assertTrue(
-        NotificationClientFactory.getNotificationClient(config)
-            instanceof ExceptionThrowingNotificationClient);
+    assertTrue(getUnwrappedClient() instanceof ExceptionThrowingNotificationClient);
   }
 
   @Test
@@ -54,7 +54,7 @@ public class NotificationClientFactoryTest {
     config.setDebugType("NotifyClientException");
     config.setDebugHttpCode(Integer.toString(IM_A_TEAPOT));
 
-    final NotificationClientApi client = NotificationClientFactory.getNotificationClient(config);
+    final NotificationClientApi client = getUnwrappedClient();
 
     int httpCode = 0;
 
@@ -69,8 +69,14 @@ public class NotificationClientFactoryTest {
 
   @Test
   public void testItCreatesConfigurationAwareNotificationClientIfDebugTypeIsNull() {
-    assertTrue(
-        NotificationClientFactory.getNotificationClient(config)
-            instanceof ConfigurationAwareNotificationClient);
+    assertTrue(getUnwrappedClient() instanceof ConfigurationAwareNotificationClient);
+  }
+
+  private NotificationClientApi getUnwrappedClient() {
+    return ((LoggingNotificationClient) getNotificationClient()).getClient();
+  }
+
+  private NotificationClientApi getNotificationClient() {
+    return NotificationClientFactory.getNotificationClient(config);
   }
 }

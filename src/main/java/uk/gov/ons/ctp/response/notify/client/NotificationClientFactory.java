@@ -26,7 +26,7 @@ public class NotificationClientFactory {
     NotificationClientApi client;
     String debugTypeString = config.getDebugType();
 
-    client = createClient(config, debugTypeString);
+    client = new LoggingNotificationClient(createClient(config, debugTypeString), log);
 
     log.info(
         "Creating NotificationClientApi - {} - {}",
