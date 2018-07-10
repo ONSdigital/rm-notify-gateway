@@ -15,6 +15,7 @@ public class NotificationClientFactory {
 
     client = new LoggingNotificationClient(createClient(config, debugTypeString), log);
 
+
     log.info(
         "Creating NotificationClientApi - {} - {}",
         debugTypeString,
