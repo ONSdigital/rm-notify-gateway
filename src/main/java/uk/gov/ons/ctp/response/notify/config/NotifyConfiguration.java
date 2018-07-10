@@ -30,6 +30,7 @@ public class NotifyConfiguration {
 
   private String censusUacSmsTemplateId;
   private String onsSurveysRasEmailReminderTemplateId;
+  private String endpointBaseUrl;
 
   /**
    * To set up the GOV.UK Notify NotificationClient

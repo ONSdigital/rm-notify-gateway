@@ -4,31 +4,20 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientApi;
 import uk.gov.service.notify.NotificationClientException;
-import uk.gov.service.notify.NotificationList;
 import uk.gov.service.notify.SendEmailResponse;
-import uk.gov.service.notify.SendSmsResponse;
-import uk.gov.service.notify.Template;
-import uk.gov.service.notify.TemplateList;
-import uk.gov.service.notify.TemplatePreview;
 
-/**
- * This is a delegate class for NotificationClient that suppresses all calls to the actual
- * NotificationClient if NotifyConfiguration.getEnabled() is false
- */
 @Slf4j
-public class ConfigurationAwareNotificationClient implements NotificationClientApi {
+public class ConfigurationAwareNotificationClient extends NotificationClientDecorator {
 
   private final NotifyConfiguration configuration;
-  private final NotificationClientApi realClient;
 
   public ConfigurationAwareNotificationClient(
       NotifyConfiguration config, NotificationClientApi realClient) {
+    super(realClient);
     this.configuration = config;
-    this.realClient = realClient;
   }
 
   public ConfigurationAwareNotificationClient(NotifyConfiguration config) {
@@ -39,95 +28,13 @@ public class ConfigurationAwareNotificationClient implements NotificationClientA
   public SendEmailResponse sendEmail(
       String templateId, String emailAddress, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
-    log.debug("sendEmail: {} - {} - {} - {}", templateId, emailAddress, personalisation, reference);
 
-    if (this.configuration.getEnabled()) {
-      boolean addressOverride = this.configuration.getAddressOverride();
-      String overrideAddress = this.configuration.getOverrideAddress();
+    boolean addressOverride = this.configuration.getAddressOverride();
+    String overrideAddress = this.configuration.getOverrideAddress();
 
-      String actualEmail =
-          addressOverride && !StringUtils.isBlank(overrideAddress) ? overrideAddress : emailAddress;
+    String actualEmail =
+        addressOverride && !StringUtils.isBlank(overrideAddress) ? overrideAddress : emailAddress;
 
-      return realClient.sendEmail(templateId, actualEmail, personalisation, reference);
-    } else {
-      return null;
-    }
-  }
-
-  @Override
-  public SendSmsResponse sendSms(
-      String templateId, String phoneNumber, Map<String, String> personalisation, String reference)
-      throws NotificationClientException {
-    log.debug("sendSms: {} - {} - {} - {}", templateId, phoneNumber, personalisation, reference);
-    if (this.configuration.getEnabled()) {
-      return realClient.sendSms(templateId, phoneNumber, personalisation, reference);
-    } else {
-      return null;
-    }
-  }
-
-  @Override
-  public Notification getNotificationById(String notificationId)
-      throws NotificationClientException {
-    log.debug("getNotificationById: {}", notificationId);
-    if (this.configuration.getEnabled()) {
-      return realClient.getNotificationById(notificationId);
-    } else {
-      return null;
-    }
-  }
-
-  @Override
-  public NotificationList getNotifications(
-      String status, String notificationType, String reference, String olderThanId)
-      throws NotificationClientException {
-    log.debug("getNotifications: {}", status, notificationType, reference, olderThanId);
-    if (this.configuration.getEnabled()) {
-      return realClient.getNotifications(status, notificationType, reference, olderThanId);
-    } else {
-      return null;
-    }
-  }
-
-  @Override
-  public Template getTemplateById(String templateId) throws NotificationClientException {
-    log.debug("getTemplateById: {}", templateId);
-    if (this.configuration.getEnabled()) {
-      return realClient.getTemplateById(templateId);
-    } else {
-      return null;
-    }
-  }
-
-  @Override
-  public Template getTemplateVersion(String templateId, int version)
-      throws NotificationClientException {
-    log.debug("getTemplateVersion: {} - {}", templateId, version);
-    if (this.configuration.getEnabled()) {
-      return realClient.getTemplateVersion(templateId, version);
-    } else {
-      return null;
-    }
-  }
-
-  @Override
-  public TemplateList getAllTemplates(String templateType) throws NotificationClientException {
-    log.debug("getAllTemplates: {}", templateType);
-    if (this.configuration.getEnabled()) {
-      return realClient.getAllTemplates(templateType);
-    } else {
-      return null;
-    }
-  }
-
-  @Override
-  public TemplatePreview generateTemplatePreview(
-      String templateId, Map<String, String> personalisation) throws NotificationClientException {
-    log.debug("generateTemplatePreview: {} - {}", templateId, personalisation);
-    if (this.configuration.getEnabled()) {
-      return realClient.generateTemplatePreview(templateId, personalisation);
-    } else {
-      return null;
-    }
+    return getClient().sendEmail(templateId, actualEmail, personalisation, reference);
   }
 }
