@@ -9,19 +9,6 @@ import uk.gov.service.notify.NotificationClientApi;
 @Slf4j
 public class NotificationClientFactory {
 
-  /**
-   * An enum to represent the different possible configurations. Parsed from notify.debugType
-   * application.yml configuration item (or env etc) None - default, uses
-   * ConfigurationAwareNotificationClient NotifyClientException - uses an
-   * ExceptionThrowingNotificationClient with an optional supplied httpCode RuntimeException - uses
-   * RuntimeExceptionThrowingNotificationClient
-   */
-  public enum DebugType {
-    None,
-    NotifyClientException,
-    RuntimeException
-  }
-
   public static NotificationClientApi getNotificationClient(NotifyConfiguration config) {
     NotificationClientApi client;
     String debugTypeString = config.getDebugType();
@@ -75,5 +62,18 @@ public class NotificationClientFactory {
     }
 
     return new ExceptionThrowingNotificationClient();
+  }
+
+  /**
+   * An enum to represent the different possible configurations. Parsed from notify.debugType
+   * application.yml configuration item (or env etc) None - default, uses
+   * ConfigurationAwareNotificationClient NotifyClientException - uses an
+   * ExceptionThrowingNotificationClient with an optional supplied httpCode RuntimeException - uses
+   * RuntimeExceptionThrowingNotificationClient
+   */
+  public enum DebugType {
+    None,
+    NotifyClientException,
+    RuntimeException
   }
 }

@@ -1,12 +1,11 @@
 package uk.gov.ons.ctp.response.notify.client;
 
-import org.junit.Test;
-import uk.gov.service.notify.NotificationClientException;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertNull;
+import org.junit.Test;
+import uk.gov.service.notify.NotificationClientException;
 
 public class NullNotificationClientTest {
   private NullNotificationClient client = new NullNotificationClient();
@@ -14,7 +13,8 @@ public class NullNotificationClientTest {
   @Test
   public void testSendEmailReturnsNull() throws NotificationClientException {
 
-    assertNull(client.sendEmail("template-id", "email@address.com", personalisation(), "reference"));
+    assertNull(
+        client.sendEmail("template-id", "email@address.com", personalisation(), "reference"));
   }
 
   @Test

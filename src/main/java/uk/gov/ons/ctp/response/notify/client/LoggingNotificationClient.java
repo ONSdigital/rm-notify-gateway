@@ -12,12 +12,11 @@ import uk.gov.service.notify.Template;
 import uk.gov.service.notify.TemplateList;
 import uk.gov.service.notify.TemplatePreview;
 
-public class LoggingNotificationClient implements NotificationClientApi {
-  private final NotificationClientApi client;
+public class LoggingNotificationClient extends NotificationClientDecorator {
   private final Logger log;
 
   public LoggingNotificationClient(NotificationClientApi client, Logger log) {
-    this.client = client;
+    super(client);
     this.log = log;
   }
 
@@ -26,7 +25,7 @@ public class LoggingNotificationClient implements NotificationClientApi {
       String templateId, String emailAddress, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
     log.debug("sendEmail: {} - {} - {} - {}", templateId, emailAddress, personalisation, reference);
-    return client.sendEmail(templateId, emailAddress, personalisation, reference);
+    return super.sendEmail(templateId, emailAddress, personalisation, reference);
   }
 
   @Override
@@ -34,14 +33,14 @@ public class LoggingNotificationClient implements NotificationClientApi {
       String templateId, String phoneNumber, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
     log.debug("sendSms: {} - {} - {} - {}", templateId, phoneNumber, personalisation, reference);
-    return client.sendSms(templateId, phoneNumber, personalisation, reference);
+    return super.sendSms(templateId, phoneNumber, personalisation, reference);
   }
 
   @Override
   public Notification getNotificationById(String notificationId)
       throws NotificationClientException {
     log.debug("getNotificationById: {}", notificationId);
-    return client.getNotificationById(notificationId);
+    return super.getNotificationById(notificationId);
   }
 
   @Override
@@ -49,36 +48,32 @@ public class LoggingNotificationClient implements NotificationClientApi {
       String status, String notificationType, String reference, String olderThanId)
       throws NotificationClientException {
     log.debug("getNotifications: {}", status, notificationType, reference, olderThanId);
-    return client.getNotifications(status, notificationType, reference, olderThanId);
+    return super.getNotifications(status, notificationType, reference, olderThanId);
   }
 
   @Override
   public Template getTemplateById(String templateId) throws NotificationClientException {
     log.debug("getTemplateById: {}", templateId);
-    return client.getTemplateById(templateId);
+    return super.getTemplateById(templateId);
   }
 
   @Override
   public Template getTemplateVersion(String templateId, int version)
       throws NotificationClientException {
     log.debug("getTemplateVersion: {} - {}", templateId, version);
-    return client.getTemplateVersion(templateId, version);
+    return super.getTemplateVersion(templateId, version);
   }
 
   @Override
   public TemplateList getAllTemplates(String templateType) throws NotificationClientException {
     log.debug("getAllTemplates: {}", templateType);
-    return client.getAllTemplates(templateType);
+    return super.getAllTemplates(templateType);
   }
 
   @Override
   public TemplatePreview generateTemplatePreview(
       String templateId, Map<String, String> personalisation) throws NotificationClientException {
     log.debug("generateTemplatePreview: {} - {}", templateId, personalisation);
-    return client.generateTemplatePreview(templateId, personalisation);
-  }
-
-  public NotificationClientApi getClient() {
-    return client;
+    return super.generateTemplatePreview(templateId, personalisation);
   }
 }

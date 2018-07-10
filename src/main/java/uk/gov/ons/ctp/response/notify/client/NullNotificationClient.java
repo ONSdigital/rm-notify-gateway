@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.notify.client;
 
+import java.util.Map;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientApi;
 import uk.gov.service.notify.NotificationClientException;
@@ -9,8 +10,6 @@ import uk.gov.service.notify.SendSmsResponse;
 import uk.gov.service.notify.Template;
 import uk.gov.service.notify.TemplateList;
 import uk.gov.service.notify.TemplatePreview;
-
-import java.util.Map;
 
 public class NullNotificationClient implements NotificationClientApi {
   @Override
