@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message;
 
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
-import uk.gov.ons.ctp.response.action.representation.exception.InvalidSituationException;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -15,5 +14,5 @@ public interface ActionInstructionReceiver {
    * @throws CommsTemplateClientException when an error is received from the comms template service
    */
   void processInstruction(ActionInstruction instruction)
-      throws NotificationClientException, CommsTemplateClientException, InvalidSituationException;
+      throws NotificationClientException, CommsTemplateClientException;
 }

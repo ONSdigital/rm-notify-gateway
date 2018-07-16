@@ -18,7 +18,6 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.representation.Situation;
-import uk.gov.ons.ctp.response.action.representation.exception.InvalidSituationException;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
@@ -48,7 +47,7 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
       inputChannel = "actionInstructionTransformed",
       adviceChain = "actionInstructionRetryAdvice")
   public void processInstruction(final ActionInstruction instruction)
-      throws NotificationClientException, CommsTemplateClientException, InvalidSituationException {
+      throws NotificationClientException, CommsTemplateClientException {
 
     log.debug("entering process with instruction {}", instruction);
 
@@ -80,14 +79,12 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
     }
   }
 
-  private ActionFeedback notifyGatewayRequestAccepted(final ActionRequest actionRequest)
-      throws InvalidSituationException {
+  private ActionFeedback notifyGatewayRequestAccepted(final ActionRequest actionRequest) {
     return ActionFeedbackFactory.create(
         actionRequest.getActionId(), new Situation(NOTIFY_GW), Outcome.REQUEST_ACCEPTED);
   }
 
-  private ActionFeedback smsNotSent(final ActionRequest actionRequest)
-      throws InvalidSituationException {
+  private ActionFeedback smsNotSent(final ActionRequest actionRequest) {
     return ActionFeedbackFactory.create(
         actionRequest.getActionId(), new Situation(NOTIFY_SMS_NOT_SENT), Outcome.REQUEST_DECLINED);
   }
