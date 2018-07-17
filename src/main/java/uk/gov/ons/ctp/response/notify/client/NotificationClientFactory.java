@@ -56,7 +56,7 @@ public class NotificationClientFactory {
       return new NullNotificationClient();
     }
 
-    return govNotifyClientFactory.create(config);
+    return new ConfigurationAwareNotificationClient(config, govNotifyClientFactory.create(config));
   }
 
   private NotificationClientApi createExceptionThrowingClient(NotifyConfiguration config) {

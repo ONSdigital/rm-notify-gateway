@@ -37,12 +37,16 @@ public class NotificationClientFactoryTest {
   public void testItCreatesConfigurationAwareNotificationClientIfDebugTypeIsNone() {
     config.setDebugType("None");
 
-    assertEquals(configAwareClient, getUnwrappedClient());
+    assertEquals(
+        configAwareClient,
+        ((ConfigurationAwareNotificationClient) getUnwrappedClient()).getClient());
   }
 
   @Test
   public void testItCreatesConfigurationAwareNotificationClientIfDebugTypeIsNull() {
-    assertEquals(configAwareClient, getUnwrappedClient());
+    assertEquals(
+        configAwareClient,
+        ((ConfigurationAwareNotificationClient) getUnwrappedClient()).getClient());
   }
 
   @Test
