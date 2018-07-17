@@ -34,11 +34,20 @@ public class GovNotifyClientFactoryTest {
 
   @Test
   public void testItSetsTheBaseURLIfProvided() {
-    config.setEndpointBaseUrl("testurl.com");
+    config.setEndpointBaseUrl("http://testurl.com");
 
     final NotificationClient client = (NotificationClient) factory.create(config);
 
-    assertEquals("testurl.com", client.getBaseUrl());
+    assertEquals("http://testurl.com", client.getBaseUrl());
+  }
+
+  @Test
+  public void testItSetsStripsTrailingSlashesOffTheBaseURL() {
+    config.setEndpointBaseUrl("http://testurl.com/");
+
+    final NotificationClient client = (NotificationClient) factory.create(config);
+
+    assertEquals("http://testurl.com", client.getBaseUrl());
   }
 
   @Test

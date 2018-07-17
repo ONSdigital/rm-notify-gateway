@@ -10,7 +10,8 @@ public class GovNotifyClientFactory {
     if (StringUtils.isEmpty(config.getEndpointBaseUrl())) {
       return new NotificationClient(config.getApiKey());
     } else {
-      return new NotificationClient(config.getApiKey(), config.getEndpointBaseUrl());
+      String baseUrl = config.getEndpointBaseUrl().replaceAll("/+$", "");
+      return new NotificationClient(config.getApiKey(), baseUrl);
     }
   }
 }
