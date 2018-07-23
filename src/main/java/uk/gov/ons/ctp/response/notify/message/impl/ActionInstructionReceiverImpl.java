@@ -11,11 +11,13 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.ons.ctp.response.action.factory.ActionFeedbackFactory;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.action.representation.Situation;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver;
@@ -78,27 +80,13 @@ public class ActionInstructionReceiverImpl implements ActionInstructionReceiver 
   }
 
   private ActionFeedback notifyGatewayRequestAccepted(final ActionRequest actionRequest) {
-    return new ActionFeedback(
-        actionRequest.getActionId(), getNotifyGateway(), Outcome.REQUEST_ACCEPTED);
+    return ActionFeedbackFactory.create(
+        actionRequest.getActionId(), new Situation(NOTIFY_GW), Outcome.REQUEST_ACCEPTED);
   }
 
   private ActionFeedback smsNotSent(final ActionRequest actionRequest) {
-    return new ActionFeedback(
-        actionRequest.getActionId(), getNotifySMSNotSent(), Outcome.REQUEST_DECLINED);
-  }
-
-  private String getNotifySMSNotSent() {
-    return truncateToSituationMaxLength(NOTIFY_SMS_NOT_SENT);
-  }
-
-  private String getNotifyGateway() {
-    return truncateToSituationMaxLength(NOTIFY_GW);
-  }
-
-  private String truncateToSituationMaxLength(final String string) {
-    return string.length() <= SITUATION_MAX_LENGTH
-        ? string
-        : string.substring(0, SITUATION_MAX_LENGTH);
+    return ActionFeedbackFactory.create(
+        actionRequest.getActionId(), new Situation(NOTIFY_SMS_NOT_SENT), Outcome.REQUEST_DECLINED);
   }
 
   private ActionRequest tidyUp(final ActionRequest actionRequest) {

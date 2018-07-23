@@ -7,7 +7,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl.SITUATION_MAX_LENGTH;
 import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_EMAIL_SENT;
 
 import java.util.List;
@@ -17,9 +16,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.response.action.factory.ActionFeedbackFactory;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.action.representation.Situation;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
@@ -42,12 +43,8 @@ public class ActionInstructionReceiverImplTest {
   public void testProcessBRESInstructionHappyPath()
       throws NotificationClientException, CommsTemplateClientException {
     ActionFeedback mockedActionFeedback =
-        new ActionFeedback(
-            MOCKED_ACTIONID,
-            NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH
-                ? NOTIFY_EMAIL_SENT
-                : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH),
-            Outcome.REQUEST_COMPLETED);
+        ActionFeedbackFactory.create(
+            MOCKED_ACTIONID, new Situation(NOTIFY_EMAIL_SENT), Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
     actionInstructionReceiver.processInstruction(
@@ -79,12 +76,8 @@ public class ActionInstructionReceiverImplTest {
   public void testProcessBRESInstructionEmailAddressWithSpacesAtFrontAndBack()
       throws NotificationClientException, CommsTemplateClientException {
     ActionFeedback mockedActionFeedback =
-        new ActionFeedback(
-            MOCKED_ACTIONID,
-            NOTIFY_EMAIL_SENT.length() <= SITUATION_MAX_LENGTH
-                ? NOTIFY_EMAIL_SENT
-                : NOTIFY_EMAIL_SENT.substring(0, SITUATION_MAX_LENGTH),
-            Outcome.REQUEST_COMPLETED);
+        ActionFeedbackFactory.create(
+            MOCKED_ACTIONID, new Situation(NOTIFY_EMAIL_SENT), Outcome.REQUEST_COMPLETED);
     when(notifyService.process(any(ActionRequest.class))).thenReturn(mockedActionFeedback);
 
     actionInstructionReceiver.processInstruction(
