@@ -9,7 +9,13 @@ import uk.gov.service.notify.NotificationClientApi;
 @Slf4j
 public class NotificationClientFactory {
 
-  public static NotificationClientApi getNotificationClient(NotifyConfiguration config) {
+  private final GovNotifyClientFactory govNotifyClientFactory;
+
+  public NotificationClientFactory(GovNotifyClientFactory govNotifyClientFactory) {
+    this.govNotifyClientFactory = govNotifyClientFactory;
+  }
+
+  public NotificationClientApi getNotificationClient(NotifyConfiguration config) {
     NotificationClientApi client;
     String debugTypeString = config.getDebugType();
 
@@ -23,8 +29,7 @@ public class NotificationClientFactory {
     return client;
   }
 
-  private static NotificationClientApi createClient(
-      NotifyConfiguration config, String debugTypeString) {
+  private NotificationClientApi createClient(NotifyConfiguration config, String debugTypeString) {
     DebugType type = getDebugType(debugTypeString);
 
     if (type == DebugType.NotifyClientException) {
@@ -38,7 +43,7 @@ public class NotificationClientFactory {
     return createRealClient(config);
   }
 
-  private static DebugType getDebugType(String debugTypeString) {
+  private DebugType getDebugType(String debugTypeString) {
     DebugType type = DebugType.None;
     if (!StringUtil.isBlank(debugTypeString)) {
       type = DebugType.valueOf(debugTypeString);
@@ -46,15 +51,15 @@ public class NotificationClientFactory {
     return type;
   }
 
-  private static NotificationClientApi createRealClient(NotifyConfiguration config) {
+  private NotificationClientApi createRealClient(NotifyConfiguration config) {
     if (!config.getEnabled()) {
       return new NullNotificationClient();
     }
 
-    return new ConfigurationAwareNotificationClient(config);
+    return new ConfigurationAwareNotificationClient(config, govNotifyClientFactory.create(config));
   }
 
-  private static NotificationClientApi createExceptionThrowingClient(NotifyConfiguration config) {
+  private NotificationClientApi createExceptionThrowingClient(NotifyConfiguration config) {
     String httpCode = config.getDebugHttpCode();
 
     if (!StringUtil.isBlank(httpCode)) {
