@@ -1,256 +1,299 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>notifygatewaysvc</artifactId>
-  <version>10.49.10-SNAPSHOT</version>
-  <packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>notifygatewaysvc</artifactId>
+    <version>10.49.10-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-  <name>CTP : NotifyGatewayService</name>
-  <description>CTP : NotifyGatewayService</description>
+    <name>CTP : NotifyGatewayService</name>
+    <description>CTP : NotifyGatewayService</description>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
-  <parent>
-    <groupId>uk.gov.ons.ctp.product</groupId>
-    <artifactId>rm-common-config</artifactId>
-    <version>10.49.11</version>
-  </parent>
+    <parent>
+        <groupId>uk.gov.ons.ctp.product</groupId>
+        <artifactId>rm-common-config</artifactId>
+        <version>10.49.11</version>
+    </parent>
 
-  <scm>
-    <connection>scm:git:https://github.com/ONSdigital/rm-notify-gateway</connection>
-    <developerConnection>scm:git:https://github.com/ONSdigital/rm-notify-gateway</developerConnection>
-    <url>https://github.com/ONSdigital/rm-notify-gateway</url>
-    <tag>HEAD</tag>
-  </scm>
+    <profiles>
+        <profile>
+            <id>artifactory</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>notify-repo</id>
+                    <url>http://artifactory-sdc.onsdigital.uk/artifactory/Gov-uk-notify-bintray</url>
+                </repository>
+            </repositories>
+            <distributionManagement>
+                    <repository>
+                        <id>central</id>
+                        <name>libs-release</name>
+                        <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-release-local</url>
+                    </repository>
+                <snapshotRepository>
+                    <id>snapshots</id>
+                    <name>libs-snapshots</name>
+                    <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 
-  <dependencies>
-    <dependency>
-      <groupId>uk.gov.ons.ctp.product</groupId>
-      <artifactId>notifygatewaysvc-api</artifactId>
-      <version>10.49.2</version>
-    </dependency>
+    <scm>
+        <connection>scm:git:https://github.com/ONSdigital/rm-notify-gateway</connection>
+        <developerConnection>scm:git:https://github.com/ONSdigital/rm-notify-gateway</developerConnection>
+        <url>https://github.com/ONSdigital/rm-notify-gateway</url>
+        <tag>HEAD</tag>
+    </scm>
 
-    <dependency>
-      <groupId>uk.gov.ons.ctp.product</groupId>
-      <artifactId>actionsvc-api</artifactId>
-      <version>10.49.21</version>
-    </dependency>
+    <dependencies>
+        <!-- Spring dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-    <dependency>
-      <groupId>uk.gov.service.notify</groupId>
-      <artifactId>notifications-java-client</artifactId>
-      <version>3.3.1-RELEASE</version>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.bitbucket.b_c</groupId>
-      <artifactId>jose4j</artifactId>
-      <version>0.6.0</version>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-jetty</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-amqp</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-      <optional>true</optional>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.amqp</groupId>
-      <artifactId>spring-rabbit</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-xml</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.integration</groupId>
-      <artifactId>spring-integration-core</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-amqp</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.integration</groupId>
-      <artifactId>spring-integration-xml</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-spring-service-connector</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.integration</groupId>
-      <artifactId>spring-integration-amqp</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-spring-service-connector</artifactId>
-    </dependency>
+        <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+        </dependency>
+        <!-- SPRING END -->
 
-    <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
-    </dependency>
+        <!-- ONS libraries-->
+        <dependency>
+            <groupId>uk.gov.service.notify</groupId>
+            <artifactId>notifications-java-client</artifactId>
+            <version>3.3.1-RELEASE</version>
+        </dependency>
 
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>uk.gov.ons.ctp.product</groupId>
+            <artifactId>notifygatewaysvc-api</artifactId>
+            <version>10.49.2</version>
+        </dependency>
 
-    <dependency>
-      <groupId>net.logstash.logback</groupId>
-      <artifactId>logstash-logback-encoder</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>uk.gov.ons.ctp.product</groupId>
+            <artifactId>actionsvc-api</artifactId>
+            <version>10.49.21</version>
+        </dependency>
+        <!-- ONS END -->
 
-    <dependency>
-      <groupId>org.liquibase</groupId>
-      <artifactId>liquibase-core</artifactId>
-    </dependency>
+        <!-- Third party libraries -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>runtime</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>ma.glasnost.orika</groupId>
-      <artifactId>orika-eclipse-tools</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger-ui</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>orika-eclipse-tools</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>net.sourceforge.cobertura</groupId>
-      <artifactId>cobertura</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>net.sourceforge.cobertura</groupId>
+            <artifactId>cobertura</artifactId>
+        </dependency>
 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.bitbucket.b_c</groupId>
+            <artifactId>jose4j</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+        <!-- Third party end -->
 
-    <dependency>
-      <groupId>uk.gov.ons.ctp.common</groupId>
-      <artifactId>test-framework</artifactId>
-      <scope>test</scope>
-    </dependency>
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>uk.gov.ons.ctp.common</groupId>
+            <artifactId>test-framework</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-  <build>
-    <defaultGoal>clean install</defaultGoal>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.version}</version>
-        <configuration>
-          <properties>
-            <property>
-              <name>junit</name>
-              <value>false</value>
-            </property>
-          </properties>
-          <threadCount>1</threadCount>
-        </configuration>
-        <!-- REQUIRED for unit tests to run -->
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>${surefire.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>com.coveo</groupId>
-        <artifactId>fmt-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <executable>true</executable>
-          <mainClass>uk.gov.ons.ctp.response.notify.Application</mainClass>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.spotify</groupId>
-        <artifactId>dockerfile-maven-plugin</artifactId>
-        <version>1.3.4</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>build</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <repository>sdcplatform/${project.artifactId}</repository>
-              <buildArgs>
-                <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-              </buildArgs>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Testing end -->
+
+    </dependencies>
+
+    <build>
+        <defaultGoal>clean install</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <properties>
+                        <property>
+                            <name>junit</name>
+                            <value>false</value>
+                        </property>
+                    </properties>
+                    <threadCount>1</threadCount>
+                </configuration>
+                <!-- REQUIRED for unit tests to run -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>${surefire.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.coveo</groupId>
+                <artifactId>fmt-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                    <mainClass>uk.gov.ons.ctp.response.notify.Application</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.3.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <repository>sdcplatform/${project.artifactId}</repository>
+                            <buildArgs>
+                                <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                            </buildArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 
 </project>
