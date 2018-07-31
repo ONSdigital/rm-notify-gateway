@@ -33,11 +33,11 @@
                 </repository>
             </repositories>
             <distributionManagement>
-                    <repository>
-                        <id>central</id>
-                        <name>libs-release</name>
-                        <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-release-local</url>
-                    </repository>
+                <repository>
+                    <id>central</id>
+                    <name>libs-release</name>
+                    <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-release-local</url>
+                </repository>
                 <snapshotRepository>
                     <id>snapshots</id>
                     <name>libs-snapshots</name>
@@ -151,6 +151,15 @@
         <!-- ONS END -->
 
         <!-- Third party libraries -->
+
+        <!--This dependency SHOULDN'T be needed, but it causes the service-->
+        <!--to fail to start locally if it's missing, although it works in Cloud-->
+        <!--Foundry-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
