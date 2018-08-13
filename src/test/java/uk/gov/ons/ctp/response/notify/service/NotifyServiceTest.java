@@ -10,17 +10,17 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.FIRSTNAME_KEY;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.LASTNAME_KEY;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_EMAIL_SENT;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_SMS_SENT;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.REPORTING_UNIT_REF_KEY;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.RESPONDENT_PERIOD_KEY;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.RETURN_BY_DATE_KEY;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.RU_NAME_KEY;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.SURVEY_ID_KEY;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.SURVEY_NAME_KEY;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.TRADING_STYLE_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.FIRSTNAME_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.LASTNAME_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_EMAIL_SENT;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_SMS_SENT;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.REPORTING_UNIT_REF_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.RESPONDENT_PERIOD_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.RETURN_BY_DATE_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.RU_NAME_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.SURVEY_ID_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.SURVEY_NAME_KEY;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.TRADING_STYLE_KEY;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.ACTION_ID;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.EMAIL_ADDRESS;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.FORENAME;
@@ -64,16 +64,15 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
-import uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 /** To unit test NotifyServiceImpl */
 @RunWith(MockitoJUnitRunner.class)
-public class NotifyServiceImplTest {
+public class NotifyServiceTest {
 
-  @InjectMocks private NotifyServiceImpl notifyService;
+  @InjectMocks private NotifyService notifyService;
 
   @Mock private NotificationClient notificationClient;
 
@@ -329,7 +328,7 @@ public class NotifyServiceImplTest {
   @Test
   public void testBuildMapFromStringHappyPath() throws Exception {
     Method methodUndertest =
-        NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+        NotifyService.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     Map<String, String> result =
         (Map<String, String>)
@@ -354,7 +353,7 @@ public class NotifyServiceImplTest {
   @Test
   public void testBuildMapFromStringNullString() throws Exception {
     Method methodUndertest =
-        NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+        NotifyService.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = null;
     Map<String, String> result =
@@ -370,7 +369,7 @@ public class NotifyServiceImplTest {
   @Test
   public void testBuildMapFromStringEmptyString() throws Exception {
     Method methodUndertest =
-        NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+        NotifyService.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = "";
     Map<String, String> result =
@@ -386,7 +385,7 @@ public class NotifyServiceImplTest {
   @Test
   public void testBuildMapFromStringUnexpectedFormat() throws Exception {
     Method methodUndertest =
-        NotifyServiceImpl.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
+        NotifyService.class.getDeclaredMethod(PRIVATE_METHOD_NAME, String.class);
     methodUndertest.setAccessible(true);
     String parameter = "something";
     Map<String, String> result =

@@ -32,12 +32,11 @@ import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
 import uk.gov.ons.ctp.response.notify.config.CommsTemplateService;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
-import uk.gov.ons.ctp.response.notify.service.impl.CommsTemplateClientImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommsTemplateClientTest {
 
-  @InjectMocks private CommsTemplateClientImpl commsTemplateClient;
+  @InjectMocks private CommsTemplateClient commsTemplateClient;
 
   @Mock private CommsTemplateService commsTemplateService;
 
