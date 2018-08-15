@@ -7,7 +7,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.ons.ctp.response.notify.service.impl.NotifyServiceImpl.NOTIFY_EMAIL_SENT;
+import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_EMAIL_SENT;
 
 import java.util.List;
 import org.junit.Test;
@@ -22,7 +22,6 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.representation.Situation;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
-import uk.gov.ons.ctp.response.notify.message.impl.ActionInstructionReceiverImpl;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClientException;
@@ -33,7 +32,7 @@ public class ActionInstructionReceiverImplTest {
 
   private static final String MOCKED_ACTIONID = "9a5f2be5-f944-41f9-982c-3517cfcfef3c";
 
-  @InjectMocks ActionInstructionReceiverImpl actionInstructionReceiver;
+  @InjectMocks ActionInstructionReceiver actionInstructionReceiver;
 
   @Mock private ActionFeedbackPublisher actionFeedbackPublisher;
 

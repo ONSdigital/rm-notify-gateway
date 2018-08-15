@@ -53,10 +53,8 @@ public class Application {
    * @return the service client
    */
   @Bean
-  public RestUtility commsTemplateClient() {
-    RestUtility restUtility =
-        new RestUtility(appConfig.getCommsTemplateService().getConnectionConfig());
-    return restUtility;
+  public RestUtility restUtility() {
+    return new RestUtility(appConfig.getCommsTemplateService().getConnectionConfig());
   }
 
   /**

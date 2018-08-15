@@ -18,13 +18,12 @@ import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
-import uk.gov.ons.ctp.response.notify.service.impl.ResilienceServiceImpl;
 
 /** To unit test ResilienceServiceImpl */
 @RunWith(MockitoJUnitRunner.class)
 public class ResilienceServiceImplTest {
 
-  @InjectMocks private ResilienceServiceImpl resilienceService;
+  @InjectMocks private ResilienceService resilienceService;
 
   @Mock private MessageRepository messageRepository;
 

@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
-import uk.gov.ons.ctp.response.notify.message.impl.NotifyRequestReceiverImpl;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
@@ -26,7 +25,7 @@ import uk.gov.service.notify.NotificationClientException;
 @RunWith(MockitoJUnitRunner.class)
 public class NotifyRequestReceiverTest {
 
-  @InjectMocks private NotifyRequestReceiverImpl notifyRequestReceiver;
+  @InjectMocks private NotifyRequestReceiver notifyRequestReceiver;
 
   @Mock private NotifyService notifyService;
 
