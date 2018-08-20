@@ -19,8 +19,8 @@ import uk.gov.service.notify.TemplatePreview;
  * kinds of problems without actually sending API calls to gov.notify
  */
 public class ExceptionThrowingNotificationClient implements NotificationClientApi {
-  private static final Logger log = LoggerFactory.getLogger(
-      ExceptionThrowingNotificationClient.class);
+  private static final Logger log =
+      LoggerFactory.getLogger(ExceptionThrowingNotificationClient.class);
 
   private NotificationClientException exceptionToThrow;
 

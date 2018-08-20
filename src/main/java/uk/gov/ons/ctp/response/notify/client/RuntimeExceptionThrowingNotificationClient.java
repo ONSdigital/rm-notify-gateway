@@ -19,8 +19,8 @@ import uk.gov.service.notify.TemplatePreview;
  * actually sending API calls to gov.notify
  */
 public class RuntimeExceptionThrowingNotificationClient implements NotificationClientApi {
-  private static final Logger log = LoggerFactory.getLogger(
-      RuntimeExceptionThrowingNotificationClient.class);
+  private static final Logger log =
+      LoggerFactory.getLogger(RuntimeExceptionThrowingNotificationClient.class);
 
   private static final RuntimeException RUNTIME_EXCEPTION =
       new RuntimeException("This is a RuntimeException");

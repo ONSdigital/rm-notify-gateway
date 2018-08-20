@@ -100,8 +100,7 @@ public class NotifyService {
       return response == null ? null : response.getNotificationId();
     } else {
       // The xsd enforces to have either a phoneNumber OR an emailAddress
-      log.info(
-          "About to invoke sendEmail with templateId {}", templateId);
+      log.info("About to invoke sendEmail with templateId {}", templateId);
       SendEmailResponse response =
           notificationClient.sendEmail(templateId, emailAddress, personalisationMap, reference);
       log.debug("response = {}", response);

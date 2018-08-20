@@ -39,6 +39,7 @@ logging:
   level:
     uk.gov.ons.ctp: debug
     org.springframework: warn
+  profile: DEV
 
 liquibase:
   user: notifygatewaysvc
