@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.notify;
 
-import lombok.extern.slf4j.Slf4j;
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
+import com.godaddy.logging.LoggingConfigs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +18,6 @@ import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
 
 /** The main application class */
-@Slf4j
 @IntegrationComponentScan
 @EnableAsync
 @EnableScheduling
@@ -24,6 +25,7 @@ import uk.gov.ons.ctp.response.notify.config.AppConfig;
 @ImportResource("springintegration/main.xml")
 @SpringBootApplication
 public class Application {
+  private static final Logger log = LoggerFactory.getLogger(Application.class);
 
   @Autowired private AppConfig appConfig;
 
@@ -63,6 +65,8 @@ public class Application {
    * @param args These are the optional command line arguments
    */
   public static void main(String[] args) {
+    LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
+
     log.debug("About to start the Notify Gateway application...");
     SpringApplication.run(Application.class, args);
   }

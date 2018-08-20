@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.notify.client;
 
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClient;
@@ -9,7 +8,6 @@ import uk.gov.service.notify.NotificationClientApi;
 import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.SendEmailResponse;
 
-@Slf4j
 public class ConfigurationAwareNotificationClient extends NotificationClientDecorator {
 
   private final NotifyConfiguration configuration;
