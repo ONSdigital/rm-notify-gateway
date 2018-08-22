@@ -50,7 +50,6 @@ public class EmailEndpoint implements CTPEndpoint {
       BindingResult bindingResult)
       throws InvalidRequestException {
     log.with("template_id", templateId)
-        .with("")
         .with("request_for_email", requestForEmailDTO)
         .debug("Entering sendEmail with censusUacSmsTemplateId");
 
