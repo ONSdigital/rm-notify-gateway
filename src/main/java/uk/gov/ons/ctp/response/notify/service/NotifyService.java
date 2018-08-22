@@ -2,6 +2,8 @@ package uk.gov.ons.ctp.response.notify.service;
 
 import static uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver.SITUATION_MAX_LENGTH;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import liquibase.util.StringUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -30,9 +31,9 @@ import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
 
 /** The service implementation for NotifyService */
-@Slf4j
 @Service
 public class NotifyService {
+  private static final Logger log = LoggerFactory.getLogger(NotifyService.class);
 
   public static final String FIRSTNAME_KEY = "firstname";
   public static final String IAC_KEY = "iac";
@@ -99,8 +100,7 @@ public class NotifyService {
       return response == null ? null : response.getNotificationId();
     } else {
       // The xsd enforces to have either a phoneNumber OR an emailAddress
-      log.info(
-          "About to invoke sendEmail with templateId {}", templateId);
+      log.info("About to invoke sendEmail with templateId {}", templateId);
       SendEmailResponse response =
           notificationClient.sendEmail(templateId, emailAddress, personalisationMap, reference);
       log.debug("response = {}", response);

@@ -1,13 +1,14 @@
 package uk.gov.ons.ctp.response.notify.client;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import jodd.util.StringUtil;
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClientApi;
 
 /** A simple factory class to create a NotificationClientApi object from a NotifyConfiguration */
-@Slf4j
 public class NotificationClientFactory {
+  private static final Logger log = LoggerFactory.getLogger(NotificationClientFactory.class);
 
   private final GovNotifyClientFactory govNotifyClientFactory;
 

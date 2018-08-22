@@ -1,8 +1,9 @@
 package uk.gov.ons.ctp.response.notify.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.io.IOException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
@@ -17,9 +18,9 @@ import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 
-@Slf4j
 @Service
 public class CommsTemplateClient {
+  private static final Logger log = LoggerFactory.getLogger(CommsTemplateClient.class);
 
   private AppConfig appConfig;
 

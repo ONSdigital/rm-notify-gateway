@@ -1,8 +1,9 @@
 package uk.gov.ons.ctp.response.notify.endpoint;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ import uk.gov.service.notify.NotificationClientException;
 /** The REST endpoint controller for retrieving Messages status */
 @RestController
 @RequestMapping(value = "/messages", produces = "application/json")
-@Slf4j
 public class StatusEndpoint {
+  private static final Logger log = LoggerFactory.getLogger(StatusEndpoint.class);
 
   @Autowired private NotifyService notifyService;
 

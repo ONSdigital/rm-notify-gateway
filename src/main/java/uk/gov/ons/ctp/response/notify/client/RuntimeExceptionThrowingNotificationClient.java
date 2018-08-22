@@ -1,7 +1,8 @@
 package uk.gov.ons.ctp.response.notify.client;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientApi;
 import uk.gov.service.notify.NotificationClientException;
@@ -17,8 +18,9 @@ import uk.gov.service.notify.TemplatePreview;
  * RuntimeException. This class is mainly intended for reproducing certain kinds of problems without
  * actually sending API calls to gov.notify
  */
-@Slf4j
 public class RuntimeExceptionThrowingNotificationClient implements NotificationClientApi {
+  private static final Logger log =
+      LoggerFactory.getLogger(RuntimeExceptionThrowingNotificationClient.class);
 
   private static final RuntimeException RUNTIME_EXCEPTION =
       new RuntimeException("This is a RuntimeException");

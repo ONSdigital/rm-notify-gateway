@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.notify.message;
 
-import lombok.extern.slf4j.Slf4j;
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 
 /** The publisher of NotifyRequests to queues */
-@Slf4j
 @MessageEndpoint
 public class NotifyRequestPublisher {
+  private static final Logger log = LoggerFactory.getLogger(NotifyRequestPublisher.class);
 
   @Qualifier("notifyRequestRabbitTemplate")
   @Autowired

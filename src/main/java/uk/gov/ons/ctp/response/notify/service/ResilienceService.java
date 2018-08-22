@@ -1,7 +1,8 @@
 package uk.gov.ons.ctp.response.notify.service;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -13,9 +14,9 @@ import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 
-@Slf4j
 @Service
 public class ResilienceService {
+  private static final Logger log = LoggerFactory.getLogger(ResilienceService.class);
 
   @Autowired private NotifyConfiguration notifyConfiguration;
 

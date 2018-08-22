@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.notify.client;
 
+import com.godaddy.logging.Logger;
 import java.util.Map;
-import org.slf4j.Logger;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientApi;
 import uk.gov.service.notify.NotificationClientException;

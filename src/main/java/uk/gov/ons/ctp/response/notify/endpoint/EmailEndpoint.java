@@ -1,8 +1,9 @@
 package uk.gov.ons.ctp.response.notify.endpoint;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.net.URI;
 import javax.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,8 +24,8 @@ import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 /** The REST endpoint controller for Email Messages */
 @RestController
 @RequestMapping(value = "/emails", produces = "application/json")
-@Slf4j
 public class EmailEndpoint implements CTPEndpoint {
+  private static final Logger log = LoggerFactory.getLogger(EmailEndpoint.class);
 
   @Qualifier("notifySvcBeanMapper")
   @Autowired
