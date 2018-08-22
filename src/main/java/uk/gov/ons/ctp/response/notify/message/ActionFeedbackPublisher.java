@@ -26,7 +26,7 @@ public class ActionFeedbackPublisher {
    */
   @Transactional(propagation = Propagation.REQUIRED)
   public void sendFeedback(ActionFeedback actionFeedback) {
-    log.debug("Entering sendFeedback for actionId {}", actionFeedback.getActionId());
+    log.with("action_id", actionFeedback.getActionId()).debug("Entering sendFeedback");
     rabbitTemplate.convertAndSend(actionFeedback);
   }
 }

@@ -49,10 +49,9 @@ public class TextEndpoint implements CTPEndpoint {
       @RequestBody @Valid final NotifyRequestForSMSDTO notifyRequestForSMSDTO,
       BindingResult bindingResult)
       throws InvalidRequestException {
-    log.debug(
-        "Entering sendSMS with censusUacSmsTemplateId {} and requestObject {}",
-        templateId,
-        notifyRequestForSMSDTO);
+    log.with("template_id", templateId)
+        .with("notify_request_for_sms", notifyRequestForSMSDTO)
+        .debug("Entering sendSMS");
 
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);

@@ -29,21 +29,20 @@ public class ResilienceService {
     String templateId = notifyRequest.getTemplateId();
     String phoneNumber = notifyRequest.getPhoneNumber();
     String emailAddress = notifyRequest.getEmailAddress();
-    log.debug(
-        "Entering process with censusUacSmsTemplateId {} - phoneNumber {} - emailAddress {}",
-        templateId,
-        phoneNumber,
-        emailAddress);
+    log.with("template_id", templateId)
+        .with("phone_number", phoneNumber)
+        .with("email_address", emailAddress)
+        .debug("Entering process");
 
     UUID theId = UUID.randomUUID();
     messageRepository.save(Message.builder().id(theId).build());
-    log.debug("Message persisted with id {}", theId);
+    log.with("id", theId).debug("Message persisted");
     if (notifyConfiguration.getEnabled()) {
       notifyRequest.setId(theId.toString());
       notifyRequestPublisher.send(notifyRequest);
-      log.debug("notifyRequest {} now on queue", notifyRequest);
+      log.with("notify_request", notifyRequest).debug("Now on queue");
     } else {
-      log.info("notifyRequest {}, not put on queue as Gov Notify disabled", notifyRequest);
+      log.with("notify_request", notifyRequest).info("Not put on queue as Gov Notify disabled");
     }
 
     return Response.builder()
@@ -56,7 +55,7 @@ public class ResilienceService {
   }
 
   public void update(Message message) {
-    log.debug("Entering update with message {}", message);
+    log.with("message", message).debug("Entering update");
     Message existingMessage = messageRepository.findById(message.getId());
     log.debug("existingMessage is {}", existingMessage);
     if (existingMessage != null) {
@@ -71,7 +70,7 @@ public class ResilienceService {
   }
 
   public Message findMessageById(UUID id) {
-    log.debug("Entering findMessageById with id {}", id);
+    log.with("id", id).debug("Entering findMessageById");
     return messageRepository.findById(id);
   }
 }

@@ -25,7 +25,7 @@ public class ExceptionThrowingNotificationClient implements NotificationClientAp
   private NotificationClientException exceptionToThrow;
 
   public ExceptionThrowingNotificationClient(NotificationClientException toThrow) {
-    log.debug("Constructing ExceptionThrowingNotificationClient with " + toThrow);
+    log.with("to_throw", toThrow).debug("Constructing ExceptionThrowingNotificationClient");
     this.exceptionToThrow = toThrow;
   }
 

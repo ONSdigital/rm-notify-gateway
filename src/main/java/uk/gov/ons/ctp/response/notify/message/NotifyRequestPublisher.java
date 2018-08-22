@@ -21,7 +21,7 @@ public class NotifyRequestPublisher {
 
   @Transactional(propagation = Propagation.REQUIRED)
   public void send(NotifyRequest notifyRequest) {
-    log.debug("send to queue notifyRequest {}", notifyRequest);
+    log.with("notify_request", notifyRequest).debug("send to queue");
     rabbitTemplate.convertAndSend(notifyRequest);
   }
 }

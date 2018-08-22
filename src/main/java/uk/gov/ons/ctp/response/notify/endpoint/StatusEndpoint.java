@@ -54,7 +54,7 @@ public class StatusEndpoint {
   @RequestMapping(value = "/{messageId}", method = RequestMethod.GET)
   public ResponseEntity<NotificationDTO> getStatus(@PathVariable("messageId") final UUID messageId)
       throws CTPException {
-    log.debug("Entering getStatus with messageId {}", messageId);
+    log.with("message_id", messageId).debug("Entering getStatus");
 
     Message message = findMessageById(messageId);
     UUID notificationId = getNotificationId(message, messageId);
@@ -106,8 +106,7 @@ public class StatusEndpoint {
       return notifyService.findNotificationById(notificationId);
     } catch (NotificationClientException e) {
       String errorMsg = String.format(ERRORMSG_NOTIFICATION_ISSUE, e.getMessage(), e.getCause());
-      log.error(errorMsg);
-      log.error("Stack trace: " + e);
+      log.error(errorMsg, e);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }
   }

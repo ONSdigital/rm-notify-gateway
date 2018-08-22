@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import com.godaddy.logging.Logger;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Before;
 import org.junit.Test;
 import uk.gov.service.notify.*;
 
@@ -17,6 +18,11 @@ public class LoggingNotificationClientTest {
   private NotificationClientApi wrappedClient = mock(NotificationClientApi.class);
   private Logger logger = mock(Logger.class);
   private LoggingNotificationClient client = new LoggingNotificationClient(wrappedClient, logger);
+
+  @Before
+  public void setUp() {
+    when(logger.with(any(), any())).thenReturn(logger);
+  }
 
   @Test
   public void testItIsAnInstanceOfNotificationClientApi() {
@@ -35,13 +41,7 @@ public class LoggingNotificationClientTest {
         client.sendEmail("template-id", "email@address.com", personalisation, "reference");
 
     assertEquals(expectedResponse, actualResponse);
-    verify(logger)
-        .debug(
-            "sendEmail: {} - {} - {} - {}",
-            "template-id",
-            "email@address.com",
-            personalisation,
-            "reference");
+    verify(logger).debug("sendEmail");
   }
 
   @Test
@@ -56,13 +56,7 @@ public class LoggingNotificationClientTest {
         client.sendSms("template-id", "07123456789", personalisation, "reference");
 
     assertEquals(expectedResponse, actualResponse);
-    verify(logger)
-        .debug(
-            "sendSms: {} - {} - {} - {}",
-            "template-id",
-            "07123456789",
-            personalisation,
-            "reference");
+    verify(logger).debug("sendSms");
   }
 
   @Test
@@ -74,7 +68,7 @@ public class LoggingNotificationClientTest {
     final Notification actualResponse = client.getNotificationById("notification-id");
 
     assertEquals(expectedResponse, actualResponse);
-    verify(logger).debug("getNotificationById: {}", "notification-id");
+    verify(logger).debug("getNotificationById");
   }
 
   @Test
@@ -88,7 +82,7 @@ public class LoggingNotificationClientTest {
         client.getNotifications("status", "type", "reference", "older-than-id");
 
     assertEquals(expectedResponse, actualResponse);
-    verify(logger).debug("getNotifications: {}", "status", "type", "reference", "older-than-id");
+    verify(logger).debug("getNotifications");
   }
 
   @Test
@@ -100,7 +94,7 @@ public class LoggingNotificationClientTest {
     final Template actualResponse = client.getTemplateById("template-id");
 
     assertEquals(expectedResponse, actualResponse);
-    verify(logger).debug("getTemplateById: {}", "template-id");
+    verify(logger).debug("getTemplateById");
   }
 
   @Test
@@ -112,7 +106,7 @@ public class LoggingNotificationClientTest {
     final Template actualResponse = client.getTemplateVersion("template-id", 2);
 
     assertEquals(expectedResponse, actualResponse);
-    verify(logger).debug("getTemplateVersion: {} - {}", "template-id", 2);
+    verify(logger).debug("getTemplateVersion");
   }
 
   @Test
@@ -124,7 +118,7 @@ public class LoggingNotificationClientTest {
     final TemplateList actualResponse = client.getAllTemplates("template-type");
 
     assertEquals(expectedResponse, actualResponse);
-    verify(logger).debug("getAllTemplates: {}", "template-type");
+    verify(logger).debug("getAllTemplates");
   }
 
   @Test
@@ -139,7 +133,7 @@ public class LoggingNotificationClientTest {
         client.generateTemplatePreview("template-id", personalisation);
 
     assertEquals(expectedResponse, actualResponse);
-    verify(logger).debug("generateTemplatePreview: {} - {}", "template-id", personalisation);
+    verify(logger).debug("generateTemplatePreview");
   }
 
   @Test
