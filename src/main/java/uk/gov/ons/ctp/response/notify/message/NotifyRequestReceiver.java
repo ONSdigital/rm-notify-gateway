@@ -1,7 +1,8 @@
 package uk.gov.ons.ctp.response.notify.message;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -14,9 +15,9 @@ import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 import uk.gov.service.notify.NotificationClientException;
 
 /** The service that reads NotifyRequests from the inbound channel */
-@Slf4j
 @MessageEndpoint
 public class NotifyRequestReceiver {
+  private static final Logger log = LoggerFactory.getLogger(NotifyRequestReceiver.class);
 
   @Autowired private NotifyService notifyService;
 
