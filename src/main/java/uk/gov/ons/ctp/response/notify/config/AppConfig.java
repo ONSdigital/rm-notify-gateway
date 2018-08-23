@@ -11,4 +11,5 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
   private SwaggerSettings swaggerSettings;
   private CommsTemplateService commsTemplateService;
+  private Logging logging;
 }
