@@ -29,8 +29,7 @@ public class ResilienceService {
     String templateId = notifyRequest.getTemplateId();
     String phoneNumber = notifyRequest.getPhoneNumber();
     String emailAddress = notifyRequest.getEmailAddress();
-    log.with("template_id", templateId)
-        .debug("Entering process");
+    log.with("template_id", templateId).debug("Entering process");
 
     UUID theId = UUID.randomUUID();
     messageRepository.save(Message.builder().id(theId).build());
