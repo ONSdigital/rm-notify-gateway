@@ -27,8 +27,6 @@ public class ResilienceService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public Response process(NotifyRequest notifyRequest) {
     String templateId = notifyRequest.getTemplateId();
-    String phoneNumber = notifyRequest.getPhoneNumber();
-    String emailAddress = notifyRequest.getEmailAddress();
     log.with("template_id", templateId).debug("Entering process");
 
     UUID theId = UUID.randomUUID();
@@ -46,8 +44,8 @@ public class ResilienceService {
         .id(theId)
         .reference(notifyRequest.getReference())
         .templateId(UUID.fromString(templateId))
-        .fromNumber(phoneNumber)
-        .fromEmail(emailAddress)
+        .fromNumber(notifyRequest.getPhoneNumber())
+        .fromEmail(notifyRequest.getEmailAddress())
         .build();
   }
 
