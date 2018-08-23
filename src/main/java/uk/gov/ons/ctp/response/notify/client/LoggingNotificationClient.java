@@ -25,7 +25,6 @@ public class LoggingNotificationClient extends NotificationClientDecorator {
       String templateId, String emailAddress, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
     log.with("template_id", templateId)
-        .with("email_address", emailAddress)
         .with("personalisation", personalisation)
         .with("reference", reference)
         .debug("sendEmail");
@@ -37,7 +36,6 @@ public class LoggingNotificationClient extends NotificationClientDecorator {
       String templateId, String phoneNumber, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
     log.with("template_id", templateId)
-        .with("phone_number", phoneNumber)
         .with("personalisation", personalisation)
         .with("reference", reference)
         .debug("sendSms");

@@ -89,19 +89,18 @@ public class NotifyService {
 
     if (!StringUtils.isEmpty(phoneNumber)) {
       log.with("template_id", templateId)
-          .with("phone_number", phoneNumber)
           .with("personalisation_map", personalisationMap)
           .debug("About to invoke sendSms");
       SendSmsResponse response =
           notificationClient.sendSms(templateId, phoneNumber, personalisationMap, reference);
-      log.debug("response = {}", response);
+      log.with("response", response).debug("Got response");
       return response == null ? null : response.getNotificationId();
     } else {
       // The xsd enforces to have either a phoneNumber OR an emailAddress
       log.with("template_id", templateId).info("About to invoke sendEmail");
       SendEmailResponse response =
           notificationClient.sendEmail(templateId, emailAddress, personalisationMap, reference);
-      log.with("response", response).debug("got response");
+      log.with("response", response).debug("Got response");
       return response == null ? null : response.getNotificationId();
     }
   }
@@ -159,7 +158,6 @@ public class NotifyService {
 
     String templateId = getTemplateIdByClassifiers(actionRequest);
     log.with("template_id", templateId)
-        .with("phone_number", phoneNumber)
         .with("personalisation", personalisation)
         .with("action_id", actionId)
         .debug("About to invoke sendSms");
@@ -212,7 +210,6 @@ public class NotifyService {
     String actionId = actionRequest.getActionId();
     String emailAddress = actionContact.getEmailAddress();
     log.with("template_id", templateId)
-        .with("email_address", emailAddress)
         .with("personalisation", personalisation)
         .with("action_id", actionId)
         .debug("About to invoke sendEmail");

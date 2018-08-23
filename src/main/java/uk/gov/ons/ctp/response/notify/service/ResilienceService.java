@@ -30,8 +30,6 @@ public class ResilienceService {
     String phoneNumber = notifyRequest.getPhoneNumber();
     String emailAddress = notifyRequest.getEmailAddress();
     log.with("template_id", templateId)
-        .with("phone_number", phoneNumber)
-        .with("email_address", emailAddress)
         .debug("Entering process");
 
     UUID theId = UUID.randomUUID();

@@ -50,7 +50,7 @@ public class CommsTemplateClient {
             appConfig.getCommsTemplateService().getTemplateByClassifiersPath(), classifiers);
 
     log.with("classifiers", classifiers)
-        .with("uri_components", uriComponents)
+        .with("uri", uriComponents.toUri())
         .debug("Attempting to get Comms Template");
 
     ResponseEntity<String> responseEntity =

@@ -131,14 +131,12 @@ public class ActionInstructionReceiver {
     }
 
     String phoneNumber = actionContact.getPhoneNumber();
-    log.debug("phoneNumber is {}", phoneNumber);
 
     if (phoneNumber != null) {
       return isPhoneNumberValid(phoneNumber);
     }
 
     String emailAddress = actionContact.getEmailAddress();
-    log.debug("emailAddress is {}", emailAddress);
 
     if (emailAddress != null) {
       return isEmailValid(emailAddress);

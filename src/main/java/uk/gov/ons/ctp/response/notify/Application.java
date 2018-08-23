@@ -66,8 +66,6 @@ public class Application implements CommandLineRunner {
    * @param args These are the optional command line arguments
    */
   public static void main(String[] args) {
-    LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
-
     log.debug("About to start the Notify Gateway application...");
     SpringApplication.run(Application.class, args);
   }
