@@ -61,7 +61,7 @@ public class CommsTemplateClient {
       String responseBody = responseEntity.getBody();
       try {
         result = objectMapper.readValue(responseBody, CommsTemplateDTO.class);
-        log.with("result", result).info("Got template from Comms Template Service");
+        log.with("result", result).debug("Got template from Comms Template Service");
       } catch (IOException e) {
         log.error("Couldn't unmarshal response from comms template service", e);
       }

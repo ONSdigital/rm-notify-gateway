@@ -24,7 +24,7 @@ public class NotificationClientFactory {
 
     log.with("debug_type", debugTypeString)
         .with("class_name", client.getClass().getCanonicalName())
-        .info("Creating NotificationClientApi");
+        .debug("Creating NotificationClientApi");
 
     return client;
   }
