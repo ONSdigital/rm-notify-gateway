@@ -49,10 +49,9 @@ public class EmailEndpoint implements CTPEndpoint {
       @RequestBody @Valid final NotifyRequestForEmailDTO requestForEmailDTO,
       BindingResult bindingResult)
       throws InvalidRequestException {
-    log.debug(
-        "Entering sendEmail with censusUacSmsTemplateId {} and requestObject {}",
-        templateId,
-        requestForEmailDTO);
+    log.with("template_id", templateId)
+        .with("request_for_email", requestForEmailDTO)
+        .debug("Entering sendEmail with censusUacSmsTemplateId");
 
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);

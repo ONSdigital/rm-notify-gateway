@@ -24,7 +24,10 @@ public class LoggingNotificationClient extends NotificationClientDecorator {
   public SendEmailResponse sendEmail(
       String templateId, String emailAddress, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
-    log.debug("sendEmail: {} - {} - {} - {}", templateId, emailAddress, personalisation, reference);
+    log.with("template_id", templateId)
+        .with("personalisation", personalisation)
+        .with("reference", reference)
+        .debug("sendEmail");
     return super.sendEmail(templateId, emailAddress, personalisation, reference);
   }
 
@@ -32,14 +35,17 @@ public class LoggingNotificationClient extends NotificationClientDecorator {
   public SendSmsResponse sendSms(
       String templateId, String phoneNumber, Map<String, String> personalisation, String reference)
       throws NotificationClientException {
-    log.debug("sendSms: {} - {} - {} - {}", templateId, phoneNumber, personalisation, reference);
+    log.with("template_id", templateId)
+        .with("personalisation", personalisation)
+        .with("reference", reference)
+        .debug("sendSms");
     return super.sendSms(templateId, phoneNumber, personalisation, reference);
   }
 
   @Override
   public Notification getNotificationById(String notificationId)
       throws NotificationClientException {
-    log.debug("getNotificationById: {}", notificationId);
+    log.with("notification_id", notificationId).debug("getNotificationById");
     return super.getNotificationById(notificationId);
   }
 
@@ -47,33 +53,39 @@ public class LoggingNotificationClient extends NotificationClientDecorator {
   public NotificationList getNotifications(
       String status, String notificationType, String reference, String olderThanId)
       throws NotificationClientException {
-    log.debug("getNotifications: {}", status, notificationType, reference, olderThanId);
+    log.with("status", status)
+        .with("notification_type", notificationType)
+        .with("reference", reference)
+        .with("older_than_id", olderThanId)
+        .debug("getNotifications");
     return super.getNotifications(status, notificationType, reference, olderThanId);
   }
 
   @Override
   public Template getTemplateById(String templateId) throws NotificationClientException {
-    log.debug("getTemplateById: {}", templateId);
+    log.with("template_id", templateId).debug("getTemplateById");
     return super.getTemplateById(templateId);
   }
 
   @Override
   public Template getTemplateVersion(String templateId, int version)
       throws NotificationClientException {
-    log.debug("getTemplateVersion: {} - {}", templateId, version);
+    log.with("template_id", templateId).with("version", version).debug("getTemplateVersion");
     return super.getTemplateVersion(templateId, version);
   }
 
   @Override
   public TemplateList getAllTemplates(String templateType) throws NotificationClientException {
-    log.debug("getAllTemplates: {}", templateType);
+    log.with("template_type", templateType).debug("getAllTemplates");
     return super.getAllTemplates(templateType);
   }
 
   @Override
   public TemplatePreview generateTemplatePreview(
       String templateId, Map<String, String> personalisation) throws NotificationClientException {
-    log.debug("generateTemplatePreview: {} - {}", templateId, personalisation);
+    log.with("template_id", templateId)
+        .with("personalisation", personalisation)
+        .debug("generateTemplatePreview");
     return super.generateTemplatePreview(templateId, personalisation);
   }
 }

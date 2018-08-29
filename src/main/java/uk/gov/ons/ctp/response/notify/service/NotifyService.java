@@ -62,7 +62,7 @@ public class NotifyService {
   public ActionFeedback process(final ActionRequest actionRequest)
       throws NotificationClientException, CommsTemplateClientException {
     String actionId = actionRequest.getActionId();
-    log.debug("Entering process with actionId {}", actionId);
+    log.with("action_id", actionId).debug("Entering process");
 
     ActionFeedback actionFeedback;
 
@@ -88,22 +88,19 @@ public class NotifyService {
     Map<String, String> personalisationMap = buildMapFromString(personalisation);
 
     if (!StringUtils.isEmpty(phoneNumber)) {
-      log.debug(
-          "About to invoke sendSms with templateId {} - phone number {} - "
-              + "personalisationMap {}",
-          templateId,
-          phoneNumber,
-          personalisationMap);
+      log.with("template_id", templateId)
+          .with("personalisation_map", personalisationMap)
+          .debug("About to invoke sendSms");
       SendSmsResponse response =
           notificationClient.sendSms(templateId, phoneNumber, personalisationMap, reference);
-      log.debug("response = {}", response);
+      log.with("response", response).debug("Got response");
       return response == null ? null : response.getNotificationId();
     } else {
       // The xsd enforces to have either a phoneNumber OR an emailAddress
-      log.info("About to invoke sendEmail with templateId {}", templateId);
+      log.with("template_id", templateId).debug("About to invoke sendEmail");
       SendEmailResponse response =
           notificationClient.sendEmail(templateId, emailAddress, personalisationMap, reference);
-      log.debug("response = {}", response);
+      log.with("response", response).debug("Got response");
       return response == null ? null : response.getNotificationId();
     }
   }
@@ -136,11 +133,7 @@ public class NotifyService {
                 .withKeyValueSeparator("=")
                 .split(personalisation.substring(1, personalisation.length() - 1));
       } catch (java.lang.IllegalArgumentException e) {
-        log.error(
-            "Unexpected personalisation - message is {} - cause is {}",
-            e.getMessage(),
-            e.getCause());
-        log.error("Stack trace: " + e);
+        log.error("Unexpected personalisation", e);
       }
     }
 
@@ -164,27 +157,24 @@ public class NotifyService {
     personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
 
     String templateId = getTemplateIdByClassifiers(actionRequest);
-    log.debug(
-        "About to invoke sendSms with censusUacSmsTemplateId {} - phone number {} - "
-            + "personalisation {}"
-            + " for actionId = {}",
-        templateId,
-        phoneNumber,
-        personalisation,
-        actionId);
+    log.with("template_id", templateId)
+        .with("personalisation", personalisation)
+        .with("action_id", actionId)
+        .debug("About to invoke sendSms");
 
     SendSmsResponse response =
         notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
 
     if (response != null) {
-      log.debug(
-          "status = {} for actionId = {}",
-          notificationClient
-              .getNotificationById(response.getNotificationId().toString())
-              .getStatus(),
-          actionId);
+      log.with(
+              "status",
+              notificationClient
+                  .getNotificationById(response.getNotificationId().toString())
+                  .getStatus())
+          .with("action_id", actionId)
+          .debug("Got response");
     } else {
-      log.debug("response is null for actionId {}", actionId);
+      log.with("action_id", actionId).debug("Response is null");
     }
 
     return new ActionFeedback(
@@ -219,13 +209,10 @@ public class NotifyService {
     String templateId = getTemplateIdByClassifiers(actionRequest);
     String actionId = actionRequest.getActionId();
     String emailAddress = actionContact.getEmailAddress();
-    log.debug(
-        "About to invoke sendEmail with templateId {} - emailAddress {} - "
-            + "personalisation {} for actionId = {}",
-        templateId,
-        emailAddress,
-        personalisation,
-        actionId);
+    log.with("template_id", templateId)
+        .with("personalisation", personalisation)
+        .with("action_id", actionId)
+        .debug("About to invoke sendEmail");
 
     SendEmailResponse response =
         notificationClient.sendEmail(templateId, emailAddress, personalisation, null);
@@ -233,9 +220,9 @@ public class NotifyService {
     if (response != null) {
       Notification notif =
           notificationClient.getNotificationById(response.getNotificationId().toString());
-      log.debug("status = {} for actionId = {}", notif.getStatus(), actionId);
+      log.with("status", notif.getStatus()).with("action_id", actionId).debug("Got response");
     } else {
-      log.debug("actionId = {}, response is null", actionId);
+      log.with("action_id", actionId).debug("Response is null");
     }
 
     return new ActionFeedback(

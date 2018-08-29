@@ -48,7 +48,7 @@ public class ActionInstructionReceiver {
   public void processInstruction(final ActionInstruction instruction)
       throws NotificationClientException, CommsTemplateClientException {
 
-    log.debug("entering process with instruction {}", instruction);
+    log.with("instruction", instruction).debug("entering processInstruction");
 
     ActionRequest actionRequest = instruction.getActionRequest();
 
@@ -63,9 +63,8 @@ public class ActionInstructionReceiver {
     actionRequest = tidyUp(actionRequest);
 
     if (!validate(actionRequest)) {
-      log.error(
-          "Data validation failed for actionRequest with action id {}",
-          actionRequest.getActionId());
+      log.with("action_id", actionRequest.getActionId())
+          .error("Data validation failed for actionRequest");
 
       publisher.sendFeedback(smsNotSent(actionRequest));
 
@@ -132,14 +131,12 @@ public class ActionInstructionReceiver {
     }
 
     String phoneNumber = actionContact.getPhoneNumber();
-    log.debug("phoneNumber is {}", phoneNumber);
 
     if (phoneNumber != null) {
       return isPhoneNumberValid(phoneNumber);
     }
 
     String emailAddress = actionContact.getEmailAddress();
-    log.debug("emailAddress is {}", emailAddress);
 
     if (emailAddress != null) {
       return isEmailValid(emailAddress);

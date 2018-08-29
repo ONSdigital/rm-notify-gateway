@@ -44,6 +44,7 @@ logging:
     uk.gov.ons.ctp: debug
     org.springframework: warn
   profile: DEV
+  useJson: false
 
 liquibase:
   user: notifygatewaysvc

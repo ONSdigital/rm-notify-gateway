@@ -49,10 +49,9 @@ public class CommsTemplateClient {
         restUtility.createUriComponents(
             appConfig.getCommsTemplateService().getTemplateByClassifiersPath(), classifiers);
 
-    log.debug(
-        "Attempting to get Comms Template for classifiers: {}, with uri {}",
-        classifiers.toString(),
-        uriComponents.toString());
+    log.with("classifiers", classifiers)
+        .with("uri", uriComponents.toUri())
+        .debug("Attempting to get Comms Template");
 
     ResponseEntity<String> responseEntity =
         restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, null, String.class);
@@ -62,14 +61,15 @@ public class CommsTemplateClient {
       String responseBody = responseEntity.getBody();
       try {
         result = objectMapper.readValue(responseBody, CommsTemplateDTO.class);
-        log.info("Got template from Comms Template Service: {}", result.toString());
+        log.with("result", result).debug("Got template from Comms Template Service");
       } catch (IOException e) {
-        log.error("Couldn't unmarshal response from comms template service: {}", e.getMessage());
+        log.error("Couldn't unmarshal response from comms template service", e);
       }
     } else {
-      log.error(
-          "Unable to retrieve Comms Template, received {} response.",
-          responseEntity.getStatusCode().toString());
+      log.with("response", responseEntity)
+          .error(
+              "Unable to retrieve Comms Template, received {} response.",
+              responseEntity.getStatusCode().toString());
       throw new CommsTemplateClientException(
           CTPException.Fault.SYSTEM_ERROR,
           String.format(

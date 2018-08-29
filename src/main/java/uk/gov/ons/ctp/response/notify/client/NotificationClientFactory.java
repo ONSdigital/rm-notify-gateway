@@ -22,10 +22,9 @@ public class NotificationClientFactory {
 
     client = new LoggingNotificationClient(createClient(config, debugTypeString), log);
 
-    log.info(
-        "Creating NotificationClientApi - {} - {}",
-        debugTypeString,
-        client.getClass().getCanonicalName());
+    log.with("debug_type", debugTypeString)
+        .with("class_name", client.getClass().getCanonicalName())
+        .debug("Creating NotificationClientApi");
 
     return client;
   }

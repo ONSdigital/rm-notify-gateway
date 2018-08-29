@@ -34,7 +34,7 @@ public class NotifyRequestReceiver {
       inputChannel = "notifyRequestTransformed",
       adviceChain = "notifyRequestRetryAdvice")
   public void process(final NotifyRequest notifyRequest) throws NotificationClientException {
-    log.debug("entering process with notifyRequest {}", notifyRequest);
+    log.with("notify_request", notifyRequest).debug("entering process");
     UUID notificationId = notifyService.process(notifyRequest);
 
     resilienceService.update(

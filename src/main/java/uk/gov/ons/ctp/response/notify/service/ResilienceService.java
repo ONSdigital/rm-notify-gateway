@@ -27,36 +27,30 @@ public class ResilienceService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public Response process(NotifyRequest notifyRequest) {
     String templateId = notifyRequest.getTemplateId();
-    String phoneNumber = notifyRequest.getPhoneNumber();
-    String emailAddress = notifyRequest.getEmailAddress();
-    log.debug(
-        "Entering process with censusUacSmsTemplateId {} - phoneNumber {} - emailAddress {}",
-        templateId,
-        phoneNumber,
-        emailAddress);
+    log.with("template_id", templateId).debug("Entering process");
 
     UUID theId = UUID.randomUUID();
     messageRepository.save(Message.builder().id(theId).build());
-    log.debug("Message persisted with id {}", theId);
+    log.with("id", theId).debug("Message persisted");
     if (notifyConfiguration.getEnabled()) {
       notifyRequest.setId(theId.toString());
       notifyRequestPublisher.send(notifyRequest);
-      log.debug("notifyRequest {} now on queue", notifyRequest);
+      log.with("notify_request", notifyRequest).debug("Now on queue");
     } else {
-      log.info("notifyRequest {}, not put on queue as Gov Notify disabled", notifyRequest);
+      log.with("notify_request", notifyRequest).info("Not put on queue as Gov Notify disabled");
     }
 
     return Response.builder()
         .id(theId)
         .reference(notifyRequest.getReference())
         .templateId(UUID.fromString(templateId))
-        .fromNumber(phoneNumber)
-        .fromEmail(emailAddress)
+        .fromNumber(notifyRequest.getPhoneNumber())
+        .fromEmail(notifyRequest.getEmailAddress())
         .build();
   }
 
   public void update(Message message) {
-    log.debug("Entering update with message {}", message);
+    log.with("message", message).debug("Entering update");
     Message existingMessage = messageRepository.findById(message.getId());
     log.debug("existingMessage is {}", existingMessage);
     if (existingMessage != null) {
@@ -71,7 +65,7 @@ public class ResilienceService {
   }
 
   public Message findMessageById(UUID id) {
-    log.debug("Entering findMessageById with id {}", id);
+    log.with("id", id).debug("Entering findMessageById");
     return messageRepository.findById(id);
   }
 }

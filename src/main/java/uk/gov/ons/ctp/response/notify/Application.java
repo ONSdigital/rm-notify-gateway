@@ -4,6 +4,7 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.godaddy.logging.LoggingConfigs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -24,7 +25,7 @@ import uk.gov.ons.ctp.response.notify.config.AppConfig;
 @EnableCaching
 @ImportResource("springintegration/main.xml")
 @SpringBootApplication
-public class Application {
+public class Application implements CommandLineRunner {
   private static final Logger log = LoggerFactory.getLogger(Application.class);
 
   @Autowired private AppConfig appConfig;
@@ -65,9 +66,14 @@ public class Application {
    * @param args These are the optional command line arguments
    */
   public static void main(String[] args) {
-    LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
-
     log.debug("About to start the Notify Gateway application...");
     SpringApplication.run(Application.class, args);
+  }
+
+  @Override
+  public void run(String... args) throws Exception {
+    if (appConfig.getLogging().isUseJson()) {
+      LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
+    }
   }
 }
