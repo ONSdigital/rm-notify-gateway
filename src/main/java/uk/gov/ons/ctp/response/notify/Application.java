@@ -3,8 +3,8 @@ package uk.gov.ons.ctp.response.notify;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.godaddy.logging.LoggingConfigs;
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -25,7 +25,7 @@ import uk.gov.ons.ctp.response.notify.config.AppConfig;
 @EnableCaching
 @ImportResource("springintegration/main.xml")
 @SpringBootApplication
-public class Application implements CommandLineRunner {
+public class Application {
   private static final Logger log = LoggerFactory.getLogger(Application.class);
 
   @Autowired private AppConfig appConfig;
@@ -70,8 +70,8 @@ public class Application implements CommandLineRunner {
     SpringApplication.run(Application.class, args);
   }
 
-  @Override
-  public void run(String... args) throws Exception {
+  @PostConstruct
+  public void initJsonLogging() {
     if (appConfig.getLogging().isUseJson()) {
       LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
     }
