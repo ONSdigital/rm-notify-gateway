@@ -57,3 +57,5 @@ target
 *.data
 *.redo
 *.backup
+
+.editorconfig
