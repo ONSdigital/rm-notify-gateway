@@ -93,14 +93,20 @@ public class NotifyService {
           .debug("About to invoke sendSms");
       SendSmsResponse response =
           notificationClient.sendSms(templateId, phoneNumber, personalisationMap, reference);
-      log.with("response", response).debug("Got response");
+      log.with("reference", response.getReference())
+        .with("template_id", response.getTemplateId())
+        .with("notification_id", response.getNotificationId())
+        .debug("Response from send SMS");
       return response == null ? null : response.getNotificationId();
     } else {
       // The xsd enforces to have either a phoneNumber OR an emailAddress
       log.with("template_id", templateId).debug("About to invoke sendEmail");
       SendEmailResponse response =
           notificationClient.sendEmail(templateId, emailAddress, personalisationMap, reference);
-      log.with("response", response).debug("Got response");
+      log.with("reference", response.getReference())
+        .with("template_id", response.getTemplateId())
+        .with("notification_id", response.getNotificationId())
+        .info("Response from send email");
       return response == null ? null : response.getNotificationId();
     }
   }
