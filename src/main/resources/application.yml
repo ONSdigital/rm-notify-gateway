@@ -119,6 +119,8 @@ swagger-settings:
 comms-template-service:
   template-by-classifiers-path: /templates
   connection-config:
+    username: admin
+    password: secret
     scheme: http
     host: comms-template
     port: 8182
