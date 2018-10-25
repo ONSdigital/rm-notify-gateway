@@ -94,9 +94,9 @@ public class NotifyService {
       SendSmsResponse response =
           notificationClient.sendSms(templateId, phoneNumber, personalisationMap, reference);
       log.with("reference", response.getReference())
-        .with("template_id", response.getTemplateId())
-        .with("notification_id", response.getNotificationId())
-        .debug("Response from send SMS");
+          .with("template_id", response.getTemplateId())
+          .with("notification_id", response.getNotificationId())
+          .debug("Response from send SMS");
       return response == null ? null : response.getNotificationId();
     } else {
       // The xsd enforces to have either a phoneNumber OR an emailAddress
@@ -104,9 +104,9 @@ public class NotifyService {
       SendEmailResponse response =
           notificationClient.sendEmail(templateId, emailAddress, personalisationMap, reference);
       log.with("reference", response.getReference())
-        .with("template_id", response.getTemplateId())
-        .with("notification_id", response.getNotificationId())
-        .info("Response from send email");
+          .with("template_id", response.getTemplateId())
+          .with("notification_id", response.getNotificationId())
+          .info("Response from send email");
       return response == null ? null : response.getNotificationId();
     }
   }
