@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.postJson;
-import static uk.gov.ons.ctp.common.error.RestExceptionHandler.PROVIDED_JSON_INCORRECT;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import java.util.UUID;
@@ -90,7 +89,7 @@ public class EmailEndpointTest {
         .andExpect(handler().handlerType(EmailEndpoint.class))
         .andExpect(handler().methodName(SEND_EMAIL_MSG))
         .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
-        .andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)))
+        .andExpect(jsonPath("$.error.message", is(RestExceptionHandler.INVALID_JSON)))
         .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
