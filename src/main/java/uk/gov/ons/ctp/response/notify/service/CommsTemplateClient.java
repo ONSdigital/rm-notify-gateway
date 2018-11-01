@@ -6,6 +6,7 @@ import com.godaddy.logging.LoggerFactory;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -53,8 +54,10 @@ public class CommsTemplateClient {
         .with("uri", uriComponents.toUri())
         .debug("Attempting to get Comms Template");
 
+    HttpEntity<?> httpEntity = restUtility.createHttpEntityWithAuthHeader();
+
     ResponseEntity<String> responseEntity =
-        restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, null, String.class);
+        restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, httpEntity, String.class);
 
     CommsTemplateDTO result = null;
     if (responseEntity.getStatusCode().is2xxSuccessful()) {

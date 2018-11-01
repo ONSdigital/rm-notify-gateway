@@ -56,7 +56,7 @@ public class StatusEndpointTest {
 
   private MockMvc mockMvc;
 
-  private static final String CREATED_AT = "2004-12-14T05:39:45.618+0000";
+  private static final String CREATED_AT = "2004-12-14T05:39:45.618Z";
   private static final String GET_STATUS = "getStatus";
   private static final String GENERAL_EXCEPTION = "java.lang.Exception";
   private static final String EXISTING_MSG_ID = "9bc9d99b-9999-99b9-ba99-99f9d9cf1111";
