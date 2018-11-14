@@ -202,7 +202,7 @@ public class NotifyService {
     ActionContact actionContact = actionRequest.getContact();
 
     Map<String, String> personalisation = new HashMap<>();
-    personalisation.put(REPORTING_UNIT_REF_KEY, actionRequest.getAddress().getSampleUnitRef());
+    personalisation.put(REPORTING_UNIT_REF_KEY, actionRequest.getSampleUnitRef());
     personalisation.put(SURVEY_NAME_KEY, actionRequest.getSurveyName());
     personalisation.put(SURVEY_ID_KEY, actionRequest.getSurveyRef());
     personalisation.put(FIRSTNAME_KEY, actionContact.getForename());

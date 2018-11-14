@@ -101,8 +101,8 @@ public class ObjectBuilder {
       actionRequest.setActionPlan(ACTION_PLAN);
       actionRequest.setActionType(NOTIFY);
       actionRequest.setQuestionSet(QUESTION_SET);
+      actionRequest.setSampleUnitRef(SAMPLE_UNIT_REF);
       ActionAddress actionAddress = new ActionAddress();
-      actionAddress.setSampleUnitRef(SAMPLE_UNIT_REF);
       actionAddress.setPostcode(POSTCODE);
       actionAddress.setLatitude(LATITYUDE);
       actionAddress.setLongitude(LONGITUDE);
