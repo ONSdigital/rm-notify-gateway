@@ -12,7 +12,7 @@ script:
   - "mvn fmt:check verify"
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+  - if ([ "$TRAVIS_BRANCH" == "rm-census" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]) || ([ "$TRAVIS_BRANCH" == "automate-census-docker-build" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]); then
     docker login -u "$DOCKER_SDCPLATFORM_USERNAME" -p "$DOCKER_SDCPLATFORM_PASSWORD";
     docker push sdcplatform/notifygatewaysvc;
     fi
@@ -30,4 +30,5 @@ cache:
 
 branches:
   only:
-    - master
+    - rm-census
+    - automate-census-docker-build
