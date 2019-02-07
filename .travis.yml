@@ -24,5 +24,4 @@ cache:
 
 branches:
   only:
-    - rm-census
     - automate-census-docker-build
