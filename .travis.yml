@@ -17,7 +17,7 @@ script:
   - "mvn fmt:check verify"
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "rm-census" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+  - if ([ "$TRAVIS_BRANCH" == "rm-census" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]) || ([ "$TRAVIS_PULL_REQUEST_BRANCH" == "automate-census-docker-build" ]); then
     docker login -u "${DOCKER_GCP_USERNAME}" -p "${DOCKER_GCP_PASSWORD}" "${DOCKER_GCP_REGISTRY}";
     docker tag "$SOURCE_IMAGE_NAME" "$DESTINATION_IMAGE_NAME";
     docker push "$DESTINATION_IMAGE_NAME";
