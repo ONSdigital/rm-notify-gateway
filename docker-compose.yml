@@ -22,7 +22,7 @@ services:
    - "9000:9000"
  notifygateway:
   container_name: ng-notifygateway
-  image: sdcplatform/notifygatewaysvc
+  image: eu.gcr.io/census-rm-ci/rm/census-rm-notifygatewaysvc
   ports:
    - "8281:8281"
    - "5281:5281"

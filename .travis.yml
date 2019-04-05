@@ -6,11 +6,6 @@ services:
 language: java
 jdk: openjdk8
 
-env:
-  global:
-    - SOURCE_IMAGE_NAME="notifygatewaysvc"
-    - DESTINATION_IMAGE_NAME="$DOCKER_GCP_LOCATION/census-rm-notifygatewaysvc"
-
 before_install: "cp .maven.settings.xml $HOME/.m2/settings.xml"
 
 script:
@@ -19,8 +14,7 @@ script:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "rm-census" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u "${DOCKER_GCP_USERNAME}" -p "${DOCKER_GCP_PASSWORD}" "${DOCKER_GCP_REGISTRY}";
-    docker tag "$SOURCE_IMAGE_NAME" "$DESTINATION_IMAGE_NAME";
-    docker push "$DESTINATION_IMAGE_NAME";
+    docker push "eu.gcr.io/census-rm-ci/rm/census-rm-notifygatewaysvc";
     fi
 
 cache:
