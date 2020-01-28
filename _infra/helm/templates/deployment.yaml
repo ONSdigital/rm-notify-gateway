@@ -6,8 +6,8 @@ spec:
   replicas: 1
   strategy:
     rollingUpdate:
-      maxSurge:
-      maxUnavailable:
+      maxSurge: 1
+      maxUnavailable: 1
     type: RollingUpdate
   selector:
     matchLabels:
@@ -108,17 +108,12 @@ spec:
           - name: SPRING_DATASOURCE_PASSWORD
             value: "$(DB_PASSWORD)"
           - name: COMMS_TEMPLATE_SERVICE_CONNECTION_CONFIG_HOST
-            value: "$(COMMS_TEMPLATE_SVC_SERVICE_HOST)"
+            value: "$(COMMS_TEMPLATE_SERVICE_HOST)"
           - name: COMMS_TEMPLATE_SERVICE_CONNECTION_CONFIG_PORT
-            value: "$(COMMS_TEMPLATE_SVC_SERVICE_PORT)"
+            value: "$(COMMS_TEMPLATE_SERVICE_PORT)"
           - name: SPRING_ZIPKIN_ENABLED
             value: "true"
           - name: SPRING_ZIPKIN_BASEURL
             value: "http://$(ZIPKIN_SERVICE_HOST):$(ZIPKIN_SERVICE_PORT)/"
           resources:
-            limits:
-              cpu: 1000m
-              memory: 2056Mi
-            requests:
-              cpu: 500m
-              memory: 1028Mi
+            {{ toYaml .Values.resources | nindent 12 }}
