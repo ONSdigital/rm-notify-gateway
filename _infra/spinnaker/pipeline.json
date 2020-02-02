@@ -1,0 +1,21 @@
+{
+  "schema": "v2",
+  "application": "notify-gateway",
+  "name": "notify-gateway",
+  "template": {
+    "artifactAccount": "front50ArtifactCredentials",
+    "reference": "spinnaker://rasrmApplicationTemplate",
+    "type": "front50/pipelineTemplate"
+  },
+  "variables": {
+    "name": "notify-gateway",
+    "defaultHelmChart": "notify-gateway-0.1.0.tgz",
+    "helmChartMatcher": "notify-gateway-.*\\.tgz"
+  },
+  "exclude": [],
+  "triggers": [],
+  "parameters": [],
+  "notifications": [],
+  "description": "",
+  "stages": []
+}
