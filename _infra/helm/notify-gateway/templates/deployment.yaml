@@ -121,6 +121,24 @@ spec:
               secretKeyRef:
                 name: security-credentials
                 key: security-password
+          - name: RABBITMQ_HOST
+            {{- if .Values.managedRabbitMQ.enabled }}
+            valueFrom:
+              configMapKeyRef:
+                name: rabbit-config
+                key: rabbit-mq-host
+            {{- else }}
+            value: "$(RABBITMQ_SERVICE_HOST)"
+            {{- end }}
+          - name: RABBITMQ_PORT
+            {{- if .Values.managedRabbitMQ.enabled }}
+            valueFrom:
+              configMapKeyRef:
+                name: rabbit-config
+                key: rabbit-mq-port
+            {{- else }}
+            value: "$(RABBITMQ_SERVICE_PORT)"
+            {{- end }}
           - name: RABBITMQ_USERNAME
             valueFrom:
               secretKeyRef:
@@ -135,10 +153,6 @@ spec:
             value: "true"
           - name: SERVER_PORT
             value: "{{ .Values.container.port }}"
-          - name: RABBITMQ_HOST
-            value: "$(RABBITMQ_SERVICE_HOST)"
-          - name: RABBITMQ_PORT
-            value: "5672"
           - name: SPRING_DATASOURCE_URL
             {{- if .Values.database.sqlProxyEnabled }}
             value: "jdbc:postgresql://127.0.0.1:5432/$(DB_NAME)"
