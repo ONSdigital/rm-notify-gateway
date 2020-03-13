@@ -173,6 +173,10 @@ spec:
             value: "$(COMMS_TEMPLATE_SERVICE_HOST)"
           - name: COMMS_TEMPLATE_SERVICE_CONNECTION_CONFIG_PORT
             value: "$(COMMS_TEMPLATE_SERVICE_PORT)"
+          - name: COMMS_TEMPLATE_SERVICE_CONNECTION_CONFIG_USERNAME
+            value: "$(SECURITY_USER_NAME)"
+          - name: COMMS_TEMPLATE_SERVICE_CONNECTION_CONFIG_PASSWORD
+            value: "$(SECURITY_USER_PASSWORD)"
           - name: SPRING_ZIPKIN_ENABLED
             value: "true"
           - name: SPRING_ZIPKIN_BASEURL
