@@ -27,5 +27,17 @@ resources:
   requests:
     memory: "256Mi"
 
+notify:
+  enabled: false
+  apiKey: dummykey-ffffffff-ffff-ffff-ffff-ffffffffffff-ffffffff-ffff-ffff-ffff-ffffffffffff
+  censusUacSmSTemplateId: ffffffff-ffff-ffff-ffff-ffffffffffff
+  onsSurveysRasEmailReminderTemplateId: ffffffff-ffff-ffff-ffff-ffffffffffff
+  endpoints:
+    enabled: false
+    infoEnabled: true
+
+zipkin:
+  enabled: false
+
 managedRabbitMQ:
   enabled: false

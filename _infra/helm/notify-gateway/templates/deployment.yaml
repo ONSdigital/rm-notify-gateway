@@ -111,6 +111,18 @@ spec:
               secretKeyRef:
                 name: db-credentials
                 key: {{ .Values.database.secrets.passwordKey }}
+          - name: ENDPOINTS_ENABLED
+            value: {{ .Values.notify.endpoints.enabled }}
+          - name: ENDPOINTS_INFO_ENABLED
+            value: {{ .Values.notify.endpoints.infoEnabled }}
+          - name: NOTIFY_ENABLED
+            value: "{{ .Values.notify.enabled }}"
+          - name: NOTIFY_APIKEY
+            value: {{ .Values.notify.apiKey }}
+          - name: NOTIFY_CENSUSUACSMSTEMPLATEID
+            value: {{ .Values.notify.censusUacSmSTemplateId }}
+          - name: NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID
+            value: {{ .Values.notify.onsSurveysRasEmailReminderTemplateId }}
           - name: SECURITY_USER_NAME
             valueFrom:
               secretKeyRef:
@@ -178,7 +190,7 @@ spec:
           - name: COMMS_TEMPLATE_SERVICE_CONNECTION_CONFIG_PASSWORD
             value: "$(SECURITY_USER_PASSWORD)"
           - name: SPRING_ZIPKIN_ENABLED
-            value: "true"
+            value: "{{ .Values.zipkin.enabled }}"
           - name: SPRING_ZIPKIN_BASEURL
             value: "http://$(ZIPKIN_SERVICE_HOST):$(ZIPKIN_SERVICE_PORT)/"
           resources:
