@@ -112,9 +112,9 @@ spec:
                 name: db-credentials
                 key: {{ .Values.database.secrets.passwordKey }}
           - name: ENDPOINTS_ENABLED
-            value: {{ .Values.notify.endpoints.enabled }}
+            value: "{{ .Values.notify.endpoints.enabled }}"
           - name: ENDPOINTS_INFO_ENABLED
-            value: {{ .Values.notify.endpoints.infoEnabled }}
+            value: "{{ .Values.notify.endpoints.infoEnabled }}"
           - name: NOTIFY_ENABLED
             value: "{{ .Values.notify.enabled }}"
           - name: NOTIFY_APIKEY
