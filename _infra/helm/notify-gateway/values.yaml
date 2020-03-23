@@ -41,3 +41,7 @@ zipkin:
 
 managedRabbitMQ:
   enabled: false
+
+dns:
+  enabled: false
+  wellKnownPort: 8080
