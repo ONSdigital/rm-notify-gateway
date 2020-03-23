@@ -1,16 +1,16 @@
 {
   "schema": "v2",
   "application": "notify-gateway",
-  "name": "notify-gateway",
+  "name": "deploy staging",
   "template": {
     "artifactAccount": "front50ArtifactCredentials",
-    "reference": "spinnaker://rasrmApplicationTemplate",
+    "reference": "spinnaker://individualDeploymentTemplate",
     "type": "front50/pipelineTemplate"
   },
   "variables": {
-    "name": "notify-gateway",
-    "defaultHelmChart": "notify-gateway-0.1.0.tgz",
-    "helmChartMatcher": "notify-gateway-.*\\.tgz"
+    "namespace": "staging",
+    "environment": "dev",
+    "service": "notify-gateway"
   },
   "exclude": [],
   "triggers": [],
