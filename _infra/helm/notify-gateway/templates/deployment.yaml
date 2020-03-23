@@ -191,7 +191,7 @@ spec:
             {{- if .Values.dns.enabled }}
             value: "{{ .Values.dns.wellKnownPort }}"
             {{- else }}
-            value: "$(COMMS_TEMPLATE_EXERCISE_SERVICE_PORT)"
+            value: "$(COMMS_TEMPLATE_SERVICE_PORT)"
             {{- end }}
           - name: COMMS_TEMPLATE_SERVICE_CONNECTION_CONFIG_USERNAME
             value: "$(SECURITY_USER_NAME)"
