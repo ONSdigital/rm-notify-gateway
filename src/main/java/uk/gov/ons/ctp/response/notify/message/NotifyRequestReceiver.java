@@ -39,12 +39,23 @@ public class NotifyRequestReceiver {
   public void process(final NotifyRequest notifyRequest) throws NotificationClientException {
     log.with("notify_request", notifyRequest).debug("entering process");
     if (notifyConfiguration.getEnabled()) {
-      UUID notificationId = notifyService.process(notifyRequest);
-      resilienceService.update(
-          Message.builder()
-              .id(UUID.fromString(notifyRequest.getId()))
-              .notificationId(notificationId)
-              .build());
+      try {
+        UUID notificationId = notifyService.process(notifyRequest);
+        resilienceService.update(
+            Message.builder()
+                .id(UUID.fromString(notifyRequest.getId()))
+                .notificationId(notificationId)
+                .build());
+      } catch (NotificationClientException nce) {
+        log.error(
+            "Error sending request to Gov.Notify with id "
+                + notifyRequest.getId()
+                + " and template id "
+                + notifyRequest.getTemplateId(),
+            nce);
+        // re-throw to maintain current functionality
+        throw nce;
+      }
     } else {
       log.with("notify_request", notifyRequest)
           .info("Not put on processing message as Gov Notify integration is disabled");
