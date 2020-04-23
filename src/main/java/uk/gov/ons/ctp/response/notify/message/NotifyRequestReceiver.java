@@ -8,6 +8,7 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
@@ -23,6 +24,8 @@ public class NotifyRequestReceiver {
 
   @Autowired private ResilienceService resilienceService;
 
+  @Autowired private NotifyConfiguration notifyConfiguration;
+
   /**
    * To process NotifyRequests from the input channel notifyRequestTransformed
    *
@@ -35,12 +38,16 @@ public class NotifyRequestReceiver {
       adviceChain = "notifyRequestRetryAdvice")
   public void process(final NotifyRequest notifyRequest) throws NotificationClientException {
     log.with("notify_request", notifyRequest).debug("entering process");
-    UUID notificationId = notifyService.process(notifyRequest);
-
-    resilienceService.update(
-        Message.builder()
-            .id(UUID.fromString(notifyRequest.getId()))
-            .notificationId(notificationId)
-            .build());
+    if (notifyConfiguration.getEnabled()) {
+      UUID notificationId = notifyService.process(notifyRequest);
+      resilienceService.update(
+          Message.builder()
+              .id(UUID.fromString(notifyRequest.getId()))
+              .notificationId(notificationId)
+              .build());
+    } else {
+      log.with("notify_request", notifyRequest)
+          .info("Not put on processing message as Gov Notify integration is disabled");
+    }
   }
 }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
@@ -17,8 +16,6 @@ import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 @Service
 public class ResilienceService {
   private static final Logger log = LoggerFactory.getLogger(ResilienceService.class);
-
-  @Autowired private NotifyConfiguration notifyConfiguration;
 
   @Autowired private MessageRepository messageRepository;
 
@@ -32,21 +29,27 @@ public class ResilienceService {
     UUID theId = UUID.randomUUID();
     messageRepository.save(Message.builder().id(theId).build());
     log.with("id", theId).debug("Message persisted");
-    if (notifyConfiguration.getEnabled()) {
-      notifyRequest.setId(theId.toString());
-      notifyRequestPublisher.send(notifyRequest);
-      log.with("notify_request", notifyRequest).debug("Now on queue");
-    } else {
-      log.with("notify_request", notifyRequest).info("Not put on queue as Gov Notify disabled");
-    }
+
+    notifyRequest.setId(theId.toString());
+    notifyRequestPublisher.send(notifyRequest);
+    log.with("notify_request", notifyRequest).debug("Now on queue");
 
     return Response.builder()
         .id(theId)
         .reference(notifyRequest.getReference())
-        .templateId(UUID.fromString(templateId))
+        .templateId(getTemplateUUID(templateId))
         .fromNumber(notifyRequest.getPhoneNumber())
         .fromEmail(notifyRequest.getEmailAddress())
         .build();
+  }
+
+  private UUID getTemplateUUID(String templateId) {
+    try {
+      return UUID.fromString(templateId);
+    } catch (IllegalArgumentException e) {
+      log.warn("Template id is not a UUID " + templateId, e);
+      return null;
+    }
   }
 
   public void update(Message message) {
