@@ -2,7 +2,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>notifygatewaysvc</artifactId>
-    <version>10.49.17-SNAPSHOT</version>
+    <version>11.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>CTP : NotifyGatewayService</name>
@@ -16,7 +16,7 @@
     <parent>
         <groupId>uk.gov.ons.ctp.product</groupId>
         <artifactId>rm-common-config</artifactId>
-        <version>10.49.13</version>
+        <version>11.0.0-SNAPSHOT</version>
     </parent>
 
     <profiles>
@@ -128,13 +128,6 @@
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
 
-        <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
-        </dependency>
-        <!-- SPRING END -->
-
         <!-- ONS libraries-->
         <dependency>
             <groupId>uk.gov.service.notify</groupId>
@@ -145,19 +138,19 @@
         <dependency>
             <groupId>uk.gov.ons.ctp.product</groupId>
             <artifactId>notifygatewaysvc-api</artifactId>
-            <version>10.49.2</version>
+            <version>11.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.ons.ctp.product</groupId>
             <artifactId>actionsvc-api</artifactId>
-            <version>10.49.32</version>
+            <version>11.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.ons.ctp.common</groupId>
-            <artifactId>framework</artifactId>
-            <version>10.49.21</version>
+            <artifactId>rm-common-service</artifactId>
+            <version>11.0.0-SNAPSHOT</version>
         </dependency>
         <!-- ONS END -->
 
@@ -218,7 +211,7 @@
 
         <dependency>
             <groupId>uk.gov.ons.ctp.common</groupId>
-            <artifactId>test-framework</artifactId>
+            <artifactId>rm-common-test-framework</artifactId>
             <scope>test</scope>
         </dependency>
 
