@@ -51,7 +51,9 @@ public class NotifyRequestReceiver {
             "Error sending request to Gov.Notify with id "
                 + notifyRequest.getId()
                 + " and template id "
-                + notifyRequest.getTemplateId(),
+                + notifyRequest.getTemplateId()
+                + ", returned status code "
+                + nce.getHttpResult(),
             nce);
         // re-throw to maintain current functionality
         throw nce;
