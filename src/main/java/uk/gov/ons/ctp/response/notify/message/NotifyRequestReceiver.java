@@ -47,14 +47,10 @@ public class NotifyRequestReceiver {
                 .notificationId(notificationId)
                 .build());
       } catch (NotificationClientException nce) {
-        log.error(
-            "Error sending request to Gov.Notify with id "
-                + notifyRequest.getId()
-                + " and template id "
-                + notifyRequest.getTemplateId()
-                + ", returned status code "
-                + nce.getHttpResult(),
-            nce);
+        log.with("id", notifyRequest.getId())
+            .with("template_id", notifyRequest.getTemplateId())
+            .with("status_code", nce.getHttpResult())
+            .error("Error sending request to Gov.Notify", nce);
         // re-throw to maintain current functionality
         throw nce;
       }
