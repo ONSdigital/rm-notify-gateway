@@ -50,11 +50,13 @@ public class NotifyService {
   public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
   public static final String REGION_CODE = "REGION";
   public static final String LEGAL_BASIS = "LEGAL_BASIS";
+  public static final String SURVEY_CLASSIFIER = "SURVEY";
   public static final String REMINDER_EMAIL = "BSRE";
   public static final String NOTIFICATION_EMAIL = "BSNE";
   public static final String REMINDER = "REMINDER";
   public static final String NOTIFICATION = "NOTIFICATION";
   public static final String COMMUNICATION_TYPE = "COMMUNICATION_TYPE";
+  public static final String COVID_SURVEY_ID = "283";
   @Autowired private NotifyConfiguration notifyConfiguration;
   @Autowired private NotificationClientApi notificationClient;
   @Autowired private CommsTemplateClient commsTemplateClient;
@@ -212,7 +214,13 @@ public class NotifyService {
     personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
     personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
 
-    String templateId = getTemplateIdByClassifiers(actionRequest);
+    String templateId;
+    if (actionRequest.getSurveyRef() == COVID_SURVEY_ID){
+      templateId = "abc";
+    } else {
+      templateId = getTemplateIdByClassifiers(actionRequest);
+    }
+
     String actionId = actionRequest.getActionId();
     String emailAddress = actionContact.getEmailAddress();
     log.with("template_id", templateId)
@@ -260,6 +268,12 @@ public class NotifyService {
       List<String> region = new ArrayList<>();
       region.add(actionRequest.getRegion());
       classifierMap.put(REGION_CODE, region);
+    }
+
+    if (actionRequest.getSurveyRef().equals(COVID_SURVEY_ID)) {
+      List<String> survey = new ArrayList<>();
+      survey.add(actionRequest.getSurveyRef());
+      classifierMap.put(SURVEY_CLASSIFIER, survey);
     }
 
     if (NOTIFICATION_EMAIL.equalsIgnoreCase(actionRequest.getActionType())) {
