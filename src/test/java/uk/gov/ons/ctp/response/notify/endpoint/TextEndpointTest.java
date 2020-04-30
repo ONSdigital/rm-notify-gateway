@@ -25,11 +25,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.response.notify.NotifySvcBeanMapper;
-import uk.gov.ons.ctp.response.notify.common.CTPException;
-import uk.gov.ons.ctp.response.notify.common.CustomObjectMapper;
-import uk.gov.ons.ctp.response.notify.common.RestExceptionHandler;
 import uk.gov.ons.ctp.response.notify.domain.Response;
-import uk.gov.ons.ctp.response.notify.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
+import uk.gov.ons.ctp.response.notify.lib.common.CustomObjectMapper;
+import uk.gov.ons.ctp.response.notify.lib.common.RestExceptionHandler;
+import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 
 public class TextEndpointTest {

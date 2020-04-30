@@ -20,10 +20,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.ons.ctp.response.notify.action.ActionFeedback;
-import uk.gov.ons.ctp.response.notify.action.Outcome;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
+import uk.gov.ons.ctp.response.notify.lib.action.ActionFeedback;
+import uk.gov.ons.ctp.response.notify.lib.action.Outcome;
 import uk.gov.service.notify.NotificationClientException;
 
 /**

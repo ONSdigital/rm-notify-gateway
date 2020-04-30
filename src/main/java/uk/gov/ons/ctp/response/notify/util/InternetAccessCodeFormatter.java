@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.notify.util;
 
-import uk.gov.ons.ctp.response.notify.common.StringUtils;
+import uk.gov.ons.ctp.response.notify.lib.common.StringUtils;
 
 /** Class to centralise the formatting of IAC codes */
 public class InternetAccessCodeFormatter {

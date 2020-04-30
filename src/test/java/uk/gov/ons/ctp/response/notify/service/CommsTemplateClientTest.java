@@ -26,12 +26,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
-import uk.gov.ons.ctp.response.notify.common.CTPException;
-import uk.gov.ons.ctp.response.notify.common.RestUtility;
-import uk.gov.ons.ctp.response.notify.common.RestUtilityConfig;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
 import uk.gov.ons.ctp.response.notify.config.CommsTemplateService;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
+import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
+import uk.gov.ons.ctp.response.notify.lib.common.RestUtility;
+import uk.gov.ons.ctp.response.notify.lib.common.RestUtilityConfig;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommsTemplateClientTest {

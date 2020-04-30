@@ -14,10 +14,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
-import uk.gov.ons.ctp.response.notify.common.CTPException;
-import uk.gov.ons.ctp.response.notify.common.RestUtility;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
+import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
+import uk.gov.ons.ctp.response.notify.lib.common.RestUtility;
 
 @Service
 public class CommsTemplateClient {
