@@ -214,13 +214,7 @@ public class NotifyService {
     personalisation.put(TRADING_STYLE_KEY, actionContact.getTradingStyle());
     personalisation.put(RETURN_BY_DATE_KEY, actionRequest.getReturnByDate());
 
-    String templateId;
-    if (actionRequest.getSurveyRef() == COVID_SURVEY_ID){
-      templateId = "abc";
-    } else {
-      templateId = getTemplateIdByClassifiers(actionRequest);
-    }
-
+    String templateId = getTemplateIdByClassifiers(actionRequest);
     String actionId = actionRequest.getActionId();
     String emailAddress = actionContact.getEmailAddress();
     log.with("template_id", templateId)
@@ -247,6 +241,13 @@ public class NotifyService {
         Outcome.REQUEST_COMPLETED);
   }
 
+  /**
+   * Gets the templateId required by the Gov Notify service to know which template to use.
+   *
+   * @param actionRequest An actionRequest object
+   * @return A string with the uuid of the template stored in the Gov Notify service
+   * @throws CommsTemplateClientException
+   */
   private String getTemplateIdByClassifiers(final ActionRequest actionRequest)
       throws CommsTemplateClientException {
     MultiValueMap<String, String> classifiers = getClassifiers(actionRequest);
