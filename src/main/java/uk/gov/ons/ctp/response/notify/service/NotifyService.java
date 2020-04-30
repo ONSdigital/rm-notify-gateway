@@ -271,7 +271,8 @@ public class NotifyService {
       classifierMap.put(REGION_CODE, region);
     }
 
-    if (actionRequest.getSurveyRef().equals(COVID_SURVEY_ID)) {
+    if (actionRequest.getSurveyRef() != null
+        && actionRequest.getSurveyRef().equals(COVID_SURVEY_ID)) {
       List<String> survey = new ArrayList<>();
       survey.add(actionRequest.getSurveyRef());
       classifierMap.put(SURVEY_CLASSIFIER, survey);
