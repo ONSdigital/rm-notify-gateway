@@ -57,13 +57,12 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
-import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.notify.action.ActionFeedback;
+import uk.gov.ons.ctp.response.notify.action.ActionRequest;
+import uk.gov.ons.ctp.response.notify.action.Outcome;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -261,11 +260,11 @@ public class NotifyServiceTest {
 
     notifyService.process(
         NotifyRequest.builder()
-            .withId(NOTIFY_REQUEST_ID)
-            .withTemplateId(TEMPLATE_ID)
-            .withReference(MESSAGE_REFERENCE)
-            .withPhoneNumber(VALID_PHONE_NUMBER)
-            .withPersonalisation(
+            .id(NOTIFY_REQUEST_ID)
+            .templateId(TEMPLATE_ID)
+            .reference(MESSAGE_REFERENCE)
+            .phoneNumber(VALID_PHONE_NUMBER)
+            .personalisation(
                 String.format(
                     PERSONALISATION_FORMAT_FROM_ORIKA,
                     IAC_KEY,
@@ -298,11 +297,11 @@ public class NotifyServiceTest {
 
     notifyService.process(
         NotifyRequest.builder()
-            .withId(NOTIFY_REQUEST_ID)
-            .withTemplateId(TEMPLATE_ID)
-            .withReference(MESSAGE_REFERENCE)
-            .withEmailAddress(VALID_EMAIL_ADDRESS)
-            .withPersonalisation(
+            .id(NOTIFY_REQUEST_ID)
+            .templateId(TEMPLATE_ID)
+            .reference(MESSAGE_REFERENCE)
+            .emailAddress(VALID_EMAIL_ADDRESS)
+            .personalisation(
                 String.format(
                     PERSONALISATION_FORMAT_FROM_ORIKA,
                     IAC_KEY,

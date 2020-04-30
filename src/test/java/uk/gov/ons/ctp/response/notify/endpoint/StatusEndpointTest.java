@@ -35,10 +35,10 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.error.RestExceptionHandler;
-import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.notify.NotifySvcBeanMapper;
+import uk.gov.ons.ctp.response.notify.common.CTPException;
+import uk.gov.ons.ctp.response.notify.common.CustomObjectMapper;
+import uk.gov.ons.ctp.response.notify.common.RestExceptionHandler;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;

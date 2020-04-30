@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.notify.message;
 
-import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForEmailDTO.EMAIL_ADDRESS_REGEX;
-import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForSMSDTO.TELEPHONE_REGEX;
+import static uk.gov.ons.ctp.response.notify.notify.NotifyRequestForEmailDTO.EMAIL_ADDRESS_REGEX;
+import static uk.gov.ons.ctp.response.notify.notify.NotifyRequestForSMSDTO.TELEPHONE_REGEX;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_SMS_NOT_SENT;
 
 import com.godaddy.logging.Logger;
@@ -12,13 +12,13 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.response.action.factory.ActionFeedbackFactory;
-import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
-import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
-import uk.gov.ons.ctp.response.action.representation.Situation;
+import uk.gov.ons.ctp.response.notify.action.ActionContact;
+import uk.gov.ons.ctp.response.notify.action.ActionFeedback;
+import uk.gov.ons.ctp.response.notify.action.ActionFeedbackFactory;
+import uk.gov.ons.ctp.response.notify.action.ActionInstruction;
+import uk.gov.ons.ctp.response.notify.action.ActionRequest;
+import uk.gov.ons.ctp.response.notify.action.Outcome;
+import uk.gov.ons.ctp.response.notify.action.Situation;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.service.notify.NotificationClientException;

@@ -15,7 +15,7 @@ import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.notify.NotifyRequest;
 
 /** To unit test ResilienceService */
 @RunWith(MockitoJUnitRunner.class)
@@ -36,9 +36,9 @@ public class ResilienceServiceTest {
     // Given a message needs sending
     NotifyRequest notifyRequest =
         NotifyRequest.builder()
-            .withTemplateId(TEMPLATE_ID)
-            .withPhoneNumber(PHONE_NUMBER)
-            .withReference(MESSAGE_REFERENCE)
+            .templateId(TEMPLATE_ID)
+            .phoneNumber(PHONE_NUMBER)
+            .reference(MESSAGE_REFERENCE)
             .build();
 
     // When the Resilience service is called

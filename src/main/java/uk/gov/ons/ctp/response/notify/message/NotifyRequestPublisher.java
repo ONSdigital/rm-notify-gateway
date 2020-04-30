@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.notify.NotifyRequest;
 
 /** The publisher of NotifyRequests to queues */
 @MessageEndpoint

@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 import uk.gov.service.notify.NotificationClientException;
@@ -49,7 +49,7 @@ public class NotifyRequestReceiverTest {
     when(notifyConfiguration.getEnabled()).thenReturn(true);
     when(notifyService.process(any(NotifyRequest.class))).thenReturn(NOTIFICATION_ID);
 
-    NotifyRequest notifyRequest = NotifyRequest.builder().withId(NOTIFY_REQUEST_ID).build();
+    NotifyRequest notifyRequest = NotifyRequest.builder().id(NOTIFY_REQUEST_ID).build();
     notifyRequestReceiver.process(notifyRequest);
 
     verify(notifyService, times(1)).process(eq(notifyRequest));
@@ -72,7 +72,7 @@ public class NotifyRequestReceiverTest {
     when(notifyService.process(any(NotifyRequest.class)))
         .thenThrow(new NotificationClientException(new Exception()));
 
-    NotifyRequest notifyRequest = NotifyRequest.builder().withId(NOTIFY_REQUEST_ID).build();
+    NotifyRequest notifyRequest = NotifyRequest.builder().id(NOTIFY_REQUEST_ID).build();
     try {
       notifyRequestReceiver.process(notifyRequest);
       fail();
@@ -93,7 +93,7 @@ public class NotifyRequestReceiverTest {
     // Given Notify is Disabled
     when(notifyConfiguration.getEnabled()).thenReturn(false);
 
-    NotifyRequest notifyRequest = NotifyRequest.builder().withId(NOTIFY_REQUEST_ID).build();
+    NotifyRequest notifyRequest = NotifyRequest.builder().id(NOTIFY_REQUEST_ID).build();
     notifyRequestReceiver.process(notifyRequest);
 
     verify(notifyService, times(0)).process(eq(notifyRequest));

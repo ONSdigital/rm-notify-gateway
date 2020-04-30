@@ -1,11 +1,11 @@
 package uk.gov.ons.ctp.response.notify.utility;
 
 import java.math.BigDecimal;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.notify.action.ActionAddress;
+import uk.gov.ons.ctp.response.notify.action.ActionContact;
+import uk.gov.ons.ctp.response.notify.action.ActionEvent;
+import uk.gov.ons.ctp.response.notify.action.ActionInstruction;
+import uk.gov.ons.ctp.response.notify.action.ActionRequest;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.SendEmailResponse;

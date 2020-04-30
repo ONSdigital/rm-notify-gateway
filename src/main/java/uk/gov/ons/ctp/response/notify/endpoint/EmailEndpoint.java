@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
-import uk.gov.ons.ctp.common.error.InvalidRequestException;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
-import uk.gov.ons.ctp.response.notify.representation.NotifyRequestForEmailDTO;
-import uk.gov.ons.ctp.response.notify.representation.ResponseDTO;
+import uk.gov.ons.ctp.response.notify.common.CTPEndpoint;
+import uk.gov.ons.ctp.response.notify.common.InvalidRequestException;
+import uk.gov.ons.ctp.response.notify.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.notify.NotifyRequestForEmailDTO;
+import uk.gov.ons.ctp.response.notify.notify.ResponseDTO;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
 
 /** The REST endpoint controller for Email Messages */
