@@ -7,8 +7,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.MvcHelper.postJson;
-import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.notify.lib.MvcHelper.postJson;
+import static uk.gov.ons.ctp.response.notify.lib.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
