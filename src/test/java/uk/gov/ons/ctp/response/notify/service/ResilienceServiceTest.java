@@ -36,9 +36,9 @@ public class ResilienceServiceTest {
     // Given a message needs sending
     NotifyRequest notifyRequest =
         NotifyRequest.builder()
-            .templateId(TEMPLATE_ID)
-            .phoneNumber(PHONE_NUMBER)
-            .reference(MESSAGE_REFERENCE)
+            .withTemplateId(TEMPLATE_ID)
+            .withPhoneNumber(PHONE_NUMBER)
+            .withReference(MESSAGE_REFERENCE)
             .build();
 
     // When the Resilience service is called

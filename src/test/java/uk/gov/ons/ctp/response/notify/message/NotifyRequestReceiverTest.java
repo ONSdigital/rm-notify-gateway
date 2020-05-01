@@ -49,7 +49,7 @@ public class NotifyRequestReceiverTest {
     when(notifyConfiguration.getEnabled()).thenReturn(true);
     when(notifyService.process(any(NotifyRequest.class))).thenReturn(NOTIFICATION_ID);
 
-    NotifyRequest notifyRequest = NotifyRequest.builder().id(NOTIFY_REQUEST_ID).build();
+    NotifyRequest notifyRequest = NotifyRequest.builder().withId(NOTIFY_REQUEST_ID).build();
     notifyRequestReceiver.process(notifyRequest);
 
     verify(notifyService, times(1)).process(eq(notifyRequest));
@@ -72,7 +72,7 @@ public class NotifyRequestReceiverTest {
     when(notifyService.process(any(NotifyRequest.class)))
         .thenThrow(new NotificationClientException(new Exception()));
 
-    NotifyRequest notifyRequest = NotifyRequest.builder().id(NOTIFY_REQUEST_ID).build();
+    NotifyRequest notifyRequest = NotifyRequest.builder().withId(NOTIFY_REQUEST_ID).build();
     try {
       notifyRequestReceiver.process(notifyRequest);
       fail();
@@ -93,7 +93,7 @@ public class NotifyRequestReceiverTest {
     // Given Notify is Disabled
     when(notifyConfiguration.getEnabled()).thenReturn(false);
 
-    NotifyRequest notifyRequest = NotifyRequest.builder().id(NOTIFY_REQUEST_ID).build();
+    NotifyRequest notifyRequest = NotifyRequest.builder().withId(NOTIFY_REQUEST_ID).build();
     notifyRequestReceiver.process(notifyRequest);
 
     verify(notifyService, times(0)).process(eq(notifyRequest));

@@ -261,11 +261,11 @@ public class NotifyServiceTest {
 
     notifyService.process(
         NotifyRequest.builder()
-            .id(NOTIFY_REQUEST_ID)
-            .templateId(TEMPLATE_ID)
-            .reference(MESSAGE_REFERENCE)
-            .phoneNumber(VALID_PHONE_NUMBER)
-            .personalisation(
+            .withId(NOTIFY_REQUEST_ID)
+            .withTemplateId(TEMPLATE_ID)
+            .withReference(MESSAGE_REFERENCE)
+            .withPhoneNumber(VALID_PHONE_NUMBER)
+            .withPersonalisation(
                 String.format(
                     PERSONALISATION_FORMAT_FROM_ORIKA,
                     IAC_KEY,
@@ -298,11 +298,11 @@ public class NotifyServiceTest {
 
     notifyService.process(
         NotifyRequest.builder()
-            .id(NOTIFY_REQUEST_ID)
-            .templateId(TEMPLATE_ID)
-            .reference(MESSAGE_REFERENCE)
-            .emailAddress(VALID_EMAIL_ADDRESS)
-            .personalisation(
+            .withId(NOTIFY_REQUEST_ID)
+            .withTemplateId(TEMPLATE_ID)
+            .withReference(MESSAGE_REFERENCE)
+            .withEmailAddress(VALID_EMAIL_ADDRESS)
+            .withPersonalisation(
                 String.format(
                     PERSONALISATION_FORMAT_FROM_ORIKA,
                     IAC_KEY,
