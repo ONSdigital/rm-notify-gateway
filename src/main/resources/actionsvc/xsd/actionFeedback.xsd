@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://ons.gov.uk/ctp/response/action/message/feedback"
+  targetNamespace="http://ons.gov.uk/ctp/response/action/message/feedback">
+
+  <!-- root element of a feedback message to the action service # Tag to verify latest code ends up in artifactory (zzz) -->
+  <xs:element name="actionFeedback" type="ActionFeedback"/>
+
+  <xs:complexType name="ActionFeedback">
+    <xs:sequence>
+      <xs:element name="actionId" type="xs:string"/>
+      <xs:element name="situation">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="100"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="outcome" type="Outcome"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="Outcome">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REQUEST_FAILED" />
+      <xs:enumeration value="REQUEST_ACCEPTED" />
+      <xs:enumeration value="REQUEST_COMPLETED" />
+      <xs:enumeration value="REQUEST_DECLINED" />
+      <xs:enumeration value="REQUEST_COMPLETED_DEACTIVATE" />
+      <xs:enumeration value="REQUEST_COMPLETED_DISABLE" />
+      <xs:enumeration value="CANCELLATION_FAILED" />
+      <xs:enumeration value="CANCELLATION_ACCEPTED" />
+      <xs:enumeration value="CANCELLATION_COMPLETED" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
