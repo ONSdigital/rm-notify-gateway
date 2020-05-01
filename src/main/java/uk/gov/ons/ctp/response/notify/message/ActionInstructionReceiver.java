@@ -96,16 +96,6 @@ public class ActionInstructionReceiver {
 
     String phoneNumber = actionContact.getPhoneNumber();
     if (phoneNumber != null) {
-      // TODO For BRES, currently removing the number to stop any SMS being sent by error. This
-      // null phone number is
-      // TODO also used as the switch in NotifyServiceImpl to determine whether to processSms or
-      // processEmail.
-      // TODO Plan for when we produce a solution serving both BRES & Census.
-      //        phoneNumber = phoneNumber.replaceAll("\\s+","");  // removes all whitespaces and
-      // non-visible characters (e.g., tab, \n).
-      //        phoneNumber = phoneNumber.replaceAll("\\(", "");
-      //        phoneNumber = phoneNumber.replaceAll("\\)", "");
-      //        actionContact.setPhoneNumber(phoneNumber);
       actionContact.setPhoneNumber(null);
     }
 

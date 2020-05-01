@@ -50,11 +50,13 @@ public class NotifyService {
   public static final String NOTIFY_SMS_SENT = "Notify Sms Sent";
   public static final String REGION_CODE = "REGION";
   public static final String LEGAL_BASIS = "LEGAL_BASIS";
+  public static final String SURVEY_CLASSIFIER = "SURVEY";
   public static final String REMINDER_EMAIL = "BSRE";
   public static final String NOTIFICATION_EMAIL = "BSNE";
   public static final String REMINDER = "REMINDER";
   public static final String NOTIFICATION = "NOTIFICATION";
   public static final String COMMUNICATION_TYPE = "COMMUNICATION_TYPE";
+  public static final String COVID_SURVEY_ID = "283";
   @Autowired private NotifyConfiguration notifyConfiguration;
   @Autowired private NotificationClientApi notificationClient;
   @Autowired private CommsTemplateClient commsTemplateClient;
@@ -239,6 +241,13 @@ public class NotifyService {
         Outcome.REQUEST_COMPLETED);
   }
 
+  /**
+   * Gets the templateId required by the Gov Notify service to know which template to use.
+   *
+   * @param actionRequest An actionRequest object
+   * @return A string with the uuid of the template stored in the Gov Notify service
+   * @throws CommsTemplateClientException
+   */
   private String getTemplateIdByClassifiers(final ActionRequest actionRequest)
       throws CommsTemplateClientException {
     MultiValueMap<String, String> classifiers = getClassifiers(actionRequest);
@@ -260,6 +269,13 @@ public class NotifyService {
       List<String> region = new ArrayList<>();
       region.add(actionRequest.getRegion());
       classifierMap.put(REGION_CODE, region);
+    }
+
+    if (actionRequest.getSurveyRef() != null
+        && actionRequest.getSurveyRef().equals(COVID_SURVEY_ID)) {
+      List<String> survey = new ArrayList<>();
+      survey.add(actionRequest.getSurveyRef());
+      classifierMap.put(SURVEY_CLASSIFIER, survey);
     }
 
     if (NOTIFICATION_EMAIL.equalsIgnoreCase(actionRequest.getActionType())) {
