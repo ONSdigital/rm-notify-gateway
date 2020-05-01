@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://ons.gov.uk/ctp/response/action/message/instruction"
+           targetNamespace="http://ons.gov.uk/ctp/response/action/message/instruction">
+
+    <!-- The root element for an outbound action instruction to an action consumer -->
+    <xs:element name="actionInstruction" type="ActionInstruction"/>
+
+    <xs:complexType name="ActionInstruction">
+        <xs:choice>
+            <xs:element name="actionRequest" type="ActionRequest"/>
+            <xs:element name="actionUpdate" type="ActionUpdate"/>
+            <xs:element name="actionCancel" type="ActionCancel"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="ActionContact">
+        <xs:sequence>
+            <xs:element name="title" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="forename" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="surname" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="phoneNumber" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="emailAddress" type="xs:string"
+                        minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ruName" type="xs:string"
+                        minOccurs="0" maxOccurs="1"/>
+            <xs:element name="tradingStyle" type="xs:string"
+                        minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- a complex type for addresses - no statistical geography info -->
+    <xs:complexType name="ActionAddress">
+        <xs:sequence>
+            <xs:element name="type" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="estabType" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="locality" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="organisationName" type="xs:string"
+                        minOccurs="0" maxOccurs="1"/>
+            <xs:element name="category" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="line1" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="line2" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="townName" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="postcode" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="country" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="ladCode" type="xs:string" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="latitude" type="xs:decimal" minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="longitude" type="xs:decimal" minOccurs="0"
+                        maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- a complex type for request instructions -->
+    <xs:complexType name="ActionRequest">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:sequence>
+                    <xs:element name="actionPlan" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="actionType" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="questionSet" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="contact" type="ActionContact" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="address" type="ActionAddress" minOccurs="0"/>
+                    <xs:element name="legalBasis" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="region" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="respondentStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="enrolmentStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="caseGroupStatus" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="caseId" type="xs:string" minOccurs="0"/>
+                    <xs:element name="priority" type="Priority" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="caseRef" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="iac" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="events" type="ActionEvent"/>
+                    <xs:element name="exerciseRef" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="userDescription" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="surveyName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="surveyRef" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="returnByDate" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="sampleUnitRef" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- a complex and reused type constraining the priority element -->
+    <xs:simpleType name="Priority">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="highest"/>
+            <xs:enumeration value="higher"/>
+            <xs:enumeration value="medium"/>
+            <xs:enumeration value="lower"/>
+            <xs:enumeration value="lowest"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <!-- a complex type for containing multiple action event elements -->
+    <xs:complexType name="ActionEvent">
+        <xs:sequence>
+            <xs:element name="event" type="xs:string" minOccurs="0"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <!-- a complex type for cancel instructions -->
+    <xs:complexType name="ActionCancel">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:sequence>
+                    <xs:element name="reason" type="xs:string"/>
+                    <xs:element name="caseId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="caseRef" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- a complex type for update instructions -->
+    <xs:complexType name="ActionUpdate">
+        <xs:complexContent>
+            <xs:extension base="Action">
+                <xs:sequence>
+                    <xs:element name="priority" type="Priority"/>
+                    <xs:element name="events" type="ActionEvent"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+    <xs:complexType name="Action">
+        <xs:sequence>
+            <xs:element name="actionId" type="xs:string"/>
+            <xs:element name="responseRequired" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

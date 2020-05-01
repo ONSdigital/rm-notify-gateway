@@ -61,6 +61,8 @@ public class ActionFeedback {
     this.outcome = outcome;
   }
 
+  public ActionFeedback() {}
+
   /**
    * Gets the value of the actionId property.
    *
