@@ -218,6 +218,18 @@
             <version>1.1.11</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.codesup.util</groupId>
+            <artifactId>jaxb2-rich-contract-plugin</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics</artifactId>
+            <version>0.12.0</version>
+        </dependency>
+
         <!-- Third party end -->
 
         <!-- Testing -->
@@ -270,7 +282,6 @@
             <scope>test</scope>
         </dependency>
         <!-- Testing end -->
-
     </dependencies>
 
     <build>
@@ -351,6 +362,104 @@
                             </buildArgs>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <executions>
+                <execution>
+                    <phase>generate-sources</phase>
+                    <id>inbound</id>
+                    <goals>
+                    <goal>generate</goal>
+                    </goals>
+                    <configuration>
+                    <bindingDirectory>src/main/resources/actionsvc/xsd</bindingDirectory>
+                    <bindingIncludes>
+                        <include>actionFeedback.xjb</include>
+                    </bindingIncludes>
+                    <bindingExcludes>
+                        <include>actionInstruction.xjb</include>
+                    </bindingExcludes>
+                    <schemaDirectory>src/main/resources/actionsvc/xsd</schemaDirectory>
+                    <schemaIncludes>
+                        <include>actionFeedback.xsd</include>
+                    </schemaIncludes>
+                    <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound</generateDirectory>
+                    <args>
+                        <arg>-Xvalue-constructor</arg>
+                        <arg>-Xfluent-builder</arg>
+                        <arg>-generateTools=n</arg>
+                        <arg>-XsimpleEquals</arg>
+                        <arg>-XsimpleHashCode</arg>
+                        <arg>-XtoString</arg>
+                    </args>
+                    <plugins>
+                        <plugin>
+                        <groupId>net.codesup.util</groupId>
+                        <artifactId>jaxb2-rich-contract-plugin</artifactId>
+                        <version>1.18.0</version>
+                        </plugin>
+                        <plugin>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-value-constructor</artifactId>
+                        <version>3.0</version>
+                        </plugin>
+                        <plugin>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-basics</artifactId>
+                        <version>0.12.0</version>
+                        </plugin>
+                    </plugins>
+                    </configuration>
+                </execution>
+                <execution>
+                    <phase>generate-sources</phase>
+                    <id>outbound</id>
+                    <goals>
+                    <goal>generate</goal>
+                    </goals>
+                    <configuration>
+                    <bindingDirectory>src/main/resources/actionsvc/xsd</bindingDirectory>
+                    <bindingIncludes>
+                        <include>actionInstruction.xjb</include>
+                    </bindingIncludes>
+                    <bindingExcludes>
+                        <include>actionFeedback.xjb</include>
+                    </bindingExcludes>
+                    <schemaDirectory>src/main/resources/actionsvc/xsd</schemaDirectory>
+                    <schemaIncludes>
+                        <include>actionInstruction.xsd</include>
+                    </schemaIncludes>
+                    <generateDirectory>${project.build.directory}/generated-sources/xjc/outbound</generateDirectory>
+                    <args>
+                        <arg>-Xvalue-constructor</arg>
+                        <arg>-Xfluent-builder</arg>
+                        <arg>-generateTools=n</arg>
+                        <arg>-XsimpleEquals</arg>
+                        <arg>-XsimpleHashCode</arg>
+                        <arg>-XtoString</arg>
+                    </args>
+                    <plugins>
+                        <plugin>
+                        <groupId>net.codesup.util</groupId>
+                        <artifactId>jaxb2-rich-contract-plugin</artifactId>
+                        <version>1.18.0</version>
+                        </plugin>
+                        <plugin>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-value-constructor</artifactId>
+                        <version>3.0</version>
+                        </plugin>
+                        <plugin>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-basics</artifactId>
+                        <version>0.12.0</version>
+                        </plugin>
+                    </plugins>
+                    </configuration>
+                </execution>
                 </executions>
             </plugin>
         </plugins>

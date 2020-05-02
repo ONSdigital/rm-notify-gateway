@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,11 +58,12 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.ons.ctp.response.notify.lib.action.ActionFeedback;
-import uk.gov.ons.ctp.response.notify.lib.action.ActionRequest;
-import uk.gov.ons.ctp.response.notify.lib.action.Outcome;
+import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionFeedback;
+import uk.gov.ons.ctp.response.notify.lib.action.inbound.Outcome;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionRequest;
 import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
