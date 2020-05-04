@@ -1,4 +1,6 @@
 name := notifygatewaysvc
+docker-name := notify-gateway
+sha := $(shell git rev-parse --short HEAD)
 
 .PHONY: all
 all: clean verify docker
@@ -16,8 +18,5 @@ verify:
 
 .PHONY: docker
 docker:
-ifndef tag
-	$(error No tag provided. Aborting build)
-endif
-	docker build -f _infra/docker/Dockerfile --tag eu.gcr.io/ons-rasrmbs-management/$(name):$(tag) .
-	docker push eu.gcr.io/ons-rasrmbs-management/$(name):$(tag)
+	docker build -f _infra/docker/Dockerfile --tag eu.gcr.io/ons-rasrmbs-management/$(docker-name):$(sha) .
+	docker push eu.gcr.io/ons-rasrmbs-management/$(docker-name):$(sha)
