@@ -23,8 +23,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionFeedback;
-import uk.gov.ons.ctp.response.notify.lib.action.inbound.Outcome;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.Outcome;
 import uk.gov.service.notify.NotificationClientException;
 
 /**

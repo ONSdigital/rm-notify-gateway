@@ -61,9 +61,9 @@ import org.springframework.util.MultiValueMap;
 
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionFeedback;
-import uk.gov.ons.ctp.response.notify.lib.action.inbound.Outcome;
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionRequest;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.Outcome;
+import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionRequest;
 import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;

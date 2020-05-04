@@ -6,7 +6,7 @@
 //
 
 
-package uk.gov.ons.ctp.response.notify.lib.action.outbound;
+package uk.gov.ons.ctp.response.notify.lib.action.inbound;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
