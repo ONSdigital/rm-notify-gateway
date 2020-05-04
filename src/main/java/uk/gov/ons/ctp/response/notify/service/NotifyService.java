@@ -2,27 +2,30 @@ package uk.gov.ons.ctp.response.notify.service;
 
 import static uk.gov.ons.ctp.response.notify.message.ActionInstructionReceiver.SITUATION_MAX_LENGTH;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
-import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import liquibase.util.StringUtils;
+
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
+import com.google.common.base.Splitter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
-import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+
+import liquibase.util.StringUtils;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.Outcome;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
+import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionContact;
+import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionRequest;
+import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientApi;

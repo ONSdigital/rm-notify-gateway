@@ -2,7 +2,7 @@ package uk.gov.ons.ctp.response.notify.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.any;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -14,8 +14,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
+import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 
 /** To unit test ResilienceService */
 @RunWith(MockitoJUnitRunner.class)

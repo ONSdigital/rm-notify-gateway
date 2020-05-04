@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.domain.model.Message;
 import uk.gov.ons.ctp.response.notify.domain.repository.MessageRepository;
+import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.message.NotifyRequestPublisher;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
 
 @Service
 public class ResilienceService {

@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.notify.client;
 
-import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
 
 public class CommsTemplateClientException extends CTPException {
 

@@ -1,25 +1,28 @@
 package uk.gov.ons.ctp.response.notify.message;
 
-import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForEmailDTO.EMAIL_ADDRESS_REGEX;
-import static uk.gov.ons.ctp.response.notify.representation.NotifyRequestForSMSDTO.TELEPHONE_REGEX;
+import static uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequestForEmailDTO.EMAIL_ADDRESS_REGEX;
+import static uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequestForSMSDTO.TELEPHONE_REGEX;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_SMS_NOT_SENT;
+
+import java.util.regex.Pattern;
 
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
-import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.response.action.factory.ActionFeedbackFactory;
-import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
-import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
-import uk.gov.ons.ctp.response.action.representation.Situation;
+
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
+import uk.gov.ons.ctp.response.notify.lib.action.ActionFeedbackFactory;
+import uk.gov.ons.ctp.response.notify.lib.action.Situation;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
+import uk.gov.ons.ctp.response.notify.lib.action.outbound.Outcome;
+import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionContact;
+import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionInstruction;
+import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.service.notify.NotificationClientException;
 

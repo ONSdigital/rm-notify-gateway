@@ -4,10 +4,10 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.notify.domain.Response;
-import uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest;
-import uk.gov.ons.ctp.response.notify.representation.NotifyRequestForEmailDTO;
-import uk.gov.ons.ctp.response.notify.representation.NotifyRequestForSMSDTO;
-import uk.gov.ons.ctp.response.notify.representation.ResponseDTO;
+import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
+import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequestForEmailDTO;
+import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequestForSMSDTO;
+import uk.gov.ons.ctp.response.notify.lib.notify.ResponseDTO;
 
 /** The bean mapper that maps to/from DTOs and JPA entity types. */
 @Component

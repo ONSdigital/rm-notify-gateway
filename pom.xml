@@ -1,50 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>notifygatewaysvc</artifactId>
+    <groupId>uk.gov.onsdigital</groupId>
+    <artifactId>rm-notify-gateway</artifactId>
     <version>10.49.17-SNAPSHOT</version>
     <packaging>jar</packaging>
-
-    <name>CTP : NotifyGatewayService</name>
-    <description>CTP : NotifyGatewayService</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <surefire.version>2.20</surefire.version>
     </properties>
-
-    <parent>
-        <groupId>uk.gov.ons.ctp.product</groupId>
-        <artifactId>rm-common-config</artifactId>
-        <version>10.49.13</version>
-    </parent>
-
-    <profiles>
-        <profile>
-            <id>artifactory</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>notify-repo</id>
-                    <url>http://artifactory-sdc.onsdigital.uk/artifactory/Gov-uk-notify-bintray</url>
-                </repository>
-            </repositories>
-            <distributionManagement>
-                <repository>
-                    <id>central</id>
-                    <name>libs-release</name>
-                    <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-release-local</url>
-                </repository>
-                <snapshotRepository>
-                    <id>snapshots</id>
-                    <name>libs-snapshots</name>
-                    <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-    </profiles>
 
     <scm>
         <connection>scm:git:https://github.com/ONSdigital/rm-notify-gateway</connection>
@@ -64,102 +31,102 @@
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
             </exclusions>
+            <version>1.5.6.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>1.5.6.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>1.5.6.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jetty</artifactId>
+            <version>1.5.6.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
+            <version>1.5.6.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+            <version>1.5.6.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.amqp</groupId>
             <artifactId>spring-rabbit</artifactId>
+            <version>1.7.3.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-core</artifactId>
+            <version>4.3.11.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-xml</artifactId>
+            <version>4.3.11.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-amqp</artifactId>
+            <version>4.3.11.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-spring-service-connector</artifactId>
+            <version>1.2.4.RELEASE</version>
         </dependency>
         
         <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-sleuth-zipkin -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+            <version>1.2.1.RELEASE</version>
         </dependency>
 
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.7.0</version>
         </dependency>
 
         <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+            <version>1.2.4.RELEASE</version>
         </dependency>
         <!-- SPRING END -->
 
-        <!-- ONS libraries-->
         <dependency>
             <groupId>uk.gov.service.notify</groupId>
             <artifactId>notifications-java-client</artifactId>
             <version>3.3.1-RELEASE</version>
         </dependency>
-
-        <dependency>
-            <groupId>uk.gov.ons.ctp.product</groupId>
-            <artifactId>notifygatewaysvc-api</artifactId>
-            <version>10.49.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>uk.gov.ons.ctp.product</groupId>
-            <artifactId>actionsvc-api</artifactId>
-            <version>10.49.32</version>
-        </dependency>
-
-        <dependency>
-            <groupId>uk.gov.ons.ctp.common</groupId>
-            <artifactId>framework</artifactId>
-            <version>10.49.21</version>
-        </dependency>
-        <!-- ONS END -->
 
         <!-- Third party libraries -->
 
@@ -169,32 +136,50 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
         </dependency>
 
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
+            <version>4.11</version>
         </dependency>
 
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+            <version>3.5.3</version>
         </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+            <version>9.4.1212.jre7</version>
         </dependency>
 
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-eclipse-tools</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>orika-core</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jodd</groupId>
+            <artifactId>jodd-bean</artifactId>
+            <version>3.7.1</version>
         </dependency>
 
         <dependency>
             <groupId>net.sourceforge.cobertura</groupId>
             <artifactId>cobertura</artifactId>
+            <version>2.1.1</version>
         </dependency>
 
         <dependency>
@@ -206,35 +191,97 @@
         <dependency>
             <groupId>com.godaddy</groupId>
             <artifactId>logging</artifactId>
+            <version>1.2.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.8.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.18</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.codesup.util</groupId>
+            <artifactId>jaxb2-rich-contract-plugin</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics</artifactId>
+            <version>0.12.0</version>
+        </dependency>
+
         <!-- Third party end -->
 
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <version>4.3.10.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>uk.gov.ons.ctp.common</groupId>
-            <artifactId>test-framework</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>1.5.6.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <version>6.11</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.3</version>
             <scope>test</scope>
         </dependency>
         <!-- Testing end -->
-
     </dependencies>
 
     <build>
@@ -243,6 +290,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.6.2</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -269,10 +321,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.coveo</groupId>
-                <artifactId>fmt-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

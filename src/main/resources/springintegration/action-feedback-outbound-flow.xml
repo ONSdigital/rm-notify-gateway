@@ -8,7 +8,7 @@
   http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
   <bean id="actionFeedbackMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-    <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback"/>
+    <property name="contextPath" value="uk.gov.ons.ctp.response.notify.lib.action.outbound"/>
   </bean>
 
   <bean id="actionFeedbackMarshallingMessageConverter"

@@ -8,7 +8,7 @@
   http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
   <bean id="notifyRequestMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-    <property name="contextPath" value="uk.gov.ons.ctp.response.notify.message.notify"/>
+    <property name="contextPath" value="uk.gov.ons.ctp.response.notify.lib.notify"/>
   </bean>
 
   <bean id="notifyRequestMarshallingMessageConverter"

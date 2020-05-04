@@ -14,9 +14,9 @@ import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.ons.ctp.common.error.RestExceptionHandler;
-import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.notify.config.AppConfig;
+import uk.gov.ons.ctp.response.notify.lib.common.RestExceptionHandler;
+import uk.gov.ons.ctp.response.notify.lib.common.RestUtility;
 
 /** The main application class */
 @IntegrationComponentScan

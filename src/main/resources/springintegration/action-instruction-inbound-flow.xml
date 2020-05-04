@@ -41,12 +41,12 @@
     discard-channel="actionInstructionInvalidXml"/>
 
   <bean id="actionInstructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-    <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction"/>
+    <property name="contextPath" value="uk.gov.ons.ctp.response.notify.lib.action.inbound"/>
   </bean>
 
   <!-- The now validated xml is transformed into the jaxb generated object model -->
   <int:channel id="actionInstructionTransformed"
-    datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction"/>
+    datatype="uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionInstruction"/>
   <int-xml:unmarshalling-transformer
     input-channel="actionInstructionXmlValid" output-channel="actionInstructionTransformed"
     unmarshaller="actionInstructionMarshaller"/>
@@ -83,7 +83,7 @@
     <property name="retryPolicy" ref="ctpRetryPolicy"/>
   </bean>
 
-  <bean id="ctpRetryPolicy" class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
+  <bean id="ctpRetryPolicy" class="uk.gov.ons.ctp.response.notify.lib.common.CTPRetryPolicy">
     <constructor-arg type="int">
       <value>${messaging.maxAttempts}</value>
     </constructor-arg>

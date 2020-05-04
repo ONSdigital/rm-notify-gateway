@@ -40,7 +40,7 @@
 
   <!-- The now validated xml is transformed into the jaxb generated object model -->
   <int:channel id="notifyRequestTransformed"
-    datatype="uk.gov.ons.ctp.response.notify.message.notify.NotifyRequest"/>
+    datatype="uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest"/>
   <int-xml:unmarshalling-transformer
     input-channel="notifyRequestXmlValid" output-channel="notifyRequestTransformed"
     unmarshaller="notifyRequestMarshaller"/>
@@ -74,7 +74,7 @@
       </bean>
     </property>
     <property name="retryPolicy">
-      <bean class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
+      <bean class="uk.gov.ons.ctp.response.notify.lib.common.CTPRetryPolicy">
         <constructor-arg type="int">
           <value>${messaging.maxAttempts}</value>
         </constructor-arg>
