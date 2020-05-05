@@ -6,7 +6,7 @@
 //
 
 
-package uk.gov.ons.ctp.response.notify.lib.action.inbound;
+package uk.gov.ons.ctp.response.action.message.instruction;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

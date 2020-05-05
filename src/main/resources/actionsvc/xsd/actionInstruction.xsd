@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns="http://ons.gov.uk/ctp/response/notify/lib/action/inbound"
-           targetNamespace="http://ons.gov.uk/ctp/response/notify/lib/action/inbound">
+           xmlns="http://ons.gov.uk/ctp/response/action/message/instruction"
+           targetNamespace="http://ons.gov.uk/ctp/response/action/message/instruction">
 
     <!-- The root element for an outbound action instruction to an action consumer -->
     <xs:element name="actionInstruction" type="ActionInstruction"/>

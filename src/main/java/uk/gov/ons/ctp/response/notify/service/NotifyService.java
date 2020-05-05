@@ -18,13 +18,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import liquibase.util.StringUtils;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.Outcome;
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
-import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionContact;
-import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionRequest;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.Notification;

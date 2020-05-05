@@ -6,7 +6,7 @@
 //
 
 
-package uk.gov.ons.ctp.response.notify.lib.action.outbound;
+package uk.gov.ons.ctp.response.action.message.feedback;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
