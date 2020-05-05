@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns="http://ons.gov.uk/ctp/response/notify/lib/action/inbound/instruction"
+           xmlns="http://ons.gov.uk/ctp/response/notify/lib/action/inbound"
            targetNamespace="http://ons.gov.uk/ctp/response/notify/lib/action/inbound">
 
     <!-- The root element for an outbound action instruction to an action consumer -->
