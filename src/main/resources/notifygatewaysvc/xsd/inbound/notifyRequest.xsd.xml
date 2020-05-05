@@ -1,4 +1,4 @@
-<not:notifyRequest xmlns:not="http://ons.gov.uk/ctp/response/notify/message/notify">
+<not:notifyRequest xmlns:not="http://ons.gov.uk/ctp/response/notify/lib/notify">
   <id>string</id>
   <!--Optional:-->
   <reference>string</reference>

@@ -1,4 +1,4 @@
-<ins:actionInstruction xmlns:ins="http://ons.gov.uk/ctp/response/action/message/instruction">
+<ins:actionInstruction xmlns:ins="http://ons.gov.uk/ctp/response/notify/lib/action/inbound">
   <!--You have a CHOICE of the next 3 items at this level-->
   <actionRequest>
     <actionId>string</actionId>

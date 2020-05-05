@@ -1,6 +1,6 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns="http://ons.gov.uk/ctp/response/notify/message/notify"
-  targetNamespace="http://ons.gov.uk/ctp/response/notify/message/notify">
+  xmlns="http://ons.gov.uk/ctp/response/notify/lib/notify"
+  targetNamespace="http://ons.gov.uk/ctp/response/notify/lib/notify">
 
   <xsd:element name="notifyRequest" type="NotifyRequest"/>
 

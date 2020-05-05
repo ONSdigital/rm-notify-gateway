@@ -5,5 +5,5 @@
 // Generated on: 2020.05.01 at 04:09:47 PM BST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://ons.gov.uk/ctp/response/notify/message/notify")
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://ons.gov.uk/ctp/response/notify/lib/notify")
 package uk.gov.ons.ctp.response.notify.lib.notify;
