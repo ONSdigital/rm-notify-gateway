@@ -94,13 +94,6 @@
             <artifactId>spring-cloud-spring-service-connector</artifactId>
             <version>1.2.4.RELEASE</version>
         </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-sleuth-zipkin -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
-            <version>1.2.1.RELEASE</version>
-        </dependency>
 
         <dependency>
             <groupId>io.springfox</groupId>
