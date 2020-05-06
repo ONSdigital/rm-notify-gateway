@@ -1,9 +1,9 @@
 package uk.gov.ons.ctp.response.notify.service;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
-import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_EMAIL_SENT;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_SMS_SENT;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.ACTION_ID;
@@ -21,10 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.Outcome;
 import uk.gov.service.notify.NotificationClientException;
 
 /**

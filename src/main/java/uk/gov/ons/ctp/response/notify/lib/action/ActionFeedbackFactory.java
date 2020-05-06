@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.notify.lib.action;
 
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.Outcome;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 
 public class ActionFeedbackFactory {
   public static ActionFeedback create(String actionId, Situation situation, Outcome outcome) {

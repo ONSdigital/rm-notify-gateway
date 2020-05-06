@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.notify.message;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.fail;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -18,12 +18,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
 import uk.gov.ons.ctp.response.notify.lib.action.ActionFeedbackFactory;
 import uk.gov.ons.ctp.response.notify.lib.action.Situation;
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.Outcome;
-import uk.gov.ons.ctp.response.notify.lib.action.inbound.ActionRequest;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
 import uk.gov.service.notify.NotificationClientException;

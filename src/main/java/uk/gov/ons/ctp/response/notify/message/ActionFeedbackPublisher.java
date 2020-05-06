@@ -10,7 +10,7 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.gov.ons.ctp.response.notify.lib.action.outbound.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 
 /** The service that publishes ActionFeedbacks to queue. */
 @MessageEndpoint
