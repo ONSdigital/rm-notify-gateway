@@ -425,6 +425,16 @@ public class NotifyServiceTest {
     assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
   }
 
+  @Test
+  public void testGetClassifiersMapReminderWithCovidSurveyRef() {
+    ActionRequest actionRequest = createActionRequest("BSRE", "", "Voluntary Not Stated", "283");
+    MultiValueMap<String, String> expectedClassifierMap =
+            getExpectedClassifiersMap("REMINDER", "", "Voluntary Not Stated", "283");
+    MultiValueMap<String, String> actualClassifiersMap =
+            notifyService.getClassifiers(actionRequest);
+    assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
+  }
+
   private ActionRequest createActionRequest(String actionType, String region, String legalBasis, String surveyRef) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setActionType(actionType);
