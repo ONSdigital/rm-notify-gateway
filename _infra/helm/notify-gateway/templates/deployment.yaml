@@ -205,5 +205,7 @@ spec:
             value: "{{ .Values.zipkin.enabled }}"
           - name: SPRING_ZIPKIN_BASEURL
             value: "http://$(ZIPKIN_SERVICE_HOST):$(ZIPKIN_SERVICE_PORT)/"
+          - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK
+            value: "{{ .Values.logging.level }}"
           resources:
             {{ toYaml .Values.resources | nindent 12 }}

@@ -47,3 +47,6 @@ managedRabbitMQ:
 dns:
   enabled: false
   wellKnownPort: 8080
+
+logging:
+  level: info
