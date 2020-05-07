@@ -397,9 +397,9 @@ public class NotifyServiceTest {
 
   @Test
   public void testGetClassifiersMapNotification() {
-    ActionRequest actionRequest = createActionRequest("BSNE", "YY", "Statistics of Trade Act 1947");
+    ActionRequest actionRequest = createActionRequest("BSNE", "YY", "Statistics of Trade Act 1947", "");
     MultiValueMap<String, String> expectedClassifierMap =
-        getExpectedClassifiersMap("NOTIFICATION", "YY", "Statistics of Trade Act 1947");
+        getExpectedClassifiersMap("NOTIFICATION", "YY", "Statistics of Trade Act 1947", "");
     MultiValueMap<String, String> actualClassifiersMap =
         notifyService.getClassifiers(actionRequest);
     assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
@@ -407,37 +407,76 @@ public class NotifyServiceTest {
 
   @Test
   public void testGetClassifiersMapReminder() {
-    ActionRequest actionRequest = createActionRequest("BSRE", "WW", "Statistics of Trade Act 1947");
+    ActionRequest actionRequest = createActionRequest("BSRE", "WW", "Statistics of Trade Act 1947", "");
     MultiValueMap<String, String> expectedClassifierMap =
-        getExpectedClassifiersMap("REMINDER", "WW", "Statistics of Trade Act 1947");
+        getExpectedClassifiersMap("REMINDER", "WW", "Statistics of Trade Act 1947", "");
     MultiValueMap<String, String> actualClassifiersMap =
         notifyService.getClassifiers(actionRequest);
     assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
   }
 
-  private ActionRequest createActionRequest(String actionType, String region, String legalBasis) {
+  @Test
+  public void testGetClassifiersMapNotificationWithCovidSurveyRef() {
+    ActionRequest actionRequest = createActionRequest("BSNE", "", "Voluntary Not Stated", "283");
+    MultiValueMap<String, String> expectedClassifierMap =
+            getExpectedClassifiersMap("NOTIFICATION", "", "Voluntary Not Stated", "283");
+    MultiValueMap<String, String> actualClassifiersMap =
+            notifyService.getClassifiers(actionRequest);
+    assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
+  }
+
+  @Test
+  public void testGetClassifiersMapReminderWithCovidSurveyRef() {
+    ActionRequest actionRequest = createActionRequest("BSRE", "", "Voluntary Not Stated", "283");
+    MultiValueMap<String, String> expectedClassifierMap =
+            getExpectedClassifiersMap("REMINDER", "", "Voluntary Not Stated", "283");
+    MultiValueMap<String, String> actualClassifiersMap =
+            notifyService.getClassifiers(actionRequest);
+    assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
+  }
+
+  private ActionRequest createActionRequest(String actionType, String region, String legalBasis, String surveyRef) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setActionType(actionType);
-    actionRequest.setRegion(region);
     actionRequest.setLegalBasis(legalBasis);
+
+    if (!region.isEmpty()) {
+      actionRequest.setRegion(region);
+    }
+
+    if (!surveyRef.isEmpty()) {
+      actionRequest.setSurveyRef(surveyRef);
+    }
     return actionRequest;
   }
 
   private MultiValueMap<String, String> getExpectedClassifiersMap(
-      final String notificationType, final String region, final String legalBasis) {
+      final String notificationType, final String region, final String legalBasis, final String surveyRef) {
     MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
 
-    List<String> communicationType = new ArrayList<>();
-    communicationType.add(notificationType);
-    classifierMap.put("COMMUNICATION_TYPE", communicationType);
+    if (!notificationType.isEmpty()) {
+      List<String> communicationType = new ArrayList<>();
+      communicationType.add(notificationType);
+      classifierMap.put("COMMUNICATION_TYPE", communicationType);
+    }
 
-    List<String> regionClassifier = new ArrayList<>();
-    regionClassifier.add(region);
-    classifierMap.put("REGION", regionClassifier);
+    if (!region.isEmpty()) {
+      List<String> regionClassifier = new ArrayList<>();
+      regionClassifier.add(region);
+      classifierMap.put("REGION", regionClassifier);
+    }
 
-    List<String> legalBasisClassifier = new ArrayList<>();
-    legalBasisClassifier.add(legalBasis);
-    classifierMap.put("LEGAL_BASIS", legalBasisClassifier);
+    if (!legalBasis.isEmpty()) {
+      List<String> legalBasisClassifier = new ArrayList<>();
+      legalBasisClassifier.add(legalBasis);
+      classifierMap.put("LEGAL_BASIS", legalBasisClassifier);
+    }
+
+    if (!surveyRef.isEmpty()){
+      List<String> surveyClassifier = new ArrayList<>();
+      surveyClassifier.add(surveyRef);
+      classifierMap.put("SURVEY", surveyClassifier);
+    }
 
     return classifierMap;
   }
