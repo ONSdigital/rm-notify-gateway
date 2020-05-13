@@ -38,9 +38,6 @@ notify:
     enabled: false
     infoEnabled: true
 
-zipkin:
-  enabled: false
-
 managedRabbitMQ:
   enabled: false
 
