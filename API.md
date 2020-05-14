@@ -16,26 +16,6 @@ This page documents the Notify Gateway service API endpoints. Apart from the Ser
 }
 ```
 
-## Send Text Message
-* `POST /texts/f3778220-f877-4a3d-80ed-e8fa7d104563` will asynchronously send a text message using the GOV.UK Notify text message template with an ID of `f3778220-f877-4a3d-80ed-e8fa7d104563`.
-
-**Required parameters:** `phoneNumber` as the phone number of the recipient.
-
-*Optional parameters:* `personalisation` as a collection of string name/value pairs of GOV.UK Notify template placeholder values, `reference` as a reference string.
-
-### Example JSON Response
-```json
-{
-  "id": "de0da3c1-2cad-421a-bddd-054ef374c6ab",
-  "reference": "Test text message",
-  "censusUacSmsTemplateId": "f3778220-f877-4a3d-80ed-e8fa7d104563",
-  "fromNumber": "07701234567"
-}
-```
-
-An `HTTP 201 Created` status code is returned if the text message request was successfully enqueued ready for sending by GOV.UK Notify. An `HTTP 400 Bad Request` is returned if the required parameter is missing.
-
-
 ## Send Email
 * `POST /emails/290b93f2-04c2-413d-8f9b-93841e684e90` will asynchronously send an email using the GOV.UK Notify email template with an ID of `290b93f2-04c2-413d-8f9b-93841e684e90`.
 
