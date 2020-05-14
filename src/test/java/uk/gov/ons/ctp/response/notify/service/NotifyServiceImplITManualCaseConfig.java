@@ -27,7 +27,6 @@ public class NotifyServiceImplITManualCaseConfig {
   public NotifyConfiguration notifyConfiguration() {
     NotifyConfiguration notifyConfiguration = new NotifyConfiguration();
     notifyConfiguration.setApiKey(apiKey);
-    notifyConfiguration.setCensusUacSmsTemplateId(censusUacSmsTemplateId);
     notifyConfiguration.setOnsSurveysRasEmailReminderTemplateId(
         onsSurveysRasEmailReminderTemplateId);
     return notifyConfiguration;
