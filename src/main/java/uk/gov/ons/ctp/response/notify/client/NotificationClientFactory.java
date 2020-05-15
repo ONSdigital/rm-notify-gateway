@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.notify.client;
 
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
-import jodd.util.StringUtil;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClientApi;
 
@@ -33,15 +32,5 @@ public class NotificationClientFactory {
     }
 
     return new ConfigurationAwareNotificationClient(config, govNotifyClientFactory.create(config));
-  }
-
-  private NotificationClientApi createExceptionThrowingClient(NotifyConfiguration config) {
-    String httpCode = config.getDebugHttpCode();
-
-    if (!StringUtil.isBlank(httpCode)) {
-      return new ExceptionThrowingNotificationClient(Integer.parseInt(httpCode));
-    }
-
-    return new ExceptionThrowingNotificationClient();
   }
 }
