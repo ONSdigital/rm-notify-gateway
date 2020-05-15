@@ -55,8 +55,10 @@ public class NotifyService {
   public static final String LEGAL_BASIS = "LEGAL_BASIS";
   public static final String SURVEY_CLASSIFIER = "SURVEY";
   public static final String REMINDER_EMAIL = "BSRE";
+  public static final String NUDGE_EMAIL = "BSNUE";
   public static final String NOTIFICATION_EMAIL = "BSNE";
   public static final String REMINDER = "REMINDER";
+  public static final String NUDGE = "NUDGE";
   public static final String NOTIFICATION = "NOTIFICATION";
   public static final String COMMUNICATION_TYPE = "COMMUNICATION_TYPE";
   public static final String COVID_SURVEY_ID = "283";
@@ -289,6 +291,10 @@ public class NotifyService {
       List<String> isReminder = new ArrayList<>();
       isReminder.add(REMINDER);
       classifierMap.put(COMMUNICATION_TYPE, isReminder);
+    } else if (NUDGE_EMAIL.equalsIgnoreCase(actionRequest.getActionType())) {
+      List<String> isNudge = new ArrayList<>();
+      isNudge.add(NUDGE);
+      classifierMap.put(COMMUNICATION_TYPE, isNudge);
     }
 
     return classifierMap;
