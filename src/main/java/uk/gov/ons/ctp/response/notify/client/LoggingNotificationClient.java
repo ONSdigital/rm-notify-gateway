@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.notify.client;
 
 import com.godaddy.logging.Logger;
+
 import java.util.Map;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientApi;
@@ -13,7 +14,7 @@ import uk.gov.service.notify.TemplateList;
 import uk.gov.service.notify.TemplatePreview;
 
 public class LoggingNotificationClient implements NotificationClientApi {
-  private final Logger log;
+  private Logger log;
   private NotificationClientApi client;
 
   public LoggingNotificationClient(NotificationClientApi client, Logger log) {

@@ -1,10 +1,18 @@
 package uk.gov.ons.ctp.response.notify.config;
 
 import lombok.Data;
+
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.gov.ons.ctp.response.notify.client.NotificationClientFactory;
+
+import uk.gov.ons.ctp.response.notify.client.LoggingNotificationClient;
+import uk.gov.ons.ctp.response.notify.client.NullNotificationClient;
+import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientApi;
 
 /** Configuration specific to GOV.UK Notify */
@@ -12,15 +20,13 @@ import uk.gov.service.notify.NotificationClientApi;
 @ConfigurationProperties("notify")
 @Data
 public class NotifyConfiguration {
+
+  private static final Logger log = LoggerFactory.getLogger(NotifyConfiguration.class);
+  @Value("${notify.enabled}")
   private Boolean enabled;
+  @Value("${notify.apiKey}")
   private String apiKey;
-  private String debugHttpCode;
-
-  // NOTE: only team members or emails explicitly whitelisted with notifications.gov.uk can be used
-  // with the override
-  // facility (otherwise notifications.gov.uk will reject).  Also, this feature is only for testing
-  // purposes.
-
+  @Value("${notify.onsSurveysRasEmailReminderTemplateId}")
   private String onsSurveysRasEmailReminderTemplateId;
 
   /**
@@ -30,8 +36,17 @@ public class NotifyConfiguration {
    */
   @Bean
   public NotificationClientApi notificationClient() {
-    NotificationClientFactory factory = new NotificationClientFactory();
+    if (enabled) {
+      return nullNotificationClient();
+    }
+    return loggingNotificationClient();
+  }
 
-    return factory.getNotificationClient(this);
+  private NullNotificationClient nullNotificationClient() {
+    return new NullNotificationClient();
+  }
+
+  private LoggingNotificationClient loggingNotificationClient() {
+    return new LoggingNotificationClient(new NotificationClient(apiKey), log);
   }
 }
