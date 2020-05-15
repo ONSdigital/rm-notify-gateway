@@ -136,11 +136,6 @@ public class LoggingNotificationClientTest {
     verify(logger).debug("generateTemplatePreview");
   }
 
-  @Test
-  public void testGetClient() {
-    assertEquals(wrappedClient, client.getClient());
-  }
-
   private Map<String, String> personalisation() {
     final Map<String, String> personalisations = new HashMap<>();
     personalisations.put("name", "example");
