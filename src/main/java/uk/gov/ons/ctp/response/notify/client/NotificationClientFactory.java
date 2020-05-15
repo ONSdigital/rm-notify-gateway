@@ -18,37 +18,13 @@ public class NotificationClientFactory {
 
   public NotificationClientApi getNotificationClient(NotifyConfiguration config) {
     NotificationClientApi client;
-    String debugTypeString = config.getDebugType();
 
-    client = new LoggingNotificationClient(createClient(config, debugTypeString), log);
+    client = new LoggingNotificationClient(createRealClient(config), log);
 
-    log.with("debug_type", debugTypeString)
-        .with("class_name", client.getClass().getCanonicalName())
+    log.with("class_name", client.getClass().getCanonicalName())
         .debug("Creating NotificationClientApi");
 
     return client;
-  }
-
-  private NotificationClientApi createClient(NotifyConfiguration config, String debugTypeString) {
-    DebugType type = getDebugType(debugTypeString);
-
-    if (type == DebugType.NotifyClientException) {
-      return createExceptionThrowingClient(config);
-    }
-
-    if (type == DebugType.RuntimeException) {
-      return new RuntimeExceptionThrowingNotificationClient();
-    }
-
-    return createRealClient(config);
-  }
-
-  private DebugType getDebugType(String debugTypeString) {
-    DebugType type = DebugType.None;
-    if (!StringUtil.isBlank(debugTypeString)) {
-      type = DebugType.valueOf(debugTypeString);
-    }
-    return type;
   }
 
   private NotificationClientApi createRealClient(NotifyConfiguration config) {
@@ -67,18 +43,5 @@ public class NotificationClientFactory {
     }
 
     return new ExceptionThrowingNotificationClient();
-  }
-
-  /**
-   * An enum to represent the different possible configurations. Parsed from notify.debugType
-   * application.yml configuration item (or env etc) None - default, uses
-   * ConfigurationAwareNotificationClient NotifyClientException - uses an
-   * ExceptionThrowingNotificationClient with an optional supplied httpCode RuntimeException - uses
-   * RuntimeExceptionThrowingNotificationClient
-   */
-  public enum DebugType {
-    None,
-    NotifyClientException,
-    RuntimeException
   }
 }

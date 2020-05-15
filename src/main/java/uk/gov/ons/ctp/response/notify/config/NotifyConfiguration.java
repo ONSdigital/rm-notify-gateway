@@ -14,7 +14,6 @@ import uk.gov.service.notify.NotificationClientApi;
 @Data
 public class NotifyConfiguration {
   private Boolean enabled;
-  private String debugType;
   private String apiKey;
   private String debugHttpCode;
 

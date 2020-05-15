@@ -34,54 +34,10 @@ public class NotificationClientFactoryTest {
   }
 
   @Test
-  public void testItCreatesConfigurationAwareNotificationClientIfDebugTypeIsNone() {
-    config.setDebugType("None");
-
-    assertEquals(
-        configAwareClient,
-        ((ConfigurationAwareNotificationClient) getUnwrappedClient()).getClient());
-  }
-
-  @Test
   public void testItCreatesConfigurationAwareNotificationClientIfDebugTypeIsNull() {
     assertEquals(
         configAwareClient,
         ((ConfigurationAwareNotificationClient) getUnwrappedClient()).getClient());
-  }
-
-  @Test
-  public void
-      testItCreatesRuntimeExceptionThrowingNotificationClientIfDebugTypeIsRuntimeException() {
-    config.setDebugType("RuntimeException");
-
-    assertTrue(getUnwrappedClient() instanceof RuntimeExceptionThrowingNotificationClient);
-  }
-
-  @Test
-  public void testItCreatesExceptionThrowingNotificationClientIfDebugTypeIsNotifyClientException() {
-    config.setDebugType("NotifyClientException");
-
-    assertTrue(getUnwrappedClient() instanceof ExceptionThrowingNotificationClient);
-  }
-
-  @Test
-  public void
-      testItCreatesExceptionThrowingNotificationClientWithHttpCodeIfDebugHttpCodeIsProvided()
-          throws NotificationClientException {
-    config.setDebugType("NotifyClientException");
-    config.setDebugHttpCode(Integer.toString(IM_A_TEAPOT));
-
-    final NotificationClientApi client = getUnwrappedClient();
-
-    int httpCode = 0;
-
-    try {
-      client.getNotificationById("random-id-string");
-    } catch (OverridenNotificationClientException e) {
-      httpCode = e.getHttpResult();
-    }
-
-    assertEquals(IM_A_TEAPOT, httpCode);
   }
 
   @Test
