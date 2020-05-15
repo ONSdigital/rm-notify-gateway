@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.gov.ons.ctp.response.notify.client.GovNotifyClientFactory;
 import uk.gov.ons.ctp.response.notify.client.NotificationClientFactory;
 import uk.gov.service.notify.NotificationClientApi;
 
@@ -22,13 +21,7 @@ public class NotifyConfiguration {
   // facility (otherwise notifications.gov.uk will reject).  Also, this feature is only for testing
   // purposes.
 
-  // If addressOverride is true, what address should the mails be sent to?
-  private String overrideAddress;
-  // Should all the emails be sent to a single email address?
-  private Boolean addressOverride;
-
   private String onsSurveysRasEmailReminderTemplateId;
-  private String endpointBaseUrl;
 
   /**
    * To set up the GOV.UK Notify NotificationClient
@@ -37,7 +30,7 @@ public class NotifyConfiguration {
    */
   @Bean
   public NotificationClientApi notificationClient() {
-    NotificationClientFactory factory = new NotificationClientFactory(new GovNotifyClientFactory());
+    NotificationClientFactory factory = new NotificationClientFactory();
 
     return factory.getNotificationClient(this);
   }
