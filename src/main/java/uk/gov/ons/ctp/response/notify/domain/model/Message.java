@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 /** Domain model object. */
 @Entity
@@ -35,9 +36,11 @@ public class Message {
   @Column(name = "messagepk")
   private Integer messagePK;
 
+  @Type(type="uuid-char")
   @Column(name = "id")
   private UUID id;
-
+  
+  @Type(type="uuid-char")
   @Column(name = "notificationid")
   private UUID notificationId;
 }
