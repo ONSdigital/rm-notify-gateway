@@ -26,8 +26,6 @@ public class NotifyConfiguration {
   private Boolean enabled;
   @Value("${notify.apiKey}")
   private String apiKey;
-  @Value("${notify.onsSurveysRasEmailReminderTemplateId}")
-  private String onsSurveysRasEmailReminderTemplateId;
 
   /**
    * To set up the GOV.UK Notify NotificationClient

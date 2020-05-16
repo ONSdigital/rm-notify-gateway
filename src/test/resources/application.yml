@@ -1,0 +1,108 @@
+info:
+  name: ${project.artifactId}
+  version: ${project.version}
+  origin: ${scm.url}
+  commit: ${buildNumber}
+  branch: ${scmBranch}
+  built: ${timestamp}
+
+spring:
+  output:
+    ansi:
+      enabled: never
+
+  application:
+    name: Notify Gateway API
+
+  datasource:
+    url: jdbc:h2:mem:postgres;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: notifygatewaysvc
+    password: notifygatewaysvc
+    driverClassName: org.h2.Driver
+    continue-on-error: true
+    tomcat:
+      initial-size: 5
+      max-active: 10
+      max-idle: 5
+      min-idle: 3
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    properties:
+      hibernate:
+        ddl-auto: create-drop
+
+# logging config here as a reminder as to how to override logback from cmd line
+# ie -Dlogging.level.org.springframework=DEBUG
+logging:
+  level:
+    uk.gov.ons.ctp: debug
+    org.springframework: warn
+  profile: DEV
+  useJson: false
+
+liquibase:
+  enabled: false
+
+security:
+  basic:
+    enabled: true
+    realm: sdc
+  user:
+    name: admin
+    password: secret
+
+management:
+  security:
+    roles: SUPERUSER
+    enabled: true
+  health:
+    rabbit:
+      enabled: false
+
+server:
+  port: 8181
+  servlet-path: /
+
+endpoints:
+  info:
+    enabled: true
+    sensitive: false
+  enabled: true
+
+redelivery-policy:
+  maxRedeliveries: 10
+  initialRedeliveryDelay: 1000
+  redeliveryDelay: 1000
+
+notify:
+  enabled: false
+  apiKey: dummykey-ffffffff-ffff-ffff-ffff-ffffffffffff-ffffffff-ffff-ffff-ffff-ffffffffffff
+  censusUacSmsTemplateId: ffffffff-ffff-ffff-ffff-ffffffffffff
+  onsSurveysRasEmailReminderTemplateId: ffffffff-ffff-ffff-ffff-ffffffffffff
+
+rabbitmq:
+  username: guest
+  password: guest
+  host: localhost
+  port: 6672
+  virtualhost: /
+
+messaging:
+  backoffInitial: 5000
+  backoffMultiplier: 3
+  backoffMax: 45000
+  consumingThreads: 1
+  maxAttempts: 3
+  prefetchCount: 10
+  txSize: 1
+
+comms-template-service:
+  template-by-classifiers-path: /templates
+  connection-config:
+    username: admin
+    password: secret
+    scheme: http
+    host: localhost
+    port: 9182

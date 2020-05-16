@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties
 @Data
 public class AppConfig {
-  private SwaggerSettings swaggerSettings;
   private CommsTemplateService commsTemplateService;
   private Logging logging;
 }
