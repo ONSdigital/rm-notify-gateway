@@ -60,7 +60,7 @@ public class CommsTemplateClientTest {
     Mockito.when(
             restTemplate.exchange(
                 any(URI.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
-        .thenReturn(new ResponseEntity(HttpStatus.OK));
+        .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
     // passed in like this as can't mix matchers and concrete values, if not declared as string then
     // mockito complains it is an ambiguous method call (could be one of 2 methods)
@@ -86,7 +86,7 @@ public class CommsTemplateClientTest {
     Mockito.when(
             restTemplate.exchange(
                 any(URI.class), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
-        .thenReturn(new ResponseEntity(HttpStatus.BAD_REQUEST));
+        .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
 
     try {
       // When
