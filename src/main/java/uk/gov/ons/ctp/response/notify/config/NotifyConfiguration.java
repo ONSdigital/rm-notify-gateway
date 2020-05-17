@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import uk.gov.ons.ctp.response.notify.client.LoggingNotificationClient;
 import uk.gov.ons.ctp.response.notify.client.NullNotificationClient;
 import uk.gov.service.notify.NotificationClient;
-import uk.gov.service.notify.NotificationClientApi;
 
 /** Configuration specific to GOV.UK Notify */
 @Configuration
@@ -27,24 +26,9 @@ public class NotifyConfiguration {
   @Value("${notify.apiKey}")
   private String apiKey;
 
-  /**
-   * To set up the GOV.UK Notify NotificationClient
-   *
-   * @return the notificationClient
-   */
   @Bean
-  public NotificationClientApi notificationClient() {
-    if (enabled) {
-      return nullNotificationClient();
-    }
-    return loggingNotificationClient();
-  }
-
-  private NullNotificationClient nullNotificationClient() {
-    return new NullNotificationClient();
-  }
-
-  private LoggingNotificationClient loggingNotificationClient() {
-    return new LoggingNotificationClient(new NotificationClient(apiKey), log);
+  public LoggingNotificationClient notificationClient() {
+    return enabled ? new LoggingNotificationClient(new NotificationClient(apiKey), log) :
+      new LoggingNotificationClient(new NullNotificationClient(), log);
   }
 }

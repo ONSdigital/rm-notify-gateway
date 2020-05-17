@@ -23,10 +23,10 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
+import uk.gov.ons.ctp.response.notify.client.LoggingNotificationClient;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.NotificationClientApi;
 import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
@@ -58,7 +58,7 @@ public class NotifyService {
   public static final String NOTIFICATION = "NOTIFICATION";
   public static final String COMMUNICATION_TYPE = "COMMUNICATION_TYPE";
   public static final String COVID_SURVEY_ID = "283";
-  @Autowired private NotificationClientApi notificationClient;
+  @Autowired private LoggingNotificationClient notificationClient;
   @Autowired private CommsTemplateClient commsTemplateClient;
 
   public ActionFeedback process(final ActionRequest actionRequest)

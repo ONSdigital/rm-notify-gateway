@@ -59,6 +59,7 @@ import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
+import uk.gov.ons.ctp.response.notify.client.LoggingNotificationClient;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
@@ -72,7 +73,7 @@ public class NotifyServiceTest {
 
   @InjectMocks private NotifyService notifyService;
 
-  @Mock private NotificationClient notificationClient;
+  @Mock private LoggingNotificationClient notificationClient;
 
   @Mock private CommsTemplateClient commsTemplateClient;
 

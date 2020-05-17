@@ -25,11 +25,6 @@ public class LoggingNotificationClientTest {
   }
 
   @Test
-  public void testItIsAnInstanceOfNotificationClientApi() {
-    assertTrue(client instanceof NotificationClientApi);
-  }
-
-  @Test
   public void testItWrapsSendEmail() throws NotificationClientException {
     final Map<String, String> personalisation = personalisation();
     SendEmailResponse expectedResponse = emailResponse();
