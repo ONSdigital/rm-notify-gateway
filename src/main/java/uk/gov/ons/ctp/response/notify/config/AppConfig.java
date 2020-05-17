@@ -10,5 +10,4 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class AppConfig {
   private CommsTemplateService commsTemplateService;
-  private Logging logging;
 }

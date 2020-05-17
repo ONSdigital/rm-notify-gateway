@@ -69,11 +69,4 @@ public class Application {
     log.debug("About to start the Notify Gateway application...");
     SpringApplication.run(Application.class, args);
   }
-
-  @PostConstruct
-  public void initJsonLogging() {
-    if (appConfig.getLogging().isUseJson()) {
-      LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
-    }
-  }
 }
