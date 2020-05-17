@@ -155,6 +155,12 @@
             <groupId>net.sourceforge.cobertura</groupId>
             <artifactId>cobertura</artifactId>
             <version>2.1.1</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>tools</artifactId>
+                    <groupId>com.sun</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -178,7 +184,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.18</version>
+            <version>1.16.22</version>
         </dependency>
 
         <dependency>
@@ -242,7 +248,21 @@
             <version>1.4.01</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.0</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -293,7 +313,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -306,7 +326,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.16.18</version>
+                            <version>1.16.22</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
