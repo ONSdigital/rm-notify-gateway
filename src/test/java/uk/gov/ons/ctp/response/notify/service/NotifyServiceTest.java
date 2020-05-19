@@ -64,7 +64,6 @@ import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
-import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 /** To unit test NotifyServiceImpl */
@@ -174,43 +173,6 @@ public class NotifyServiceTest {
         .sendEmail(
             any(String.class), eq(INVALID_EMAIL_ADDRESS), eq(personalisation), any(String.class));
     verify(notificationClient, never()).getNotificationById(any(String.class));
-  }
-
-  /**
-   * To test the happy path when processing a NotifyRequest (SMS scenario)
-   *
-   * @throws NotificationClientException when censusNotificationClient does
-   */
-  @Test
-  public void testProcessNotifyRequestHappyPathSMS() throws NotificationClientException {
-    Mockito.when(
-            notificationClient.sendSms(
-                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
-        .thenReturn(buildSendSmsResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class)))
-        .thenReturn(buildNotificationForSMS());
-
-    notifyService.process(
-        NotifyRequest.builder()
-            .withId(NOTIFY_REQUEST_ID)
-            .withTemplateId(TEMPLATE_ID)
-            .withReference(MESSAGE_REFERENCE)
-            .withPhoneNumber(VALID_PHONE_NUMBER)
-            .withPersonalisation(
-                String.format(
-                    PERSONALISATION_FORMAT_FROM_ORIKA,
-                    IAC_KEY,
-                    IAC_VALUE,
-                    OTHER_FIELD_KEY,
-                    OTHER_FIELD_VALUE))
-            .build());
-
-    HashMap<String, String> personalisation = new HashMap<>();
-    personalisation.put(IAC_KEY, IAC_VALUE);
-    personalisation.put(OTHER_FIELD_KEY, OTHER_FIELD_VALUE);
-    verify(notificationClient, times(1))
-        .sendSms(
-            any(String.class), eq(VALID_PHONE_NUMBER), eq(personalisation), eq(MESSAGE_REFERENCE));
   }
 
   /**

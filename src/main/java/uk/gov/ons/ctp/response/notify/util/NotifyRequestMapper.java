@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.notify.util;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 
 import org.joda.time.DateTime;
@@ -21,13 +22,7 @@ public interface NotifyRequestMapper {
   
   NotifyRequestMapper INSTANCE = Mappers.getMapper(NotifyRequestMapper.class);
 
-  /**
-   * Theres a mismatch between NotifyRequestForEmailDTO and NotifyRequest,
-   * personalisation is a Map for one and a String for the other but it doesnt appear to
-   * be used anywhere so it can be deleted as part of the culling
-   * @param notifyRequest
-   */
-  @Mapping(target="personalisation", ignore=true)
+  @Mapping(source="personalisation", target="personalisation", qualifiedByName="personalisationMapToString")
   NotifyRequest mapToNotifyRequest(NotifyRequestForEmailDTO notifyRequest);
 
   @Mappings({
@@ -48,5 +43,10 @@ public interface NotifyRequestMapper {
   @Named("optionalToString")
   public static String optionalToString(Optional<String> str) {
     return str.orElse(null);
+  }
+
+  @Named("personalisationMapToString")
+  public static String personalisationMapToString(Map<String, String> personalisationMap) {
+    return personalisationMap != null ? personalisationMap.toString() : null;
   }
 }
