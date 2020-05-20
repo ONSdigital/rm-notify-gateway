@@ -4,10 +4,12 @@ services:
   - docker
 
 language: java
-jdk: openjdk8
+jdk: 
+  - openjdk8
 
-before_install: "cp .maven.settings.xml $HOME/.m2/settings.xml"
-
+before_install:
+  - export TZ=Europe/London
+  
 script:
   - "mvn clean verify"
 

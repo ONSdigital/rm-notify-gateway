@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.FIRSTNAME_KEY;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.LASTNAME_KEY;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_EMAIL_SENT;
-import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_SMS_SENT;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.REPORTING_UNIT_REF_KEY;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.RESPONDENT_PERIOD_KEY;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.RETURN_BY_DATE_KEY;
@@ -24,11 +23,8 @@ import static uk.gov.ons.ctp.response.notify.service.NotifyService.TRADING_STYLE
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.ACTION_ID;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.EMAIL_ADDRESS;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.FORENAME;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.IAC_AS_DISPLAYED_IN_SMS;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.INVALID_EMAIL_ADDRESS;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.INVALID_PHONENUMBER;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.NOTIFICATION_ID;
-import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.PHONENUMBER;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.RESPONDENT_PERIOD;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.RETURN_BY_DATE;
 import static uk.gov.ons.ctp.response.notify.utility.ObjectBuilder.RU_NAME;
@@ -63,11 +59,11 @@ import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
+import uk.gov.ons.ctp.response.notify.client.LoggingNotificationClient;
 import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
 import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.utility.ObjectBuilder;
-import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 /** To unit test NotifyServiceImpl */
@@ -76,7 +72,7 @@ public class NotifyServiceTest {
 
   @InjectMocks private NotifyService notifyService;
 
-  @Mock private NotificationClient notificationClient;
+  @Mock private LoggingNotificationClient notificationClient;
 
   @Mock private CommsTemplateClient commsTemplateClient;
 
@@ -95,74 +91,6 @@ public class NotifyServiceTest {
   private static final String VALID_EMAIL_ADDRESS = "tester@ons.gov.uk";
   private static final String VALID_PHONE_NUMBER = "01234567890";
   private static final String MESSAGE_REFERENCE = "the reference";
-
-  /**
-   * To test the happy path when processing an ActionRequest for SMS. Note emailAddress is at null.
-   *
-   * @throws CTPException when notifyService.process does
-   * @throws NotificationClientException when censusNotificationClient does
-   */
-  @Test
-  public void testProcessActionRequestHappyPathSMS()
-      throws NotificationClientException, CommsTemplateClientException {
-    Mockito.when(
-            notificationClient.sendSms(
-                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
-        .thenReturn(buildSendSmsResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class)))
-        .thenReturn(buildNotificationForSMS());
-    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject()))
-        .thenReturn(buildCommsTemplateDTO());
-
-    ActionFeedback result =
-        notifyService.process(
-            ObjectBuilder.buildActionRequest(
-                ACTION_ID, FORENAME, SURNAME, PHONENUMBER, null, true));
-    assertEquals(ACTION_ID, result.getActionId());
-    assertEquals(NOTIFY_SMS_SENT, result.getSituation());
-    assertEquals(Outcome.REQUEST_COMPLETED, result.getOutcome());
-
-    HashMap<String, String> personalisation = new HashMap<>();
-    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    verify(notificationClient, times(1))
-        .sendSms(any(String.class), eq(PHONENUMBER), eq(personalisation), any(String.class));
-    verify(notificationClient, times(1)).getNotificationById(eq(NOTIFICATION_ID));
-    verify(commsTemplateClient, times(1)).getCommsTemplateByClassifiers(anyObject());
-  }
-
-  /**
-   * To test the error path when processing an ActionRequest for SMS. Note emailAddress is at null.
-   *
-   * @throws CTPException when notifyService.process does
-   * @throws NotificationClientException when censusNotificationClient does
-   */
-  @Test
-  public void testProcessActionRequestErrorPathSMS()
-      throws NotificationClientException, CommsTemplateClientException {
-    Mockito.when(
-            notificationClient.sendSms(
-                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
-        .thenThrow(new NotificationClientException(new Exception()));
-    Mockito.when(commsTemplateClient.getCommsTemplateByClassifiers(anyObject()))
-        .thenReturn(buildCommsTemplateDTO());
-
-    try {
-      notifyService.process(
-          ObjectBuilder.buildActionRequest(
-              ACTION_ID, FORENAME, SURNAME, INVALID_PHONENUMBER, null, true));
-      fail();
-    } catch (NotificationClientException e) {
-      assertEquals(EXCEPTION_MSG, e.getMessage());
-    }
-
-    HashMap<String, String> personalisation = new HashMap<>();
-    personalisation.put(IAC_KEY, IAC_AS_DISPLAYED_IN_SMS);
-    verify(notificationClient, times(1))
-        .sendSms(
-            any(String.class), eq(INVALID_PHONENUMBER), eq(personalisation), any(String.class));
-    verify(notificationClient, never()).getNotificationById(any(String.class));
-    verify(commsTemplateClient, times(1)).getCommsTemplateByClassifiers(anyObject());
-  }
 
   /**
    * To test the happy path when processing an ActionRequest for Email. Note phonenumber is at null.
@@ -245,43 +173,6 @@ public class NotifyServiceTest {
         .sendEmail(
             any(String.class), eq(INVALID_EMAIL_ADDRESS), eq(personalisation), any(String.class));
     verify(notificationClient, never()).getNotificationById(any(String.class));
-  }
-
-  /**
-   * To test the happy path when processing a NotifyRequest (SMS scenario)
-   *
-   * @throws NotificationClientException when censusNotificationClient does
-   */
-  @Test
-  public void testProcessNotifyRequestHappyPathSMS() throws NotificationClientException {
-    Mockito.when(
-            notificationClient.sendSms(
-                any(String.class), any(String.class), any(HashMap.class), any(String.class)))
-        .thenReturn(buildSendSmsResponse());
-    Mockito.when(notificationClient.getNotificationById(any(String.class)))
-        .thenReturn(buildNotificationForSMS());
-
-    notifyService.process(
-        NotifyRequest.builder()
-            .withId(NOTIFY_REQUEST_ID)
-            .withTemplateId(TEMPLATE_ID)
-            .withReference(MESSAGE_REFERENCE)
-            .withPhoneNumber(VALID_PHONE_NUMBER)
-            .withPersonalisation(
-                String.format(
-                    PERSONALISATION_FORMAT_FROM_ORIKA,
-                    IAC_KEY,
-                    IAC_VALUE,
-                    OTHER_FIELD_KEY,
-                    OTHER_FIELD_VALUE))
-            .build());
-
-    HashMap<String, String> personalisation = new HashMap<>();
-    personalisation.put(IAC_KEY, IAC_VALUE);
-    personalisation.put(OTHER_FIELD_KEY, OTHER_FIELD_VALUE);
-    verify(notificationClient, times(1))
-        .sendSms(
-            any(String.class), eq(VALID_PHONE_NUMBER), eq(personalisation), eq(MESSAGE_REFERENCE));
   }
 
   /**

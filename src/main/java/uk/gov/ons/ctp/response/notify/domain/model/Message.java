@@ -37,7 +37,7 @@ public class Message {
 
   @Column(name = "id")
   private UUID id;
-
+  
   @Column(name = "notificationid")
   private UUID notificationId;
 }

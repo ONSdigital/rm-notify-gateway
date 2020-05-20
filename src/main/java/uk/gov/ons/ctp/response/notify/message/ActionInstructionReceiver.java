@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.notify.message;
 
 import static uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequestForEmailDTO.EMAIL_ADDRESS_REGEX;
-import static uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequestForSMSDTO.TELEPHONE_REGEX;
 import static uk.gov.ons.ctp.response.notify.service.NotifyService.NOTIFY_SMS_NOT_SENT;
 
 import java.util.regex.Pattern;
@@ -123,12 +122,6 @@ public class ActionInstructionReceiver {
       return false;
     }
 
-    String phoneNumber = actionContact.getPhoneNumber();
-
-    if (phoneNumber != null) {
-      return isPhoneNumberValid(phoneNumber);
-    }
-
     String emailAddress = actionContact.getEmailAddress();
 
     if (emailAddress != null) {
@@ -141,11 +134,6 @@ public class ActionInstructionReceiver {
   private boolean isEmailValid(final String emailAddress) {
     Pattern pattern = Pattern.compile(EMAIL_ADDRESS_REGEX);
     return pattern.matcher(emailAddress).matches();
-  }
-
-  private boolean isPhoneNumberValid(final String phoneNumber) {
-    Pattern pattern = Pattern.compile(TELEPHONE_REGEX);
-    return pattern.matcher(phoneNumber).matches();
   }
 
   /**

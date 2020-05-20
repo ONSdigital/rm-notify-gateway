@@ -1,0 +1,14 @@
+{
+  "id": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+  "email_address": "test@test.com",
+  "type": "A",
+  "reference": "123",
+  "template": {
+    "id": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+    "version": "1",
+    "uri": "https://www.google.com"
+  },
+  "body": "hello",
+  "status": "good",
+  "created_at": "2012-01-01"
+}

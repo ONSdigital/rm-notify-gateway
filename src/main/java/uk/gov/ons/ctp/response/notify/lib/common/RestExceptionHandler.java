@@ -72,9 +72,7 @@ public class RestExceptionHandler {
   @ExceptionHandler(Throwable.class)
   public ResponseEntity<?> handleGeneralException(Throwable t) {
     log.error("Uncaught Throwable", t);
-    return new ResponseEntity<>(
-        new CTPException(CTPException.Fault.SYSTEM_ERROR, t, t.getMessage()),
-        HttpStatus.INTERNAL_SERVER_ERROR);
+    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   /**

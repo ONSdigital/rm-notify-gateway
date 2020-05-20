@@ -25,11 +25,6 @@ public class LoggingNotificationClientTest {
   }
 
   @Test
-  public void testItIsAnInstanceOfNotificationClientApi() {
-    assertTrue(client instanceof NotificationClientApi);
-  }
-
-  @Test
   public void testItWrapsSendEmail() throws NotificationClientException {
     final Map<String, String> personalisation = personalisation();
     SendEmailResponse expectedResponse = emailResponse();
@@ -134,11 +129,6 @@ public class LoggingNotificationClientTest {
 
     assertEquals(expectedResponse, actualResponse);
     verify(logger).debug("generateTemplatePreview");
-  }
-
-  @Test
-  public void testGetClient() {
-    assertEquals(wrappedClient, client.getClient());
   }
 
   private Map<String, String> personalisation() {

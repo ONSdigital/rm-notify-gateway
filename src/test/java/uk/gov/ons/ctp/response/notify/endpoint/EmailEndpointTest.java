@@ -11,7 +11,6 @@ import static uk.gov.ons.ctp.response.notify.lib.MockMvcControllerAdviceHelper.m
 import static uk.gov.ons.ctp.response.notify.lib.MvcHelper.postJson;
 
 import java.util.UUID;
-import ma.glasnost.orika.MapperFacade;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -19,12 +18,10 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.ons.ctp.response.notify.NotifySvcBeanMapper;
 import uk.gov.ons.ctp.response.notify.domain.Response;
 import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
 import uk.gov.ons.ctp.response.notify.lib.common.CustomObjectMapper;
@@ -37,8 +34,6 @@ public class EmailEndpointTest {
   @InjectMocks private EmailEndpoint emailEndpoint;
 
   @Mock private ResilienceService resilienceService;
-
-  @Spy private MapperFacade mapperFacade = new NotifySvcBeanMapper();
 
   private MockMvc mockMvc;
 

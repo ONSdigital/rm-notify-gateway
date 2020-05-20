@@ -4,9 +4,7 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.net.URI;
 import javax.validation.Valid;
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,22 +12,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.ons.ctp.response.notify.lib.common.CTPEndpoint;
 import uk.gov.ons.ctp.response.notify.lib.common.InvalidRequestException;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequestForEmailDTO;
 import uk.gov.ons.ctp.response.notify.lib.notify.ResponseDTO;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
+import uk.gov.ons.ctp.response.notify.util.NotifyRequestMapper;
+import uk.gov.ons.ctp.response.notify.util.ResponseMapper;
 
 /** The REST endpoint controller for Email Messages */
 @RestController
 @RequestMapping(value = "/emails", produces = "application/json")
-public class EmailEndpoint implements CTPEndpoint {
+public class EmailEndpoint {
   private static final Logger log = LoggerFactory.getLogger(EmailEndpoint.class);
-
-  @Qualifier("notifySvcBeanMapper")
-  @Autowired
-  private MapperFacade mapperFacade;
 
   @Autowired private ResilienceService resilienceService;
 
@@ -57,10 +52,10 @@ public class EmailEndpoint implements CTPEndpoint {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
 
-    NotifyRequest notifyRequest = mapperFacade.map(requestForEmailDTO, NotifyRequest.class);
+    NotifyRequest notifyRequest = NotifyRequestMapper.INSTANCE.mapToNotifyRequest(requestForEmailDTO);
     notifyRequest.setTemplateId(templateId);
 
     return ResponseEntity.created(URI.create("TODO"))
-        .body(mapperFacade.map(resilienceService.process(notifyRequest), ResponseDTO.class));
+        .body(ResponseMapper.INSTANCE.mapToResponseDto(resilienceService.process(notifyRequest)));
   }
 }

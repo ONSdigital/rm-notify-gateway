@@ -2,12 +2,8 @@ package uk.gov.ons.ctp.response.notify.endpoint;
 
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
-import java.util.Optional;
 import java.util.UUID;
-import ma.glasnost.orika.MapperFacade;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +14,7 @@ import uk.gov.ons.ctp.response.notify.lib.common.CTPException;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotificationDTO;
 import uk.gov.ons.ctp.response.notify.service.NotifyService;
 import uk.gov.ons.ctp.response.notify.service.ResilienceService;
+import uk.gov.ons.ctp.response.notify.util.NotifyRequestMapper;
 import uk.gov.service.notify.Notification;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -30,10 +27,6 @@ public class StatusEndpoint {
   @Autowired private NotifyService notifyService;
 
   @Autowired private ResilienceService resilienceService;
-
-  @Qualifier("notifySvcBeanMapper")
-  @Autowired
-  private MapperFacade mapperFacade;
 
   public static final String ERRORMSG_MESSAGE_NOTFOUND = "Message not found for message id %s";
   public static final String ERRORMSG_NOTIFICATION_ISSUE =
@@ -59,8 +52,8 @@ public class StatusEndpoint {
     Message message = findMessageById(messageId);
     UUID notificationId = getNotificationId(message, messageId);
     Notification notification = findNotificationById(notificationId, messageId);
-
-    return ResponseEntity.ok(map(notification));
+    NotificationDTO notificationDto = NotifyRequestMapper.INSTANCE.mapToNotificationDTO(notification);
+    return ResponseEntity.ok(notificationDto);
   }
 
   private Message findMessageById(final UUID messageId) throws CTPException {
@@ -109,42 +102,5 @@ public class StatusEndpoint {
       log.error(errorMsg, e);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, errorMsg);
     }
-  }
-
-  // TODO Attempted to use mapperFacade but was getting the exception:
-  // TODO ma.glasnost.orika.MappingException: No concrete class mapping defined for source class
-  // TODO org.joda.time.chrono.ISOChronology
-  private NotificationDTO map(Notification notification) {
-    NotificationDTO result =
-        NotificationDTO.builder()
-            .id(notification.getId())
-            .notificationType(notification.getNotificationType())
-            .status(notification.getStatus())
-            .templateId(notification.getTemplateId())
-            .templateVersion(notification.getTemplateVersion())
-            .createdAt(notification.getCreatedAt().toDate())
-            .build();
-    Optional<String> reference = notification.getReference();
-    if (reference.isPresent()) {
-      result.setReference(reference.get());
-    }
-    Optional<String> emailAddress = notification.getEmailAddress();
-    if (emailAddress.isPresent()) {
-      result.setEmailAddress(emailAddress.get());
-    }
-    Optional<String> phoneNumber = notification.getPhoneNumber();
-    if (phoneNumber.isPresent()) {
-      result.setPhoneNumber(phoneNumber.get());
-    }
-    Optional<DateTime> sentAt = notification.getSentAt();
-    if (sentAt.isPresent()) {
-      result.setSentAt(sentAt.get().toDate());
-    }
-    Optional<DateTime> completedAt = notification.getCompletedAt();
-    if (completedAt.isPresent()) {
-      result.setCompletedAt(completedAt.get().toDate());
-    }
-
-    return result;
   }
 }

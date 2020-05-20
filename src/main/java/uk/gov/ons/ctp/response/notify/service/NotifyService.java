@@ -23,12 +23,10 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.notify.client.CommsTemplateClientException;
-import uk.gov.ons.ctp.response.notify.config.NotifyConfiguration;
+import uk.gov.ons.ctp.response.notify.client.LoggingNotificationClient;
 import uk.gov.ons.ctp.response.notify.domain.model.CommsTemplateDTO;
 import uk.gov.ons.ctp.response.notify.lib.notify.NotifyRequest;
-import uk.gov.ons.ctp.response.notify.util.InternetAccessCodeFormatter;
 import uk.gov.service.notify.Notification;
-import uk.gov.service.notify.NotificationClientApi;
 import uk.gov.service.notify.NotificationClientException;
 import uk.gov.service.notify.SendEmailResponse;
 import uk.gov.service.notify.SendSmsResponse;
@@ -60,8 +58,7 @@ public class NotifyService {
   public static final String NOTIFICATION = "NOTIFICATION";
   public static final String COMMUNICATION_TYPE = "COMMUNICATION_TYPE";
   public static final String COVID_SURVEY_ID = "283";
-  @Autowired private NotifyConfiguration notifyConfiguration;
-  @Autowired private NotificationClientApi notificationClient;
+  @Autowired private LoggingNotificationClient notificationClient;
   @Autowired private CommsTemplateClient commsTemplateClient;
 
   public ActionFeedback process(final ActionRequest actionRequest)
@@ -69,21 +66,10 @@ public class NotifyService {
     String actionId = actionRequest.getActionId();
     log.with("action_id", actionId).debug("Entering process");
 
-    ActionFeedback actionFeedback;
-
-    ActionContact actionContact = actionRequest.getContact();
-    String phoneNumber = actionContact.getPhoneNumber();
-    if (!StringUtils.isEmpty(phoneNumber)) { // TODO Switch used for BRES
-      actionFeedback = processSms(actionRequest);
-    } else {
-      actionFeedback = processEmail(actionRequest);
-    }
-
-    return actionFeedback;
+    return processEmail(actionRequest);
   }
 
   public UUID process(final NotifyRequest notifyRequest) throws NotificationClientException {
-    String phoneNumber = notifyRequest.getPhoneNumber();
     String emailAddress = notifyRequest.getEmailAddress();
 
     String templateId = notifyRequest.getTemplateId();
@@ -92,28 +78,14 @@ public class NotifyService {
     String personalisation = notifyRequest.getPersonalisation();
     Map<String, String> personalisationMap = buildMapFromString(personalisation);
 
-    if (!StringUtils.isEmpty(phoneNumber)) {
-      log.with("template_id", templateId)
-          .with("personalisation_map", personalisationMap)
-          .debug("About to invoke sendSms");
-      SendSmsResponse response =
-          notificationClient.sendSms(templateId, phoneNumber, personalisationMap, reference);
-      log.with("reference", response.getReference())
-          .with("template_id", response.getTemplateId())
-          .with("notification_id", response.getNotificationId())
-          .debug("Response from send SMS");
-      return response == null ? null : response.getNotificationId();
-    } else {
-      // The xsd enforces to have either a phoneNumber OR an emailAddress
-      log.with("template_id", templateId).debug("About to invoke sendEmail");
-      SendEmailResponse response =
-          notificationClient.sendEmail(templateId, emailAddress, personalisationMap, reference);
-      log.with("reference", response.getReference())
-          .with("template_id", response.getTemplateId())
-          .with("notification_id", response.getNotificationId())
-          .info("Response from send email");
-      return response == null ? null : response.getNotificationId();
-    }
+    log.with("template_id", templateId).debug("About to invoke sendEmail");
+    SendEmailResponse response =
+        notificationClient.sendEmail(templateId, emailAddress, personalisationMap, reference);
+    log.with("reference", response.getReference())
+        .with("template_id", response.getTemplateId())
+        .with("notification_id", response.getNotificationId())
+        .info("Response from send email");
+    return response == null ? null : response.getNotificationId();
   }
 
   public Notification findNotificationById(final UUID notificationId)
@@ -149,51 +121,6 @@ public class NotifyService {
     }
 
     return result;
-  }
-
-  /**
-   * To process actionRequest for SMS
-   *
-   * @param actionRequest to process for SMS
-   * @return the ActionFeedback
-   * @throws NotificationClientException, CommsTemplateClientException
-   */
-  private ActionFeedback processSms(final ActionRequest actionRequest)
-      throws NotificationClientException, CommsTemplateClientException {
-    String actionId = actionRequest.getActionId();
-    ActionContact actionContact = actionRequest.getContact();
-    String phoneNumber = actionContact.getPhoneNumber();
-
-    Map<String, String> personalisation = new HashMap<>();
-    personalisation.put(IAC_KEY, InternetAccessCodeFormatter.externalize(actionRequest.getIac()));
-
-    String templateId = getTemplateIdByClassifiers(actionRequest);
-    log.with("template_id", templateId)
-        .with("personalisation", personalisation)
-        .with("action_id", actionId)
-        .debug("About to invoke sendSms");
-
-    SendSmsResponse response =
-        notificationClient.sendSms(templateId, phoneNumber, personalisation, null);
-
-    if (response != null) {
-      log.with(
-              "status",
-              notificationClient
-                  .getNotificationById(response.getNotificationId().toString())
-                  .getStatus())
-          .with("action_id", actionId)
-          .debug("Got response");
-    } else {
-      log.with("action_id", actionId).debug("Response is null");
-    }
-
-    return new ActionFeedback(
-        actionId,
-        NOTIFY_SMS_SENT.length() <= SITUATION_MAX_LENGTH
-            ? NOTIFY_SMS_SENT
-            : NOTIFY_SMS_SENT.substring(0, SITUATION_MAX_LENGTH),
-        Outcome.REQUEST_COMPLETED);
   }
 
   /**

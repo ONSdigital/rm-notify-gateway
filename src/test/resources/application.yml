@@ -15,10 +15,10 @@ spring:
     name: Notify Gateway API
 
   datasource:
-    url: jdbc:postgresql://localhost:6432/postgres
+    url: jdbc:h2:mem:postgres;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
     username: notifygatewaysvc
     password: notifygatewaysvc
-    driverClassName: org.postgresql.Driver
+    driverClassName: org.h2.Driver
     continue-on-error: true
     tomcat:
       initial-size: 5
@@ -31,7 +31,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        ddl-auto: update
+        ddl-auto: create-drop
 
 # logging config here as a reminder as to how to override logback from cmd line
 # ie -Dlogging.level.org.springframework=DEBUG
@@ -43,11 +43,7 @@ logging:
   useJson: false
 
 liquibase:
-  user: notifygatewaysvc
-  password: notifygatewaysvc
-  default-schema: notifygatewaysvc
-  url: jdbc:postgresql://localhost:6432/postgres
-  changeLog: classpath:/database/changelog-master.yml
+  enabled: false
 
 security:
   basic:
@@ -100,18 +96,11 @@ messaging:
   prefetchCount: 10
   txSize: 1
 
-swagger-settings:
-  swagger-ui-active: true
-  group-name: rm-notify-gateway-api
-  title: Notify Gateway API
-  description: API for ${project.artifactId}
-  version: ${project.version}
-
 comms-template-service:
   template-by-classifiers-path: /templates
   connection-config:
     username: admin
     password: secret
     scheme: http
-    host: comms-template
-    port: 8182
+    host: localhost
+    port: 9182

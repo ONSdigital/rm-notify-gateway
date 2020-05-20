@@ -12,14 +12,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHan
 public class MockMvcControllerAdviceHelper extends ExceptionHandlerExceptionResolver {
 
   private static final String ERROR_MSG = "Unable to instantiate exception handler %s";
-  private final Class exceptionHandlerClass;
+  private final Class<?> exceptionHandlerClass;
 
   /**
    * MockMvcControllerAdviceHelper constructor
    *
    * @param exceptionHandlerClass Exception Handler Class
    */
-  public MockMvcControllerAdviceHelper(Class exceptionHandlerClass) {
+  public MockMvcControllerAdviceHelper(Class<?> exceptionHandlerClass) {
     super();
     getMessageConverters().add(new MappingJackson2HttpMessageConverter());
     getMessageConverters().add(new Jaxb2RootElementHttpMessageConverter());
@@ -33,7 +33,7 @@ public class MockMvcControllerAdviceHelper extends ExceptionHandlerExceptionReso
    * @param exceptionHandlerClass Exception Handler Class
    * @return MockMvcControllerAdviceHelper object
    */
-  public static MockMvcControllerAdviceHelper mockAdviceFor(Class exceptionHandlerClass) {
+  public static MockMvcControllerAdviceHelper mockAdviceFor(Class<?> exceptionHandlerClass) {
     return new MockMvcControllerAdviceHelper(exceptionHandlerClass);
   }
 

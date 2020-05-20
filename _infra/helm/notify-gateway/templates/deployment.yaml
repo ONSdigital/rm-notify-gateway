@@ -123,10 +123,6 @@ spec:
             value: "{{ .Values.notify.enabled }}"
           - name: NOTIFY_APIKEY
             value: {{ .Values.notify.apiKey }}
-          - name: NOTIFY_CENSUSUACSMSTEMPLATEID
-            value: {{ .Values.notify.censusUacSmSTemplateId }}
-          - name: NOTIFY_ONSSURVEYSRASEMAILREMINDERTEMPLATEID
-            value: {{ .Values.notify.onsSurveysRasEmailReminderTemplateId }}
           - name: SECURITY_USER_NAME
             valueFrom:
               secretKeyRef:
