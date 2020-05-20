@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-xml</artifactId>
-            <version>4.3.11.RELEASE</version>
+            <version>4.3.20.RELEASE</version>
         </dependency>
 
         <dependency>
