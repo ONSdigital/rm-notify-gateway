@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -39,7 +41,7 @@ public class NotifyMapperTest {
   }
 
   @Test
-  public void requestMapsToDto() throws IOException {
+  public void requestMapsToDto() throws IOException, ParseException {
 
     Map<String, String> personalisation = new HashMap<>();
     personalisation.put("key", "value");
@@ -53,7 +55,8 @@ public class NotifyMapperTest {
     assertEquals(UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"), dto.getTemplateId());
     assertEquals("test@test.com", dto.getEmailAddress());
     assertEquals("123", dto.getReference());
-    assertEquals("Sun Jan 01 00:00:00 GMT 2012", dto.getCreatedAt().toString());
+    assertEquals(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2012").toString(),
+            dto.getCreatedAt().toString());
 
     reader.close();
   }
