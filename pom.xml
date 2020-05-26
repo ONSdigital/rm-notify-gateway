@@ -309,6 +309,7 @@
 
     <build>
         <defaultGoal>clean install</defaultGoal>
+        <finalName>notifygatewaysvc</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
