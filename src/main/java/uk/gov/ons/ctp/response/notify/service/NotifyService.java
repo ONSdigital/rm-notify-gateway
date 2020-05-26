@@ -191,6 +191,13 @@ public class NotifyService {
   public MultiValueMap<String, String> getClassifiers(final ActionRequest actionRequest) {
     MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
 
+    if (NUDGE_EMAIL.equals((actionRequest.getActionType()))) {
+      List<String> isNudge = new ArrayList<>();
+      isNudge.add(NUDGE);
+      classifierMap.put(COMMUNICATION_TYPE, isNudge);
+      return classifierMap;
+    }
+
     if (actionRequest.getLegalBasis() != null) {
       List<String> legalBasis = new ArrayList<>();
       legalBasis.add(actionRequest.getLegalBasis());
@@ -218,13 +225,7 @@ public class NotifyService {
       List<String> isReminder = new ArrayList<>();
       isReminder.add(REMINDER);
       classifierMap.put(COMMUNICATION_TYPE, isReminder);
-    } else if (NUDGE_EMAIL.equalsIgnoreCase(actionRequest.getActionType())) {
-      List<String> isNudge = new ArrayList<>();
-      isNudge.add(NUDGE);
-      classifierMap.put(COMMUNICATION_TYPE, isNudge);
     }
-
-
     return classifierMap;
   }
 }
