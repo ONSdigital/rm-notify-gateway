@@ -53,6 +53,8 @@ public class NotifyService {
   public static final String LEGAL_BASIS = "LEGAL_BASIS";
   public static final String SURVEY_CLASSIFIER = "SURVEY";
   public static final String REMINDER_EMAIL = "BSRE";
+  public static final String NUDGE_EMAIL = "BSNUE";
+  public static final String NUDGE = "NUDGE";
   public static final String NOTIFICATION_EMAIL = "BSNE";
   public static final String REMINDER = "REMINDER";
   public static final String NOTIFICATION = "NOTIFICATION";
@@ -189,6 +191,13 @@ public class NotifyService {
   public MultiValueMap<String, String> getClassifiers(final ActionRequest actionRequest) {
     MultiValueMap<String, String> classifierMap = new LinkedMultiValueMap<>();
 
+    if (NUDGE_EMAIL.equals((actionRequest.getActionType()))) {
+      List<String> isNudge = new ArrayList<>();
+      isNudge.add(NUDGE);
+      classifierMap.put(COMMUNICATION_TYPE, isNudge);
+      return classifierMap;
+    }
+
     if (actionRequest.getLegalBasis() != null) {
       List<String> legalBasis = new ArrayList<>();
       legalBasis.add(actionRequest.getLegalBasis());
@@ -217,7 +226,6 @@ public class NotifyService {
       isReminder.add(REMINDER);
       classifierMap.put(COMMUNICATION_TYPE, isReminder);
     }
-
     return classifierMap;
   }
 }
