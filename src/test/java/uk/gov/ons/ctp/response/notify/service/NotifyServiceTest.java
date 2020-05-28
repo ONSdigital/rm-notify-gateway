@@ -326,6 +326,16 @@ public class NotifyServiceTest {
     assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
   }
 
+  @Test
+  public void testGetClassifiersMapForNugeEmail() {
+    ActionRequest actionRequest = createActionRequest("BSNUE", "", "Voluntary Not Stated", "283");
+    MultiValueMap<String, String> expectedClassifierMap =
+            getExpectedClassifiersMap("NUDGE", "", "", "");
+    MultiValueMap<String, String> actualClassifiersMap =
+            notifyService.getClassifiers(actionRequest);
+    assertTrue(EqualsBuilder.reflectionEquals(expectedClassifierMap, actualClassifiersMap));
+  }
+
   private ActionRequest createActionRequest(String actionType, String region, String legalBasis, String surveyRef) {
     ActionRequest actionRequest = new ActionRequest();
     actionRequest.setActionType(actionType);
