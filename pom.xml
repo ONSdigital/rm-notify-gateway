@@ -213,6 +213,14 @@
 
         <!-- Third party end -->
 
+        <!-- Document Dependency -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <!-- Document Dependency End -->
+
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework</groupId>

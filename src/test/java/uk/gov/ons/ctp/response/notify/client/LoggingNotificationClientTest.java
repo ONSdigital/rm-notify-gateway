@@ -40,21 +40,6 @@ public class LoggingNotificationClientTest {
   }
 
   @Test
-  public void testItWrapsSendSms() throws NotificationClientException {
-    final Map<String, String> personalisation = personalisation();
-    SendSmsResponse expectedResponse = smsResponse();
-
-    when(wrappedClient.sendSms("template-id", "07123456789", personalisation, "reference"))
-        .thenReturn(expectedResponse);
-
-    final SendSmsResponse actualResponse =
-        client.sendSms("template-id", "07123456789", personalisation, "reference");
-
-    assertEquals(expectedResponse, actualResponse);
-    verify(logger).debug("sendSms");
-  }
-
-  @Test
   public void testItWrapsGetNotificationId() throws NotificationClientException {
     Notification expectedResponse = returnedNotification();
 

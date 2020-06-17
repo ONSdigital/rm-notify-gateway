@@ -3,6 +3,15 @@ package uk.gov.ons.ctp.response.notify.endpoint;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.util.UUID;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springdoc.core.annotations.RouterOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,11 +53,19 @@ public class StatusEndpoint {
    * @throws CTPException if GOV.UK Notify has thrown an exception or if no resource found for
    *     messageId
    */
+  @Operation(summary = "Get status of an existing message")
+  @Parameter(in = ParameterIn.PATH, name = "messageId", description = "Message Id")
+  @ApiResponses( value = {
+          @ApiResponse(responseCode = "200", description = "Successful Operation"),
+          @ApiResponse(responseCode = "401", description = "Unauthorized",
+                  content = @Content(examples = {})),
+          @ApiResponse(responseCode = "404", description = "Resource Not Found",
+                  content = @Content(examples = {}))
+  })
   @RequestMapping(value = "/{messageId}", method = RequestMethod.GET)
   public ResponseEntity<NotificationDTO> getStatus(@PathVariable("messageId") final UUID messageId)
       throws CTPException {
     log.with("message_id", messageId).debug("Entering getStatus");
-
     Message message = findMessageById(messageId);
     UUID notificationId = getNotificationId(message, messageId);
     Notification notification = findNotificationById(notificationId, messageId);

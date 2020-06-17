@@ -115,3 +115,12 @@ comms-template-service:
     scheme: http
     host: comms-template
     port: 8182
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: false
+  swagger-ui:
+    path: /api-doc.html
+    operationsSorter: method
+    enabled: false
