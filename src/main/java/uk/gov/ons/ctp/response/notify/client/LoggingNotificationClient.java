@@ -32,16 +32,6 @@ public class LoggingNotificationClient {
     return client.sendEmail(templateId, emailAddress, personalisation, reference);
   }
 
-  public SendSmsResponse sendSms(
-      String templateId, String phoneNumber, Map<String, String> personalisation, String reference)
-      throws NotificationClientException {
-    log.with("template_id", templateId)
-        .with("personalisation", personalisation)
-        .with("reference", reference)
-        .debug("sendSms");
-    return client.sendSms(templateId, phoneNumber, personalisation, reference);
-  }
-
   public Notification getNotificationById(String notificationId)
       throws NotificationClientException {
     log.with("notification_id", notificationId).debug("getNotificationById");
