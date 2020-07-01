@@ -4,7 +4,7 @@ info:
   description: notify gateway svc
   version: UNVERSIONED
 servers:
-  - url: http://localhost:8181/api
+  - url: http://localhost:5181
 paths:
   "/emails/{censusUacSmsTemplateId}":
     post:
