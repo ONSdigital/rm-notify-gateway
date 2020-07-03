@@ -1,0 +1,125 @@
+openapi: 3.0.1
+info:
+  title: notifygatewaysvc
+  description: notify gateway svc
+  version: UNVERSIONED
+servers:
+  - url: http://localhost:5181
+paths:
+  "/emails/{censusUacSmsTemplateId}":
+    post:
+      tags:
+        - email-endpoint
+      summary: Send Email via Gov.Notify
+      operationId: sendEmail
+      parameters:
+        - name: censusUacSmsTemplateId
+          in: path
+          description: Gov Notify Template Id to be used for email.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NotifyRequestForEmailDTO"
+        required: true
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ResponseDTO"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Resource Not Found
+  "/messages/{messageId}":
+    get:
+      tags:
+        - status-endpoint
+      summary: Get status of an existing message
+      operationId: getStatus
+      parameters:
+        - name: messageId
+          in: path
+          description: Message Id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NotificationDTO"
+        "401":
+          description: Unauthorized
+        "404":
+          description: Resource Not Found
+components:
+  schemas:
+    NotifyRequestForEmailDTO:
+      required:
+        - emailAddress
+      type: object
+      properties:
+        reference:
+          type: string
+        personalisation:
+          type: object
+          additionalProperties:
+            type: string
+        emailAddress:
+          pattern: ".*@.*"
+          type: string
+    ResponseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        templateId:
+          type: string
+          format: uuid
+        fromEmail:
+          type: string
+        fromNumber:
+          type: string
+        reference:
+          type: string
+    NotificationDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        reference:
+          type: string
+        emailAddress:
+          type: string
+        phoneNumber:
+          type: string
+        notificationType:
+          type: string
+        status:
+          type: string
+        templateId:
+          type: string
+          format: uuid
+        templateVersion:
+          type: integer
+          format: int32
+        createdAt:
+          type: string
+          format: date-time
+        sentAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
