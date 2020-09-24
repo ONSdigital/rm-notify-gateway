@@ -2,6 +2,9 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/sdcplatform/notifygatewaysvc.svg)]()
 [![Build Status](https://travis-ci.org/ONSdigital/rm-notify-gateway.svg?branch=master)](https://travis-ci.org/ONSdigital/rm-notify-gateway)
 # Notify Gateway Service
+This service is no longer in use. it has been replaced by our cloud function ras-rm-notify
+
+
 This repository contains the Notify Gateway service. This microservice is a web service implemented using [Spring Boot](http://projects.spring.io/spring-boot/). It provides a wrapper around [GOV.UK Notify](https://www.notifications.service.gov.uk/), offering both a RESTful and queue interface to clients.
 
 The Notify Gateway provides an interface for Response Management to send communications to users using the [GOV.UK Notify](https://www.gov.uk/government/publications/govuk-notify/govuk-notify) service. It is implemented using [Spring Boot](http://projects.spring.io/spring-boot/).
